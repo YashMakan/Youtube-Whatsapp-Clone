@@ -1,116 +1,107 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:whatsapp_application/constants/persons.dart';
 import '../../constants/colors.dart';
-import '../../widgets/widgets.dart';
+import '../../widgets/common_widgets.dart';
 import '../home_page/home_widgets.dart';
 
 class CallPage extends StatefulWidget {
-  const CallPage({Key? key}) : super(key: key);
+  const CallPage({Key? key, required this.scrollController}) : super(key: key);
+
+  final ScrollController scrollController;
 
   @override
   _CallPageState createState() => _CallPageState();
 }
 
 class _CallPageState extends State<CallPage> {
+  bool isSearch = false;
+  TextEditingController controller = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: backgroundColor(context),
       floatingActionButton: FloatingActionButton(
-        onPressed: (){},
+        onPressed: () {},
         backgroundColor: Colors.transparent,
         child: gradientIconButton(
-            size: 55, iconData: Icons.group_add),
+            size: 55, iconData: Icons.phone_forwarded, context: context),
       ),
       body: SafeArea(
-        child: Column(
-          children: [
-            const SizedBox(
-              height: 32,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(left: 16.0),
-                  child: Text(
-                    "Calls",
-                    style: TextStyle(fontSize: 26, fontWeight: FontWeight.w800, color: blackColor(context).darkShade),
-                  ),
-                ),
-                const Padding(
-                  padding: EdgeInsets.only(right: 16.0),
-                  child: Icon(
-                    Icons.search,
-                    size: 32,
-                    color: greenColor,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(
-              height: 26,
-            ),
-            const Divider(
-              thickness: 0.6,
-            ),
-            Padding(
-              padding:
-              const EdgeInsets.only(left: 16.0, top: 12.0, bottom: 12.0),
-              child: SizedBox(
-                height: 100,
-                child: ListView(
-                  scrollDirection: Axis.horizontal,
-                  children: [
-                    gradientIconButton(
-                        size: 60, iconData: Icons.add, text: "New Status"),
-                    const SizedBox(
-                      width: 8,
+          child: Column(
+        children: [
+          Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              const SizedBox(
+                height: 26,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(left: 16.0),
+                    child: Text(
+                      "Calls",
+                      style: TextStyle(
+                          fontSize: 26,
+                          fontWeight: FontWeight.w800,
+                          color: blackColor(context).darkShade),
                     ),
-                    SizedBox(
-                      height: 100,
-                      child: ListView(
-                        shrinkWrap: true,
-                        scrollDirection: Axis.horizontal,
-                        children: List.generate(
-                            persons.length,
-                                (index) => storyWidget(
-                                size: 60,
-                                showGreenStrip: index == 2 || index == 3,
-                                text: persons.reversed.toList()[index]['title'].toString(),
-                                imageUrl: persons.reversed.toList()[index]['picture'].toString()
-                            )),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(right: 16.0),
+                    child: Transform.rotate(
+                      angle: isSearch ? pi * (90 / 360) : 0,
+                      child: IconButton(
+                        icon:
+                            Icon(isSearch ? Icons.add : Icons.search, size: 32),
+                        splashRadius: 20,
+                        onPressed: () {
+                          setState(() {
+                            isSearch = !isSearch;
+                          });
+                        },
+                        color: greenColor,
                       ),
-                    )
-                  ],
-                ),
+                    ),
+                  ),
+                ],
               ),
-            ),
-            const Divider(
-              thickness: 0.6,
-            ),
-            Expanded(
-              child: ListView.separated(
-                itemCount: persons.length,
-                physics: const BouncingScrollPhysics(),
-                separatorBuilder: (context, index){
-                  return const Divider(thickness: 0.3,);
-                },
-                itemBuilder: (context, index) => homeListTile(
-                    context: context,
-                    isOnline: index==3?false:true,
-                    imageUrl: persons[index]['picture'].toString(),
-                    title: "${persons[index]['first_name']} ${persons[index]['last_name']}",
-                    subTitle: "Bro, these are fire 🔥🔥",
-                    messageCounter: 4,
-                    participantImages: index==3?persons.map((e) => e['picture'].toString()).toList():null,
-                    tiles: index == 3?homeTiles.group:homeTiles.message,
-                    timeFrame: "16:32"),
+              const SizedBox(
+                height: 10,
               ),
-            )
-          ],
-        ),
-      ),
+              isSearch
+                  ? searchBar(context: context, controller: controller)
+                  : statusBar(
+                      addWidget: false, seeAllWidget: false, context: context)
+            ],
+          ),
+          Expanded(
+            child: ListView.separated(
+              padding: const EdgeInsets.only(top: 10),
+              controller: widget.scrollController,
+              itemCount: persons.length,
+              separatorBuilder: (context, index) {
+                return const Divider(
+                  thickness: 0.3,
+                );
+              },
+              itemBuilder: (context, index) => customListTile(
+                  context: context,
+                  imageUrl: persons[index]['picture'].toString(),
+                  title:
+                      "${persons[index]['first_name']} ${persons[index]['last_name']}",
+                  subTitle: "May 7, 6:29 PM",
+                  onTap: () {},
+                  numberOfCalls: 2,
+                  customListTileType: CustomListTileType.call,
+                  callStatus: CallStatus.accepted),
+            ),
+          )
+        ],
+      )),
     );
   }
 }

@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:custom_navigation_bar/custom_navigation_bar.dart';
+import 'package:hidable/hidable.dart';
+import 'package:line_icons/line_icons.dart';
 import 'package:whatsapp_application/views/call_page/call_page.dart';
 import 'package:whatsapp_application/views/settings_page/settings_page.dart';
 import '../constants/colors.dart';
 import 'home_page/home_page.dart';
-import 'home_page/home_widgets.dart';
 
 class RootPage extends StatefulWidget {
   const RootPage({Key? key}) : super(key: key);
@@ -15,48 +16,65 @@ class RootPage extends StatefulWidget {
 
 class _RootPageState extends State<RootPage> {
   int selectedIndex = 1;
+  final ScrollController scrollController = ScrollController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: backgroundColor(context),
-      floatingActionButton: FloatingActionButton(
-        onPressed: (){},
-        backgroundColor: Colors.transparent,
-        child: gradientIconButton(
-            size: 55, iconData: Icons.group_add),
-      ),
-      body: getBody(),
-      bottomNavigationBar: bottomNavigationBar()
-    );
+        backgroundColor: backgroundColor(context),
+        body: getBody(),
+        bottomNavigationBar: Hidable(
+          child: bottomNavigationBar(),
+          controller: scrollController,
+        ));
   }
-  Widget getBody(){
-    switch(selectedIndex){
+
+  Widget getBody() {
+    switch (selectedIndex) {
       case 0:
-        return const CallPage();
+        return CallPage(
+          scrollController: scrollController,
+        );
       case 1:
-        return const HomePage();
+        return HomePage(
+          scrollController: scrollController,
+        );
       case 2:
-        return const SettingsPage();
+        return UserPage(
+          scrollController: scrollController,
+        );
       default:
-        return const HomePage();
+        return HomePage(
+          scrollController: scrollController,
+        );
     }
   }
+
   Widget bottomNavigationBar() {
     return CustomNavigationBar(
       iconSize: 24.0,
-      selectedColor: Colors.white,
-      strokeColor: Colors.white,
+      selectedColor: greenColor,
+      strokeColor: greenGradient.lightShade.withOpacity(0.6),
       unSelectedColor: const Color(0xff6c788a),
       backgroundColor: backgroundColor(context),
       items: [
         CustomNavigationBarItem(
-          icon: Icon(Icons.phone, size: 24, color: selectedIndex == 0?greenColor:null,),
+          icon: const Icon(
+            LineIcons.phone,
+            size: 24,
+          ),
         ),
         CustomNavigationBarItem(
-          icon: Icon(Icons.message, size: 24, color: selectedIndex == 1?greenColor:null,),
+          icon: const Icon(
+            LineIcons.sms,
+            size: 24,
+          ),
         ),
         CustomNavigationBarItem(
-          icon: Icon(Icons.settings, size: 24, color: selectedIndex == 2?greenColor:null,),
+          icon: const Icon(
+            LineIcons.user,
+            size: 24,
+          ),
         ),
       ],
       currentIndex: selectedIndex,
