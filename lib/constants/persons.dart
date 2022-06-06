@@ -1,4 +1,4 @@
-const persons = [
+List persons = [
   {
     'email': 'william.david@example.com',
     'gender': 'male',

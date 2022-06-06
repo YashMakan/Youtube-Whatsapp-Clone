@@ -4,17 +4,14 @@ import 'package:whatsapp_application/models/user.dart';
 import 'package:whatsapp_application/views/settings_page/settings_widgets.dart';
 import '../../constants/colors.dart';
 
-class UserPage extends StatefulWidget {
-  const UserPage({Key? key, required this.scrollController})
-      : super(key: key);
-
-  final ScrollController scrollController;
+class ProfilePage extends StatefulWidget {
+  const ProfilePage({Key? key}) : super(key: key);
 
   @override
-  _UserPageState createState() => _UserPageState();
+  _ProfilePageState createState() => _ProfilePageState();
 }
 
-class _UserPageState extends State<UserPage> {
+class _ProfilePageState extends State<ProfilePage> {
   bool isSearch = false;
   bool toggle = true;
   User? user;
@@ -34,7 +31,7 @@ class _UserPageState extends State<UserPage> {
                 height: 35,
               ),
               profileWidget(
-                  image: user?.picture??"",
+                  image: user?.picture ?? "",
                   name: "Yash Makan",
                   onLogoutClick: () {
                     showModalBottomSheet(
@@ -47,9 +44,11 @@ class _UserPageState extends State<UserPage> {
                             padding: const EdgeInsets.symmetric(
                                 vertical: 20, horizontal: 20),
                             decoration: BoxDecoration(
-                                color: context.isDarkMode()?Colors.black26:Colors.white,
-                                borderRadius:
-                                    const BorderRadius.all(Radius.circular(10))),
+                                color: context.isDarkMode()
+                                    ? Colors.black26
+                                    : Colors.white,
+                                borderRadius: const BorderRadius.all(
+                                    Radius.circular(10))),
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -61,7 +60,9 @@ class _UserPageState extends State<UserPage> {
                                       color: blackColor(context).darkShade,
                                       fontSize: 19),
                                 ),
-                                const SizedBox(height: 16,),
+                                const SizedBox(
+                                  height: 16,
+                                ),
                                 ButtonBar(
                                   buttonPadding: EdgeInsets.zero,
                                   alignment: MainAxisAlignment.spaceBetween,
@@ -74,7 +75,8 @@ class _UserPageState extends State<UserPage> {
                                         ),
                                       ),
                                       style: ButtonStyle(
-                                        fixedSize: MaterialStateProperty.all(const Size(150, 30)),
+                                          fixedSize: MaterialStateProperty.all(
+                                              const Size(150, 30)),
                                           backgroundColor:
                                               MaterialStateProperty.all(
                                                   greenColor)),
@@ -84,12 +86,14 @@ class _UserPageState extends State<UserPage> {
                                       child: const Text('Cancel',
                                           style: TextStyle(color: greenColor)),
                                       style: ButtonStyle(
-                                          fixedSize: MaterialStateProperty.all(const Size(100, 30)),
+                                          fixedSize: MaterialStateProperty.all(
+                                              const Size(100, 30)),
                                           backgroundColor:
                                               MaterialStateProperty.all(
                                                   backgroundColor(context)),
                                           side: MaterialStateProperty.all(
-                                              const BorderSide(color: greenColor))),
+                                              const BorderSide(
+                                                  color: greenColor))),
                                       onPressed: () {},
                                     ),
                                   ],
@@ -115,7 +119,7 @@ class _UserPageState extends State<UserPage> {
               settingTile(
                   title: "Notifications",
                   settingTrailing: SettingTrailing.toggle,
-                  onToggle: (value){
+                  onToggle: (value) {
                     setState(() {
                       toggle = value;
                     });

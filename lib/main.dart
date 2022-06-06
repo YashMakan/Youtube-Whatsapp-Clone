@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:whatsapp_application/views/root_page.dart';
+import 'package:whatsapp_application/views/onboarding_page/onboarding_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -21,14 +21,11 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Whatsapp',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        fontFamily: "SFProText"
-      ),
+      theme: ThemeData(primarySwatch: Colors.blue, fontFamily: "SFProText"),
       builder: (context, child) {
         return ScrollConfiguration(behavior: ScrollGlowEffect(), child: child!);
       },
-      home: const RootPage(),
+      home: const OnBoardingPage(),
     );
   }
 }

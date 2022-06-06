@@ -1,8 +1,13 @@
 import 'dart:math';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:whatsapp_application/constants/persons.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:line_icons/line_icons.dart';
+import 'package:whatsapp_application/models/user.dart';
 import '../../constants/colors.dart';
+import '../../constants/persons.dart';
 import '../../widgets/common_widgets.dart';
+import '../message_page/message_page.dart';
 import 'home_widgets.dart';
 
 class HomePage extends StatefulWidget {
@@ -17,7 +22,18 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   bool isSearch = false;
   TextEditingController controller = TextEditingController();
+  List<User> chats = [];
+  List<User> statusList = [];
 
+  // ignore: non_constant_identifier_names
+  double SLIDABLE_WIDGET_WIDTH_RATIO = 0.25, SLIDABLE_ICON_SIZE = 30;
+
+  @override
+  void initState() {
+    chats = persons.map((e) => User.fromJson(e)).toList();
+    statusList = persons.map((e) => User.fromJson(e)).toList().reversed.toList();
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,7 +42,7 @@ class _HomePageState extends State<HomePage> {
         onPressed: () {},
         backgroundColor: Colors.transparent,
         child: gradientIconButton(
-            size: 55, iconData: Icons.group_add, context: context),
+            size: 55, iconData: Icons.group_add),
       ),
       body: SafeArea(
           child: Column(
@@ -74,8 +90,8 @@ class _HomePageState extends State<HomePage> {
                 height: 10,
               ),
               isSearch
-                  ? searchBar(context: context, controller: controller)
-                  : statusBar(context: context)
+                  ? searchBar(controller: controller)
+                  : statusBar(statusList: statusList)
             ],
           ),
           Expanded(
@@ -86,30 +102,86 @@ class _HomePageState extends State<HomePage> {
                 : ListView.separated(
                     padding: const EdgeInsets.only(top: 10),
                     controller: widget.scrollController,
-                    itemCount: persons.length,
+                    itemCount: chats.length,
                     separatorBuilder: (context, index) {
                       return const Divider(
                         thickness: 0.3,
                       );
                     },
-                    itemBuilder: (context, index) => customListTile(
-                        context: context,
-                        isOnline: index == 3 ? false : true,
-                        imageUrl: persons[index]['picture'].toString(),
-                        title:
-                            "${persons[index]['first_name']} ${persons[index]['last_name']}",
-                        subTitle: sentences[index],
-                        messageCounter: index == 0 ? 3 : null,
-                        onTap: () {},
-                        participantImages: index == 3
-                            ? persons
-                                .map((e) => e['picture'].toString())
-                                .toList()
-                            : null,
-                        customListTileType: index == 3
-                            ? CustomListTileType.group
-                            : CustomListTileType.message,
-                        timeFrame: "16:32"),
+                    itemBuilder: (context, index) => Slidable(
+                      key: UniqueKey(),
+                      startActionPane: ActionPane(
+                        motion: const ScrollMotion(),
+                        extentRatio: SLIDABLE_WIDGET_WIDTH_RATIO,
+                        dismissible: DismissiblePane(onDismissed: () {
+                          setState(() {
+                            chats.removeAt(index);
+                          });
+                        }),
+                        children: [
+                          CustomSlidableAction(
+                            backgroundColor: greenColor,
+                            onPressed: (BuildContext context) {},
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                      colors: [
+                                    greenGradient.lightShade,
+                                    greenGradient.darkShade,
+                                  ],
+                                      begin: Alignment.bottomCenter,
+                                      end: Alignment.topCenter)),
+                              child: Center(
+                                child: Icon(LineIcons.checkSquareAlt,
+                                    color: Colors.white,
+                                    size: SLIDABLE_ICON_SIZE),
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                      endActionPane: ActionPane(
+                        motion: const ScrollMotion(),
+                        extentRatio: (SLIDABLE_WIDGET_WIDTH_RATIO) * 2,
+                        dismissible: DismissiblePane(onDismissed: () {}),
+                        children: [
+                          CustomSlidableAction(
+                            onPressed: (_) {},
+                            backgroundColor: grayColor(context).lightShade,
+                            foregroundColor: Colors.white,
+                            child: Icon(
+                              Icons.more_horiz_outlined,
+                              size: SLIDABLE_ICON_SIZE,
+                            ),
+                          ),
+                          CustomSlidableAction(
+                            onPressed: (_) {},
+                            backgroundColor: const Color(0xFFE25C5C),
+                            foregroundColor: Colors.white,
+                            child: Icon(Icons.delete_outline,
+                                size: SLIDABLE_ICON_SIZE),
+                          ),
+                        ],
+                      ),
+                      child: customListTile(
+                          isOnline: index == 3 ? false : true,
+                          imageUrl: chats[index].picture,
+                          title:
+                              "${chats[index].firstName} ${chats[index].lastName}",
+                          subTitle: sentences[index],
+                          messageCounter: index == 0 ? 3 : null,
+                          onTap: () {
+                            Navigator.of(context).push(CupertinoPageRoute(
+                                builder: (context) => MessagePage(user: chats[index],)));
+                          },
+                          participantImages: index == 3
+                              ? chats.map((chat) => chat.picture).toList()
+                              : null,
+                          customListTileType: index == 3
+                              ? CustomListTileType.group
+                              : CustomListTileType.message,
+                          timeFrame: "16:32"),
+                    ),
                   ),
           )
         ],

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:custom_navigation_bar/custom_navigation_bar.dart';
 import 'package:hidable/hidable.dart';
 import 'package:line_icons/line_icons.dart';
+import 'package:whatsapp_application/helper/size_config.dart';
 import 'package:whatsapp_application/views/call_page/call_page.dart';
 import 'package:whatsapp_application/views/settings_page/settings_page.dart';
 import '../constants/colors.dart';
@@ -20,6 +21,7 @@ class _RootPageState extends State<RootPage> {
 
   @override
   Widget build(BuildContext context) {
+    print(SizeConfig.cntxt);
     return Scaffold(
         backgroundColor: backgroundColor(context),
         body: getBody(),
