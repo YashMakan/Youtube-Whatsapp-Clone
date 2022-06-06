@@ -1,16 +1,18 @@
-# whatsapp_application
+WhatsApp Redisign in Flutter
+================
 
-A new Flutter application.
+A complete full stack whatsapp clone app made with Flutter, Python, Firebase & ❤
 
-## Getting Started
+[![YouTube Video: https://www.youtube.com/playlist?list=PLm8trMDxkTIlIJJqIHK12PiT36C8RpQCs](https://img.youtube.com/vi/yqsb3gKP_N4/0.jpg)]([https://www.youtube.com/watch?v=yqsb3gKP_N4](https://www.youtube.com/playlist?list=PLm8trMDxkTIlIJJqIHK12PiT36C8RpQCs))
 
-This project is a starting point for a Flutter application.
+Installation
+-------------
+To run this on your machine, install the following:
+#### Requirements:
+* Flutter SDK - 2.10.2 or any with null-safety
+* Dart SDK - ">=2.16.1 <3.0.0"
+* Any Editor like VsCode or Android Studio (Optional but must have i'd say 🙄)
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Is this github repo helpful 🤔?
+-------------
+If YES! then make sure ⭐ this github repo and subscribe to my YouTube [channel](https://www.youtube.com/c/YashMakan)
