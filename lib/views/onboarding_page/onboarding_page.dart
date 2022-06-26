@@ -67,6 +67,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
   Widget build(BuildContext context) {
     SizeConfig().init(context);
     return Scaffold(
+      backgroundColor: backgroundColor(context),
       body: Stack(
         children: [
           showForm
@@ -118,8 +119,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                           GradientText(
                             onOTPage ? "Enter the OTP" : "Welcome!",
                             style: const TextStyle(
-                              fontSize: 25,
-                            ),
+                                fontSize: 36, fontWeight: FontWeight.bold),
                             gradient: LinearGradient(colors: [
                               greenGradient.lightShade,
                               greenGradient.darkShade,
@@ -226,6 +226,8 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                   : SizeConfig.screenHeight * 0.33,
               child: Card(
                 elevation: 3,
+                shadowColor: blackColor(context).lightShade.withOpacity(0.3),
+                color: backgroundColor(context),
                 child: !showForm
                     ? Column(
                         children: [
@@ -235,8 +237,8 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                           Text(
                             page.heading,
                             textAlign: TextAlign.center,
-                            style: const TextStyle(
-                                color: Colors.black,
+                            style: TextStyle(
+                                color: blackColor(context).darkShade,
                                 fontSize: 22,
                                 fontWeight: FontWeight.w700),
                           ),
@@ -246,6 +248,8 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                             child: Text(
                               page.text,
                               textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  color: blackColor(context).lightShade),
                             ),
                           ),
                           const Spacer(),
@@ -331,27 +335,32 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                                               }
                                               setState(() {});
                                             },
-                                            icon: const Icon(
-                                                LineIcons.arrowLeft)),
+                                            icon: Icon(
+                                              LineIcons.arrowLeft,
+                                              color:
+                                                  blackColor(context).darkShade,
+                                            )),
                                         const SizedBox(
                                           height: 12,
                                         ),
-                                        const Text(
+                                        Text(
                                           "Login Account",
                                           textAlign: TextAlign.center,
                                           style: TextStyle(
-                                              color: Colors.black,
+                                              color:
+                                                  blackColor(context).darkShade,
                                               fontSize: 18,
                                               fontWeight: FontWeight.w600),
                                         ),
                                         const SizedBox(
                                           height: 3,
                                         ),
-                                        const Text(
+                                        Text(
                                           "Hello, let's setup everything.",
                                           textAlign: TextAlign.center,
                                           style: TextStyle(
-                                              color: Colors.black54,
+                                              color: blackColor(context)
+                                                  .lightShade,
                                               fontSize: 12,
                                               fontWeight: FontWeight.w600),
                                         ),
@@ -359,108 +368,83 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                                     ),
                                     SizedBox(
                                       child: Row(
-                                        children: const [
-                                          CircleAvatar(
+                                        children: [
+                                          const CircleAvatar(
                                             radius: 16.0,
                                             backgroundImage: NetworkImage(
                                                 "https://media.istockphoto.com/vectors/flag-of-india-vector-id472317739?k=20&m=472317739&s=612x612&w=0&h=EyWmhj952ZyJEgDStLz3fd0WZjqYIpSvnK3OpPfJ4eA="),
                                           ),
                                           Icon(
                                             Icons.arrow_drop_down,
-                                            color: Colors.black54,
+                                            color:
+                                                blackColor(context).darkShade,
                                           )
                                         ],
                                       ),
                                     )
                                   ],
                                 ),
-                                Expanded(
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    mainAxisAlignment: MainAxisAlignment.center,
+                                const Spacer(),
+                                Container(
+                                  padding: EdgeInsets.zero,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(40.0),
+                                      border: Border.all(
+                                          color: blackColor(context).lightShade,
+                                          width: 1.5)),
+                                  child: Row(
                                     children: [
-                                      Row(
-                                        children: const [
-                                          Text(
-                                            "Phone Number",
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                                color: Colors.black54,
-                                                fontSize: 14,
-                                                fontWeight: FontWeight.w600),
-                                          )
-                                        ],
-                                      ),
-                                      const SizedBox(
-                                        height: 4,
-                                      ),
-                                      Container(
-                                        padding: EdgeInsets.zero,
-                                        decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(40.0),
-                                            border: Border.all(
-                                                color: Colors.black38,
-                                                width: 1.5)),
-                                        child: Row(
-                                          children: [
-                                            Padding(
-                                              padding: const EdgeInsets.only(
-                                                  left: 10),
-                                              child: SizedBox(
-                                                child: Row(
-                                                  mainAxisSize:
-                                                      MainAxisSize.min,
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.center,
-                                                  children: const [
-                                                    CircleAvatar(
-                                                      radius: 14.0,
-                                                      backgroundImage: NetworkImage(
-                                                          "https://media.istockphoto.com/vectors/flag-of-india-vector-id472317739?k=20&m=472317739&s=612x612&w=0&h=EyWmhj952ZyJEgDStLz3fd0WZjqYIpSvnK3OpPfJ4eA="),
-                                                    ),
-                                                    Icon(
-                                                      Icons.arrow_drop_down,
-                                                      color: Colors.black45,
-                                                    )
-                                                  ],
-                                                ),
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(left: 10),
+                                        child: SizedBox(
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            children: [
+                                              const CircleAvatar(
+                                                radius: 14.0,
+                                                backgroundImage: NetworkImage(
+                                                    "https://media.istockphoto.com/vectors/flag-of-india-vector-id472317739?k=20&m=472317739&s=612x612&w=0&h=EyWmhj952ZyJEgDStLz3fd0WZjqYIpSvnK3OpPfJ4eA="),
                                               ),
-                                            ),
-                                            Padding(
-                                              padding: const EdgeInsets.only(
-                                                  left: 4, right: 8),
-                                              child: Container(
-                                                width: 1.5,
-                                                height: 46,
-                                                color: Colors.black38,
-                                              ),
-                                            ),
-                                            const Flexible(
-                                              child: TextField(
-                                                decoration: InputDecoration(
-                                                    border: InputBorder.none,
-                                                    focusedBorder:
-                                                        InputBorder.none,
-                                                    enabledBorder:
-                                                        InputBorder.none,
-                                                    errorBorder:
-                                                        InputBorder.none,
-                                                    disabledBorder:
-                                                        InputBorder.none,
-                                                    contentPadding:
-                                                        EdgeInsets.zero,
-                                                    hintStyle: TextStyle(
-                                                        color: Colors.black38),
-                                                    hintText: "phone number"),
-                                              ),
-                                            )
-                                          ],
+                                              Icon(
+                                                Icons.arrow_drop_down,
+                                                color: blackColor(context)
+                                                    .lightShade,
+                                              )
+                                            ],
+                                          ),
                                         ),
                                       ),
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                            left: 4, right: 8),
+                                        child: Container(
+                                          width: 1.5,
+                                          height: 46,
+                                          color: blackColor(context).lightShade,
+                                        ),
+                                      ),
+                                      Flexible(
+                                        child: TextField(
+                                          decoration: InputDecoration(
+                                              border: InputBorder.none,
+                                              focusedBorder: InputBorder.none,
+                                              enabledBorder: InputBorder.none,
+                                              errorBorder: InputBorder.none,
+                                              disabledBorder: InputBorder.none,
+                                              contentPadding: EdgeInsets.zero,
+                                              hintStyle: TextStyle(
+                                                  color: blackColor(context)
+                                                      .lightShade),
+                                              hintText: "phone number"),
+                                        ),
+                                      )
                                     ],
                                   ),
                                 ),
+                                const Spacer(),
                                 Container(
                                   decoration: BoxDecoration(
                                       borderRadius: const BorderRadius.all(
@@ -513,29 +497,32 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                                               }
                                               setState(() {});
                                             },
-                                            icon: const Icon(
-                                                LineIcons.arrowLeft)),
+                                            icon: Icon(
+                                              LineIcons.arrowLeft,
+                                              color:
+                                                  blackColor(context).darkShade,
+                                            )),
                                       ],
                                     ),
                                     const SizedBox(
                                       height: 4,
                                     ),
-                                    const Text(
+                                    Text(
                                       "Verification Code",
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
-                                          color: Colors.black,
+                                          color: blackColor(context).darkShade,
                                           fontSize: 18,
                                           fontWeight: FontWeight.w600),
                                     ),
                                     const SizedBox(
                                       height: 8,
                                     ),
-                                    const Text(
+                                    Text(
                                       "We have sent the code verification to\nYour Mobile Number",
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
-                                          color: Colors.black54,
+                                          color: blackColor(context).lightShade,
                                           fontSize: 12,
                                           fontWeight: FontWeight.w600),
                                     ),
@@ -550,11 +537,12 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                                         mainAxisAlignment:
                                             MainAxisAlignment.center,
                                         children: [
-                                          const Text(
+                                          Text(
                                             "+6282179410098",
                                             textAlign: TextAlign.center,
                                             style: TextStyle(
-                                                color: Colors.black54,
+                                                color: blackColor(context)
+                                                    .lightShade,
                                                 fontSize: 16,
                                                 fontWeight: FontWeight.w600),
                                           ),
@@ -578,12 +566,17 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                                               (index) => Container(
                                                     width: 45,
                                                     height: 45,
-                                                    decoration:
-                                                        const BoxDecoration(
-                                                            shape:
-                                                                BoxShape.circle,
-                                                            color: Color(
-                                                                0xFFF8F7FB)),
+                                                    decoration: BoxDecoration(
+                                                        borderRadius:
+                                                            const BorderRadius
+                                                                    .all(
+                                                                Radius.circular(
+                                                                    10)),
+                                                        color: !context
+                                                                .isDarkMode()
+                                                            ? const Color(
+                                                                0xFFF8F7FB)
+                                                            : Colors.white12),
                                                   )),
                                         ),
                                       )

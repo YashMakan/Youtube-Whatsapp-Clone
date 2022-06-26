@@ -10,7 +10,7 @@ class SizeConfig {
   static late double safeBlockVertical;
   static late BuildContext cntxt;
 
-  void init(BuildContext context){
+  void init(BuildContext context) {
     cntxt = context;
     _mediaQueryData = MediaQuery.of(context);
     screenWidth = _mediaQueryData.size.width;

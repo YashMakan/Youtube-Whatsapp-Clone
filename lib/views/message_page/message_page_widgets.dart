@@ -1,11 +1,13 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:simple_link_preview/simple_link_preview.dart';
 import 'package:whatsapp_application/constants/colors.dart';
 import 'package:whatsapp_application/helper/size_config.dart';
+import 'package:whatsapp_application/views/call_page/call_page.dart';
 import '../../helper/music_slider.dart';
 
-Widget profileCircularWidget(context, image) {
+Widget profileCircularWidget(BuildContext context, image) {
   return Stack(
     clipBehavior: Clip.none,
     children: [
@@ -21,8 +23,10 @@ Widget profileCircularWidget(context, image) {
         right: -5,
         child: Container(
           decoration: BoxDecoration(
-              color: Colors.black,
-              border: Border.all(width: 3, color: backgroundColor(context)),
+              color: !context.isDarkMode() ? Colors.white : Colors.black,
+              border: Border.all(
+                  width: 3,
+                  color: !context.isDarkMode() ? Colors.white : Colors.black),
               shape: BoxShape.circle),
           child: const Padding(
             padding: EdgeInsets.all(2.0),
@@ -34,28 +38,31 @@ Widget profileCircularWidget(context, image) {
   );
 }
 
-Widget circularTextField() {
+Widget circularTextField({required TextEditingController controller, required String hintText}) {
   return Container(
-    height: 40,
-    padding: const EdgeInsets.only(bottom: 8),
     decoration: BoxDecoration(
         borderRadius: const BorderRadius.all(Radius.circular(40)),
-        border: Border.all(color: Colors.white24)),
-    child: TextFormField(
-      cursorColor: Colors.white,
-      style: const TextStyle(color: Colors.white38),
-      maxLines: 10,
-      minLines: 1,
-      decoration: const InputDecoration(
-          border: InputBorder.none,
-          focusedBorder: InputBorder.none,
-          enabledBorder: InputBorder.none,
-          errorBorder: InputBorder.none,
-          disabledBorder: InputBorder.none,
-          contentPadding:
-              EdgeInsets.only(left: 15, bottom: 8, top: 8, right: 15),
-          hintText: "Respond...",
-          hintStyle: TextStyle(color: Colors.white70)),
+        border: Border.all(
+            color: blackColor(SizeConfig.cntxt).lightShade.withOpacity(0.5))),
+    child: Center(
+      child: TextFormField(
+        cursorColor: Colors.white,
+        style: const TextStyle(color: Colors.white38),
+        maxLines: 10,
+        minLines: 1,
+        controller: controller,
+        decoration: InputDecoration(
+            border: InputBorder.none,
+            focusedBorder: InputBorder.none,
+            enabledBorder: InputBorder.none,
+            errorBorder: InputBorder.none,
+            disabledBorder: InputBorder.none,
+            contentPadding:
+                const EdgeInsets.only(left: 15, bottom: 8, top: 8, right: 15),
+            hintText: hintText,
+            hintStyle: TextStyle(
+                color: blackColor(SizeConfig.cntxt).darkShade.withOpacity(0.6))),
+      ),
     ),
   );
 }
@@ -67,9 +74,13 @@ Widget circularIconButton(iconData, onTap) {
       width: 40,
       height: 40,
       decoration: BoxDecoration(
-          shape: BoxShape.circle, border: Border.all(color: Colors.white24)),
+          shape: BoxShape.circle,
+          border: Border.all(
+              color: blackColor(SizeConfig.cntxt).lightShade.withOpacity(0.5))),
       child: Center(
-        child: Icon(iconData, size: 25, color: Colors.white70),
+        child: Icon(iconData,
+            size: 25,
+            color: blackColor(SizeConfig.cntxt).lightShade.withOpacity(0.5)),
       ),
     ),
   );
@@ -81,16 +92,14 @@ Widget circularMessage(
     {String? message,
     String? gif,
     String? audio,
-      String? url,
+    String? url,
     required bool fromFriend,
     required MessageType messageType}) {
   switch (messageType) {
     case MessageType.text:
       return textMessage(message: message!, fromFriend: fromFriend);
     case MessageType.audio:
-      return audioMessage(
-          audio: audio!,
-          fromFriend: fromFriend);
+      return audioMessage(audio: audio!, fromFriend: fromFriend);
     case MessageType.video:
       return textMessage(message: message!, fromFriend: fromFriend);
     case MessageType.gif:
@@ -100,50 +109,65 @@ Widget circularMessage(
   }
 }
 
-Widget urlMessage({required String url, required bool fromFriend}){
+Widget urlMessage({required String url, required bool fromFriend}) {
   return Padding(
     padding: const EdgeInsets.only(bottom: 20),
     child: Row(
       mainAxisAlignment:
-      fromFriend ? MainAxisAlignment.start : MainAxisAlignment.end,
+          fromFriend ? MainAxisAlignment.start : MainAxisAlignment.end,
       children: [
         Container(
             width: SizeConfig.screenWidth * 0.5,
             height: SizeConfig.screenWidth * 0.6,
             child: FutureBuilder(
               future: SimpleLinkPreview.getPreview(url),
-              builder: (context, AsyncSnapshot<LinkPreview?> data){
-                if(data.hasData){
+              builder: (context, AsyncSnapshot<LinkPreview?> data) {
+                if (data.hasData) {
                   return Column(
                     children: [
                       Container(
                         width: SizeConfig.screenWidth * 0.5,
                         height: SizeConfig.screenWidth * 0.25,
                         decoration: BoxDecoration(
-                          image: DecorationImage(image: NetworkImage(data.data!.image!), fit: BoxFit.cover),
-                          borderRadius: const BorderRadius.only(
-                            topLeft: Radius.circular(40),
-                            topRight: Radius.circular(40),
-                          )
-                        ),
+                            image: DecorationImage(
+                                image: NetworkImage(data.data!.image!),
+                                fit: BoxFit.cover),
+                            borderRadius: const BorderRadius.only(
+                              topLeft: Radius.circular(40),
+                              topRight: Radius.circular(40),
+                            )),
                       ),
                       Padding(
                         padding: const EdgeInsets.all(4.0),
-                        child: Text(data.data!.title!, style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w600),),
+                        child: Text(
+                          data.data!.title!,
+                          style: TextStyle(
+                              color: blackColor(context).darkShade,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600),
+                        ),
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 5.0),
-                        child: Text(data.data!.description!, style: const TextStyle(color: Colors.white38, fontSize: 12), maxLines: 4, overflow: TextOverflow.ellipsis),
+                        child: Text(data.data!.description!,
+                            style: TextStyle(
+                                color: blackColor(context).lightShade,
+                                fontSize: 12),
+                            maxLines: 4,
+                            overflow: TextOverflow.ellipsis),
                       )
                     ],
                   );
-                }else{
+                } else {
                   return const SizedBox();
                 }
               },
             ),
             decoration: BoxDecoration(
-              border: Border.all(color: Colors.white24.withOpacity(0.18)),
+              border: Border.all(
+                  color: blackColor(SizeConfig.cntxt)
+                      .lightShade
+                      .withOpacity(0.18)),
               borderRadius: BorderRadius.only(
                   bottomLeft: Radius.circular(fromFriend ? 0 : 40),
                   topLeft: const Radius.circular(40),
@@ -155,9 +179,7 @@ Widget urlMessage({required String url, required bool fromFriend}){
   );
 }
 
-Widget audioMessage(
-    {required String audio,
-    required bool fromFriend}) {
+Widget audioMessage({required String audio, required bool fromFriend}) {
   return MusicSlider(
     emptyColor: greenColor,
     fillColor: blackColor(SizeConfig.cntxt).darkShade,
@@ -272,7 +294,11 @@ Widget headerSection(context, user) {
                   Row(
                     children: [
                       GestureDetector(
-                          onTap: () {},
+                          onTap: () {
+                            Navigator.of(context).push(CupertinoPageRoute(
+                                builder: (context) =>
+                                    CallAcceptDeclinePage(user: user,)));
+                          },
                           child: const Icon(
                             LineIcons.phone,
                             size: 27,
@@ -296,10 +322,11 @@ Widget headerSection(context, user) {
           ],
         ),
         Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8.0),
+          padding: const EdgeInsets.only(top: 8.0),
           child: Divider(
             thickness: 0.3,
-            color: grayColor(context).darkShade.withOpacity(0.3),
+            height: 0,
+            color: grayColor(context).darkShade.withOpacity(0.5),
           ),
         ),
       ],

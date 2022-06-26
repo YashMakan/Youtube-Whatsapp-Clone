@@ -27,8 +27,8 @@ class User {
   final String title;
   final String picture;
 
-  User({
-      required this.name,
+  User(
+      {required this.name,
       required this.email,
       required this.gender,
       required this.phoneNumber,
@@ -42,32 +42,32 @@ class User {
       required this.picture});
 
   factory User.fromJson(Map json) => User(
-      name: "${json[firstNameKey]} ${json[lastNameKey]}",
-      email: json[emailKey],
-      gender: json[genderKey],
-      phoneNumber: json[phoneNumberKey],
-      birthDate: json[birthDateKey],
-      location: Location.fromJson(json[locationKey]),
-      username: json[usernameKey],
-      password: json[passwordKey],
-      firstName: json[firstNameKey],
-      lastName: json[lastNameKey],
-      title: json[titleKey],
-      picture: json[pictureKey],
-  );
+        name: "${json[firstNameKey]} ${json[lastNameKey]}",
+        email: json[emailKey],
+        gender: json[genderKey],
+        phoneNumber: json[phoneNumberKey],
+        birthDate: json[birthDateKey],
+        location: Location.fromJson(json[locationKey]),
+        username: json[usernameKey],
+        password: json[passwordKey],
+        firstName: json[firstNameKey],
+        lastName: json[lastNameKey],
+        title: json[titleKey],
+        picture: json[pictureKey],
+      );
 
   toJson() => {
-    nameKey: name,
-    emailKey: email,
-    genderKey: gender,
-    phoneNumberKey: phoneNumber,
-    birthDateKey: birthDate,
-    locationKey: location.toJson(),
-    usernameKey: username,
-    passwordKey: password,
-    firstNameKey: firstName,
-    lastNameKey: lastName,
-    titleKey: title,
-    pictureKey: picture,
-  };
+        nameKey: name,
+        emailKey: email,
+        genderKey: gender,
+        phoneNumberKey: phoneNumber,
+        birthDateKey: birthDate,
+        locationKey: location.toJson(),
+        usernameKey: username,
+        passwordKey: password,
+        firstNameKey: firstName,
+        lastNameKey: lastName,
+        titleKey: title,
+        pictureKey: picture,
+      };
 }

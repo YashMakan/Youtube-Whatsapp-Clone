@@ -34,7 +34,6 @@ const Color redColor = Color(0xFFE25C5C);
 DoubleShade greenGradient =
     DoubleShade(const Color(0xFF5CE27F), const Color(0xFF5CABE2));
 
-
 DoubleShade grayColor(BuildContext context) => context.isDarkMode()
     ? DoubleShade(const Color(0xFFB1B1B1), const Color(0xFFEFEFEF))
     : DoubleShade(const Color(0xff4e4e4e), const Color(0xff101010));

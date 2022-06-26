@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:whatsapp_application/models/user.dart';
-import 'package:whatsapp_application/views/settings_page/settings_widgets.dart';
 import '../../constants/colors.dart';
+import 'main_profile_page_widgets.dart';
 
-class ProfilePage extends StatefulWidget {
-  const ProfilePage({Key? key}) : super(key: key);
+class MainProfilePage extends StatefulWidget {
+  const MainProfilePage({Key? key}) : super(key: key);
 
   @override
-  _ProfilePageState createState() => _ProfilePageState();
+  _MainProfilePageState createState() => _MainProfilePageState();
 }
 
-class _ProfilePageState extends State<ProfilePage> {
+class _MainProfilePageState extends State<MainProfilePage> {
   bool isSearch = false;
   bool toggle = true;
   User? user;

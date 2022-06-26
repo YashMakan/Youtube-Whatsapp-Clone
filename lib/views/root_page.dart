@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:custom_navigation_bar/custom_navigation_bar.dart';
 import 'package:hidable/hidable.dart';
 import 'package:line_icons/line_icons.dart';
-import 'package:whatsapp_application/helper/size_config.dart';
-import 'package:whatsapp_application/views/call_page/call_page.dart';
-import 'package:whatsapp_application/views/settings_page/settings_page.dart';
+import 'package:whatsapp_application/views/profile_page/main_profile_page.dart';
 import '../constants/colors.dart';
+import '../helper/size_config.dart';
+import 'call_page/call_list_page.dart';
 import 'home_page/home_page.dart';
 
 class RootPage extends StatefulWidget {
@@ -21,7 +21,7 @@ class _RootPageState extends State<RootPage> {
 
   @override
   Widget build(BuildContext context) {
-    print(SizeConfig.cntxt);
+    SizeConfig().init(context);
     return Scaffold(
         backgroundColor: backgroundColor(context),
         body: getBody(),
@@ -34,7 +34,7 @@ class _RootPageState extends State<RootPage> {
   Widget getBody() {
     switch (selectedIndex) {
       case 0:
-        return CallPage(
+        return CallListPage(
           scrollController: scrollController,
         );
       case 1:
@@ -42,7 +42,7 @@ class _RootPageState extends State<RootPage> {
           scrollController: scrollController,
         );
       case 2:
-        return UserPage(
+        return MainProfilePage(
           scrollController: scrollController,
         );
       default:

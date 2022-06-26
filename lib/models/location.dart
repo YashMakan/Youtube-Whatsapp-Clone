@@ -22,9 +22,9 @@ class Location {
       postcode: json[postcodeKey].toString());
 
   toJson() => {
-    streetKey: street,
-    cityKey: city,
-    stateKey: state,
-    postcodeKey: postcode,
-  };
+        streetKey: street,
+        cityKey: city,
+        stateKey: state,
+        postcodeKey: postcode,
+      };
 }

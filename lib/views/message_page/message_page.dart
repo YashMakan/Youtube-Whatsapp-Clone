@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:giphy_api_client/giphy_api_client.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:whatsapp_application/models/user.dart';
 import 'package:whatsapp_application/views/message_page/message_page_widgets.dart';
@@ -16,10 +17,17 @@ class MessagePage extends StatefulWidget {
 
 class _MessagePageState extends State<MessagePage> {
   bool isSearch = false;
-  TextEditingController controller = TextEditingController();
+  bool isGifClicked = false;
+  TextEditingController messageController = TextEditingController();
+  TextEditingController gifController = TextEditingController();
+  final client = GiphyClient(apiKey: 'NMFj5k2Slp67Tg2lSUANshwMFS9qTiB1');
+  final ScrollController scrollController = ScrollController();
 
   @override
   void initState() {
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
+      scrollController.jumpTo(scrollController.position.maxScrollExtent);
+    });
     super.initState();
   }
 
@@ -30,14 +38,12 @@ class _MessagePageState extends State<MessagePage> {
       body: Column(
         children: [
           headerSection(context, widget.user),
-          const SizedBox(
-            height: 8,
-          ),
           Expanded(
               child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
+            padding: const EdgeInsets.only(left: 16, right: 16),
             child: ListView(
-              padding: EdgeInsets.zero,
+              controller: scrollController,
+              padding: const EdgeInsets.only(top: 20),
               children: [
                 circularMessage(
                     fromFriend: true,
@@ -73,30 +79,111 @@ class _MessagePageState extends State<MessagePage> {
               ],
             ),
           )),
-          SizedBox(
-            width: SizeConfig.screenWidth,
-            child: Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
-              child: Row(
-                children: [
-                  circularIconButton(Icons.gif, () {}),
-                  const SizedBox(
-                    width: 8.0,
+          isGifClicked
+              ? SizedBox(
+                  width: SizeConfig.screenWidth,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 16.0, vertical: 16.0),
+                    child: Row(
+                      children: [
+                        circularIconButton(Icons.gif, () {
+                          setState(() {
+                            isGifClicked = !isGifClicked;
+                          });
+                        }),
+                        const SizedBox(
+                          width: 8.0,
+                        ),
+                        Expanded(
+                            child: circularTextField(
+                                controller: gifController,
+                                hintText: "Search...")),
+                        const SizedBox(
+                          width: 8.0,
+                        ),
+                        circularIconButton(LineIcons.search, () {
+                          setState(() {
+                            FocusManager.instance.primaryFocus?.unfocus();
+                          });
+                        }),
+                      ],
+                    ),
                   ),
-                  Expanded(child: circularTextField()),
-                  const SizedBox(
-                    width: 8.0,
+                )
+              : SizedBox(
+                  width: SizeConfig.screenWidth,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 16.0, vertical: 16.0),
+                    child: Row(
+                      children: [
+                        circularIconButton(Icons.gif, () {
+                          setState(() {
+                            isGifClicked = !isGifClicked;
+                          });
+                        }),
+                        const SizedBox(
+                          width: 8.0,
+                        ),
+                        Expanded(
+                            child: circularTextField(
+                                controller: messageController,
+                                hintText: "Respond...")),
+                        const SizedBox(
+                          width: 8.0,
+                        ),
+                        circularIconButton(LineIcons.microphone, () {}),
+                        const SizedBox(
+                          width: 8.0,
+                        ),
+                        circularIconButton(LineIcons.horizontalEllipsis, () {})
+                      ],
+                    ),
                   ),
-                  circularIconButton(LineIcons.microphone, () {}),
-                  const SizedBox(
-                    width: 8.0,
-                  ),
-                  circularIconButton(LineIcons.horizontalEllipsis, () {})
-                ],
-              ),
-            ),
-          )
+                ),
+          isGifClicked
+              ? SizedBox(
+                  width: SizeConfig.screenWidth,
+                  height: SizeConfig.screenHeight * 0.2,
+                  child: Column(
+                    children: [
+                      FutureBuilder(
+                        future: gifController.text.isEmpty
+                            ? client.trending()
+                            : client.search(gifController.text),
+                        builder:
+                            (context, AsyncSnapshot<GiphyCollection> snapshot) {
+                          List<GiphyGif?> gifs = snapshot.data?.data ?? [];
+                          if (snapshot.hasData) {
+                            return Expanded(
+                              child: GridView.builder(
+                                  gridDelegate:
+                                      const SliverGridDelegateWithFixedCrossAxisCount(
+                                          crossAxisCount: 2,
+                                          crossAxisSpacing: 15.0,
+                                          mainAxisSpacing: 15.0,
+                                          childAspectRatio: 1.4),
+                                  padding: EdgeInsets.zero,
+                                  itemCount: gifs.length,
+                                  itemBuilder: (context, index) {
+                                    return Image.network(
+                                      gifs[index]?.images?.original?.url ?? "",
+                                      width: 50,
+                                      height: 30,
+                                      fit: BoxFit.cover,
+                                    );
+                                  }),
+                            );
+                          } else {
+                            return const Center(
+                                child: CircularProgressIndicator());
+                          }
+                        },
+                      )
+                    ],
+                  ))
+              : const SizedBox(),
         ],
       ),
     );

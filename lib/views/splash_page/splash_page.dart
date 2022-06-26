@@ -31,7 +31,9 @@ class _SplashScreenState extends State<SplashScreen> {
                     fit: BoxFit.cover,
                   ),
                 ),
-                const SizedBox(height: 20,),
+                const SizedBox(
+                  height: 20,
+                ),
                 GradientText(
                   "WhatsApp",
                   style: const TextStyle(
@@ -74,7 +76,9 @@ class _SplashScreenState extends State<SplashScreen> {
                   )
                 ],
               ),
-              SizedBox(height: SizeConfig.screenHeight*0.12,)
+              SizedBox(
+                height: SizeConfig.screenHeight * 0.12,
+              )
             ],
           )
         ],

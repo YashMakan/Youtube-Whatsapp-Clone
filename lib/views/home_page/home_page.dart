@@ -3,7 +3,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:line_icons/line_icons.dart';
+import 'package:whatsapp_application/main.dart';
 import 'package:whatsapp_application/models/user.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:whatsapp_application/views/status_page/new_status_page.dart';
 import '../../constants/colors.dart';
 import '../../constants/persons.dart';
 import '../../widgets/common_widgets.dart';
@@ -21,6 +24,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   bool isSearch = false;
+  bool isNewContact = false;
   TextEditingController controller = TextEditingController();
   List<User> chats = [];
   List<User> statusList = [];
@@ -31,19 +35,26 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     chats = persons.map((e) => User.fromJson(e)).toList();
-    statusList = persons.map((e) => User.fromJson(e)).toList().reversed.toList();
+    statusList =
+        persons.map((e) => User.fromJson(e)).toList().reversed.toList();
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: backgroundColor(context),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        backgroundColor: Colors.transparent,
-        child: gradientIconButton(
-            size: 55, iconData: Icons.group_add),
-      ),
+      floatingActionButton: !isNewContact && !isSearch
+          ? FloatingActionButton(
+              onPressed: () {
+                setState(() {
+                  isNewContact = true;
+                });
+              },
+              backgroundColor: Colors.transparent,
+              child: gradientIconButton(size: 55, iconData: Icons.group_add),
+            )
+          : const SizedBox(),
       body: SafeArea(
           child: Column(
         children: [
@@ -59,7 +70,11 @@ class _HomePageState extends State<HomePage> {
                   Padding(
                     padding: const EdgeInsets.only(left: 16.0),
                     child: Text(
-                      isSearch ? "Search" : "Chats",
+                      isSearch
+                          ? "Search"
+                          : isNewContact
+                              ? "New Contacts"
+                              : "Chats",
                       style: TextStyle(
                           fontSize: 26,
                           fontWeight: FontWeight.w800,
@@ -68,20 +83,23 @@ class _HomePageState extends State<HomePage> {
                   ),
                   Padding(
                     padding: const EdgeInsets.only(right: 16.0),
-                    child: Transform.rotate(
-                      angle: isSearch ? pi * (90 / 360) : 0,
-                      child: IconButton(
-                        icon:
-                            Icon(isSearch ? Icons.add : Icons.search, size: 32),
-                        splashRadius: 20,
-                        onPressed: () {
-                          setState(() {
-                            isSearch = !isSearch;
-                            controller.clear();
-                          });
-                        },
-                        color: greenColor,
-                      ),
+                    child: IconButton(
+                      icon: Icon(
+                          isSearch || isNewContact ? Icons.close : Icons.search,
+                          size: 32),
+                      splashRadius: 20,
+                      onPressed: () {
+                        setState(() {
+                          if (isSearch) {
+                            isSearch = false;
+                          } else if (!isNewContact) {
+                            isSearch = true;
+                          }
+                          isNewContact = false;
+                          controller.clear();
+                        });
+                      },
+                      color: greenColor,
                     ),
                   ),
                 ],
@@ -89,9 +107,80 @@ class _HomePageState extends State<HomePage> {
               const SizedBox(
                 height: 10,
               ),
-              isSearch
+              isSearch || isNewContact
                   ? searchBar(controller: controller)
-                  : statusBar(statusList: statusList)
+                  : statusBar(statusList: statusList, onNewStatusClicked: () async {
+                showModalBottomSheet(
+                    context: context,
+                    backgroundColor: Colors.transparent,
+                    builder: (context) {
+                      return Container(
+                        margin: const EdgeInsets.only(
+                            left: 25, right: 25, bottom: 70),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 20, horizontal: 20),
+                        decoration: BoxDecoration(
+                            color: context.isDarkMode()
+                                ? Colors.black26
+                                : Colors.white,
+                            borderRadius: const BorderRadius.all(
+                                Radius.circular(10))),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Text(
+                              "Are you sure to logout ?",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  color: blackColor(context).darkShade,
+                                  fontSize: 19),
+                            ),
+                            const SizedBox(
+                              height: 16,
+                            ),
+                            ButtonBar(
+                              buttonPadding: EdgeInsets.zero,
+                              alignment: MainAxisAlignment.spaceBetween,
+                              children: <Widget>[
+                                ElevatedButton(
+                                  child: const Text(
+                                    'Yes, log out!',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                  style: ButtonStyle(
+                                      fixedSize: MaterialStateProperty.all(
+                                          const Size(150, 30)),
+                                      backgroundColor:
+                                      MaterialStateProperty.all(
+                                          greenColor)),
+                                  onPressed: () {},
+                                ),
+                                ElevatedButton(
+                                  child: const Text('Cancel',
+                                      style: TextStyle(color: greenColor)),
+                                  style: ButtonStyle(
+                                      fixedSize: MaterialStateProperty.all(
+                                          const Size(100, 30)),
+                                      backgroundColor:
+                                      MaterialStateProperty.all(
+                                          backgroundColor(context)),
+                                      side: MaterialStateProperty.all(
+                                          const BorderSide(
+                                              color: greenColor))),
+                                  onPressed: () {},
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      );
+                    });
+//                final ImagePicker _picker = ImagePicker();
+//                final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+              })
             ],
           ),
           Expanded(
@@ -122,20 +211,10 @@ class _HomePageState extends State<HomePage> {
                           CustomSlidableAction(
                             backgroundColor: greenColor,
                             onPressed: (BuildContext context) {},
-                            child: Container(
-                              decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                      colors: [
-                                    greenGradient.lightShade,
-                                    greenGradient.darkShade,
-                                  ],
-                                      begin: Alignment.bottomCenter,
-                                      end: Alignment.topCenter)),
-                              child: Center(
-                                child: Icon(LineIcons.checkSquareAlt,
-                                    color: Colors.white,
-                                    size: SLIDABLE_ICON_SIZE),
-                              ),
+                            child: Center(
+                              child: Icon(LineIcons.userSecret,
+                                  color: Colors.white,
+                                  size: SLIDABLE_ICON_SIZE),
                             ),
                           )
                         ],
@@ -172,7 +251,9 @@ class _HomePageState extends State<HomePage> {
                           messageCounter: index == 0 ? 3 : null,
                           onTap: () {
                             Navigator.of(context).push(CupertinoPageRoute(
-                                builder: (context) => MessagePage(user: chats[index],)));
+                                builder: (context) => MessagePage(
+                                      user: chats[index],
+                                    )));
                           },
                           participantImages: index == 3
                               ? chats.map((chat) => chat.picture).toList()

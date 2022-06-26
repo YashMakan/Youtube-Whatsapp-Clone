@@ -1,6 +1,8 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:whatsapp_application/models/user.dart';
+import 'package:whatsapp_application/views/status_page/status_page.dart';
 import 'package:whatsapp_application/widgets/common_widgets.dart';
 import '../../constants/colors.dart';
 import '../../helper/size_config.dart';
@@ -56,9 +58,7 @@ Widget storyWidget(
   );
 }
 
-Widget searchBar(
-    {
-    required TextEditingController controller}) {
+Widget searchBar({required TextEditingController controller}) {
   return Column(
     key: const ValueKey<int>(0),
     children: [
@@ -78,7 +78,8 @@ Widget searchBar(
                 controller: controller,
                 onSubmitted: (v) {},
                 onChanged: (v) {},
-                style: TextStyle(color: backgroundColor(SizeConfig.cntxt, invert: true)),
+                style: TextStyle(
+                    color: backgroundColor(SizeConfig.cntxt, invert: true)),
                 decoration: InputDecoration(
                   icon: Padding(
                     padding: const EdgeInsets.only(left: 8.0),
@@ -111,9 +112,7 @@ Widget searchBar(
 }
 
 Widget statusBar(
-    {required List<User> statusList,
-    addWidget = true,
-    seeAllWidget = true}) {
+    {required List<User> statusList, GestureTapCallback? onNewStatusClicked, addWidget = true, seeAllWidget = true}) {
   return Column(
     key: const ValueKey<int>(1),
     children: [
@@ -126,10 +125,11 @@ Widget statusBar(
             padding: const EdgeInsets.only(left: 16),
             children: [
               addWidget
-                  ? gradientIconButton(
-                      size: 60,
-                      iconData: Icons.add,
-                      text: "New Status")
+                  ? GestureDetector(
+                      onTap: onNewStatusClicked,
+                      child: gradientIconButton(
+                          size: 60, iconData: Icons.add, text: "New Status"),
+                    )
                   : const SizedBox(),
               addWidget
                   ? const SizedBox(
@@ -143,13 +143,20 @@ Widget statusBar(
                   itemCount: statusList.length,
                   scrollDirection: Axis.horizontal,
                   itemBuilder: (context, index) {
-                    return storyWidget(
-                        size: 60,
-                        showGreenStrip: addWidget && (index == 2 || index == 3),
-                        text: statusList[index].firstName +
-                            " " +
-                            statusList[index].lastName,
-                        imageUrl: statusList[index].picture);
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.of(context).push(CupertinoPageRoute(
+                            builder: (context) => const StatusPage()));
+                      },
+                      child: storyWidget(
+                          size: 60,
+                          showGreenStrip:
+                              addWidget && (index == 2 || index == 3),
+                          text: statusList[index].firstName +
+                              " " +
+                              statusList[index].lastName,
+                          imageUrl: statusList[index].picture),
+                    );
                   },
                 ),
               ),

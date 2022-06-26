@@ -56,12 +56,12 @@ Widget gradientIconButton(
                   ])),
         child: iconData != null
             ? Center(
-              child: Icon(
+                child: Icon(
                   iconData,
                   size: iconSize,
                   color: Colors.white,
                 ),
-            )
+              )
             : counterText != null
                 ? Center(
                     child: Text(

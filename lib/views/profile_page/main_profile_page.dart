@@ -1,23 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:line_icons/line_icons.dart';
+import 'package:whatsapp_application/helper/size_config.dart';
+import 'package:whatsapp_application/main.dart';
+import 'package:whatsapp_application/models/location.dart';
 import 'package:whatsapp_application/models/user.dart';
-import 'package:whatsapp_application/views/settings_page/settings_widgets.dart';
 import '../../constants/colors.dart';
+import 'main_profile_page_widgets.dart';
 
-class UserPage extends StatefulWidget {
-  const UserPage({Key? key, required this.scrollController})
+class MainProfilePage extends StatefulWidget {
+  const MainProfilePage({Key? key, required this.scrollController})
       : super(key: key);
 
   final ScrollController scrollController;
 
   @override
-  _UserPageState createState() => _UserPageState();
+  _MainProfilePageState createState() => _MainProfilePageState();
 }
 
-class _UserPageState extends State<UserPage> {
+class _MainProfilePageState extends State<MainProfilePage> {
   bool isSearch = false;
   bool toggle = true;
-  User? user;
   TextEditingController controller = TextEditingController();
 
   @override
@@ -34,8 +36,8 @@ class _UserPageState extends State<UserPage> {
                 height: 35,
               ),
               profileWidget(
-                  image: user?.picture??"",
-                  name: "Yash Makan",
+                  image: user.picture,
+                  name: user.name,
                   onLogoutClick: () {
                     showModalBottomSheet(
                         context: context,
@@ -47,9 +49,11 @@ class _UserPageState extends State<UserPage> {
                             padding: const EdgeInsets.symmetric(
                                 vertical: 20, horizontal: 20),
                             decoration: BoxDecoration(
-                                color: context.isDarkMode()?Colors.black26:Colors.white,
-                                borderRadius:
-                                    const BorderRadius.all(Radius.circular(10))),
+                                color: context.isDarkMode()
+                                    ? Colors.black26
+                                    : Colors.white,
+                                borderRadius: const BorderRadius.all(
+                                    Radius.circular(10))),
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -61,7 +65,9 @@ class _UserPageState extends State<UserPage> {
                                       color: blackColor(context).darkShade,
                                       fontSize: 19),
                                 ),
-                                const SizedBox(height: 16,),
+                                const SizedBox(
+                                  height: 16,
+                                ),
                                 ButtonBar(
                                   buttonPadding: EdgeInsets.zero,
                                   alignment: MainAxisAlignment.spaceBetween,
@@ -74,7 +80,8 @@ class _UserPageState extends State<UserPage> {
                                         ),
                                       ),
                                       style: ButtonStyle(
-                                        fixedSize: MaterialStateProperty.all(const Size(150, 30)),
+                                          fixedSize: MaterialStateProperty.all(
+                                              const Size(150, 30)),
                                           backgroundColor:
                                               MaterialStateProperty.all(
                                                   greenColor)),
@@ -84,12 +91,14 @@ class _UserPageState extends State<UserPage> {
                                       child: const Text('Cancel',
                                           style: TextStyle(color: greenColor)),
                                       style: ButtonStyle(
-                                          fixedSize: MaterialStateProperty.all(const Size(100, 30)),
+                                          fixedSize: MaterialStateProperty.all(
+                                              const Size(100, 30)),
                                           backgroundColor:
                                               MaterialStateProperty.all(
                                                   backgroundColor(context)),
                                           side: MaterialStateProperty.all(
-                                              const BorderSide(color: greenColor))),
+                                              const BorderSide(
+                                                  color: greenColor))),
                                       onPressed: () {},
                                     ),
                                   ],
@@ -113,15 +122,15 @@ class _UserPageState extends State<UserPage> {
                 height: 10,
               ),
               settingTile(
-                  title: "Notifications",
+                  title: "Do Not Disturb",
                   settingTrailing: SettingTrailing.toggle,
-                  onToggle: (value){
+                  onToggle: (value) {
                     setState(() {
                       toggle = value;
                     });
                   },
                   toggle: toggle,
-                  iconData: LineIcons.bell),
+                  iconData: Icons.do_not_disturb),
               const SizedBox(
                 height: 30,
               ),
@@ -138,69 +147,87 @@ class _UserPageState extends State<UserPage> {
                   ],
                 ),
               ),
-              Column(
-                children: [
-                  settingTile(
-                      title: "Settings",
-                      settingTrailing: SettingTrailing.arrow,
-                      iconData: LineIcons.cog),
-                  settingTile(
-                      title: "Share",
-                      settingTrailing: SettingTrailing.arrow,
-                      iconData: LineIcons.share),
-                  settingTile(
-                      title: "Change Password",
-                      settingTrailing: SettingTrailing.arrow,
-                      iconData: LineIcons.lock),
-                  settingTile(
-                      title: "FAQ",
-                      settingTrailing: SettingTrailing.arrow,
-                      iconData: Icons.question_answer_outlined),
-                  settingTile(
-                      title: "Help",
-                      settingTrailing: SettingTrailing.arrow,
-                      iconData: Icons.help_outline),
-                  settingTile(
-                      title: "Invite a friend",
-                      settingTrailing: SettingTrailing.arrow,
-                      iconData: LineIcons.users),
-                ],
+              SizedBox(
+                height: SizeConfig.screenHeight * 0.45,
+                child: Scrollbar(
+                  isAlwaysShown: true,
+                  thickness: 2,
+                  hoverThickness: 4,
+                  interactive: true,
+                  showTrackOnHover: true,
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        settingTile(
+                            title: "Settings",
+                            settingTrailing: SettingTrailing.arrow,
+                            iconData: LineIcons.cog),
+                        settingTile(
+                            title: "Private",
+                            settingTrailing: SettingTrailing.arrow,
+                            iconData: LineIcons.userSecret),
+                        settingTile(
+                            title: "Share",
+                            settingTrailing: SettingTrailing.arrow,
+                            iconData: LineIcons.share),
+                        settingTile(
+                            title: "Change Password",
+                            settingTrailing: SettingTrailing.arrow,
+                            iconData: LineIcons.lock),
+                        settingTile(
+                            title: "FAQ",
+                            settingTrailing: SettingTrailing.arrow,
+                            iconData: Icons.question_answer_outlined),
+                        settingTile(
+                            title: "Help",
+                            settingTrailing: SettingTrailing.arrow,
+                            iconData: Icons.help_outline),
+                        settingTile(
+                            title: "Invite a friend",
+                            settingTrailing: SettingTrailing.arrow,
+                            iconData: LineIcons.users),
+                      ],
+                    ),
+                  ),
+                ),
               ),
               Expanded(
-                  child: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'from',
-                      style: TextStyle(
-                          color: grayColor(context).lightShade.withOpacity(0.8),
-                          fontSize: 13),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        const Icon(
-                          LineIcons.infinity,
-                          size: 24,
-                          color: greenColor,
-                        ),
-                        const SizedBox(
-                          width: 5,
-                        ),
-                        Text(
-                          "Meta",
-                          style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w800,
-                              color: backgroundColor(context, invert: true)),
-                        )
-                      ],
-                    )
-                  ],
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'from',
+                        style: TextStyle(
+                            color:
+                                grayColor(context).lightShade.withOpacity(0.8),
+                            fontSize: 13),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          const Icon(
+                            LineIcons.infinity,
+                            size: 24,
+                            color: greenColor,
+                          ),
+                          const SizedBox(
+                            width: 5,
+                          ),
+                          Text(
+                            "Meta",
+                            style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w800,
+                                color: backgroundColor(context, invert: true)),
+                          )
+                        ],
+                      )
+                    ],
+                  ),
                 ),
-              ))
+              )
             ],
           ),
         )));

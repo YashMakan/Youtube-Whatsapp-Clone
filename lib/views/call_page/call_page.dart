@@ -1,107 +1,163 @@
-import 'dart:math';
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
+import 'package:line_icons/line_icons.dart';
+import 'package:whatsapp_application/helper/size_config.dart';
 import 'package:whatsapp_application/models/user.dart';
+
 import '../../constants/colors.dart';
-import '../../widgets/common_widgets.dart';
-import '../home_page/home_widgets.dart';
 
-class CallPage extends StatefulWidget {
-  const CallPage({Key? key, required this.scrollController}) : super(key: key);
-
-  final ScrollController scrollController;
+class CallAcceptDeclinePage extends StatefulWidget {
+  final User user;
+  const CallAcceptDeclinePage({Key? key, required this.user}) : super(key: key);
 
   @override
-  _CallPageState createState() => _CallPageState();
+  _CallAcceptDeclinePageState createState() => _CallAcceptDeclinePageState();
 }
 
-class _CallPageState extends State<CallPage> {
-  bool isSearch = false;
-  TextEditingController controller = TextEditingController();
-  List<User> users = [];
-
+class _CallAcceptDeclinePageState extends State<CallAcceptDeclinePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: backgroundColor(context),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        backgroundColor: Colors.transparent,
-        child: gradientIconButton(
-            size: 55, iconData: Icons.phone_forwarded),
-      ),
-      body: SafeArea(
-          child: Column(
+      body: Stack(
         children: [
-          Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              const SizedBox(
-                height: 26,
+          Container(
+            width: SizeConfig.screenWidth,
+            height: SizeConfig.screenHeight,
+            decoration: BoxDecoration(
+                image: DecorationImage(
+                    image: NetworkImage(
+                        widget.user.picture),
+                    fit: BoxFit.cover)),
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 8.0, sigmaY: 8.0),
+              child: Container(
+                decoration: BoxDecoration(color: Colors.white.withOpacity(0.0)),
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            ),
+          ),
+          Column(
+            children: [
+              const Spacer(),
+              Column(
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.only(left: 16.0),
-                    child: Text(
-                      "Calls",
-                      style: TextStyle(
-                          fontSize: 26,
-                          fontWeight: FontWeight.w800,
-                          color: blackColor(context).darkShade),
-                    ),
+                  Container(
+                    width: 150,
+                    height: 150,
+                    decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        image: DecorationImage(
+                            image: NetworkImage(
+                                widget.user.picture),
+                            fit: BoxFit.cover)),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(right: 16.0),
-                    child: Transform.rotate(
-                      angle: isSearch ? pi * (90 / 360) : 0,
-                      child: IconButton(
-                        icon:
-                            Icon(isSearch ? Icons.add : Icons.search, size: 32),
-                        splashRadius: 20,
-                        onPressed: () {
-                          setState(() {
-                            isSearch = !isSearch;
-                          });
-                        },
-                        color: greenColor,
+                  const SizedBox(
+                    height: 16,
+                  ),
+                  Text(
+                    widget.user.name,
+                    style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 26,
+                        fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(
+                    height: 8,
+                  ),
+                  const Text(
+                    "Calling...",
+                    style: TextStyle(
+                        color: Colors.white,
+                        shadows: [
+                          BoxShadow(color: Colors.black, blurRadius: 3)
+                        ],
+                        fontSize: 16),
+                  )
+                ],
+              ),
+              const SizedBox(height: 60,),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Column(
+                    children: [
+                      Container(
+                        width: 70,
+                        height: 70,
+                        decoration: BoxDecoration(
+                            color: greenGradient.lightShade,
+                            shape: BoxShape.circle),
+                        child: const Icon(LineIcons.phone, color: Colors.white),
                       ),
-                    ),
+                      const SizedBox(
+                        height: 8,
+                      ),
+                      const Text(
+                        "Accept",
+                        style: TextStyle(color: Colors.white),
+                      )
+                    ],
+                  ),
+                  Column(
+                    children: [
+                      Container(
+                        width: 70,
+                        height: 70,
+                        decoration: const BoxDecoration(
+                            color: Colors.redAccent, shape: BoxShape.circle),
+                        child: const Icon(LineIcons.phoneSlash,
+                            color: Colors.white),
+                      ),
+                      const SizedBox(
+                        height: 8,
+                      ),
+                      const Text(
+                        "Decline",
+                        style: TextStyle(color: Colors.white),
+                      )
+                    ],
                   ),
                 ],
               ),
-              const SizedBox(
-                height: 10,
+              const SizedBox(height: 60,),
+              const Text(
+                "Decline & Send Message",
+                style: TextStyle(
+                    color: Colors.white60,
+                    fontSize: 14),
               ),
-              isSearch
-                  ? searchBar(controller: controller)
-                  : statusBar(
-                      addWidget: false, seeAllWidget: false, statusList: users)
+              const SizedBox(height: 10,),
+              ClipRect(
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 1.0, sigmaY: 1.0),
+                  child: Container(
+                    width: SizeConfig.screenWidth*0.75,
+                    decoration: BoxDecoration(
+                        color: Colors.grey.shade200.withOpacity(0.2),
+                      borderRadius: const BorderRadius.all(Radius.circular(20))
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 20),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: const [
+                          SizedBox(height: 10,),
+                          Text("I'll call you back", style: TextStyle(color: Colors.white54),),
+                          SizedBox(height: 10,),
+                          SizedBox(height: 10,),
+                          Text("Sorry, I can't talk right now", style: TextStyle(color: Colors.white54),),
+                          SizedBox(height: 10,),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 80,),
             ],
-          ),
-          Expanded(
-            child: ListView.separated(
-              padding: const EdgeInsets.only(top: 10),
-              controller: widget.scrollController,
-              itemCount: users.length,
-              separatorBuilder: (context, index) {
-                return const Divider(
-                  thickness: 0.3,
-                );
-              },
-              itemBuilder: (context, index) => customListTile(
-                  imageUrl: users[index].picture,
-                  title:
-                  "${users[index].firstName} ${users[index].lastName}",
-                  subTitle: "May 7, 6:29 PM",
-                  onTap: () {},
-                  numberOfCalls: 2,
-                  customListTileType: CustomListTileType.call,
-                  callStatus: CallStatus.accepted),
-            ),
           )
         ],
-      )),
+      ),
     );
   }
 }
