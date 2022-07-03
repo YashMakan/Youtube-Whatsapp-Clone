@@ -13,6 +13,8 @@ class User {
   static const String lastNameKey = "last_name";
   static const String titleKey = "title";
   static const String pictureKey = "picture";
+  static const String uuidKey = "uuid";
+  static const String firebaseTokenKey = "firebase_token";
 
   final String name;
   final String email;
@@ -26,6 +28,8 @@ class User {
   final String lastName;
   final String title;
   final String picture;
+  final String uuid;
+  final String firebaseToken;
 
   User(
       {required this.name,
@@ -39,6 +43,8 @@ class User {
       required this.firstName,
       required this.lastName,
       required this.title,
+      required this.uuid,
+      required this.firebaseToken,
       required this.picture});
 
   factory User.fromJson(Map json) => User(
@@ -53,6 +59,8 @@ class User {
         firstName: json[firstNameKey],
         lastName: json[lastNameKey],
         title: json[titleKey],
+        firebaseToken: json[firebaseTokenKey]??"",
+        uuid: json[uuidKey]??"",
         picture: json[pictureKey],
       );
 
@@ -68,6 +76,8 @@ class User {
         firstNameKey: firstName,
         lastNameKey: lastName,
         titleKey: title,
+        uuidKey: uuid,
+        firebaseTokenKey: firebaseToken,
         pictureKey: picture,
       };
 }

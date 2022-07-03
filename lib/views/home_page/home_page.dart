@@ -1,12 +1,9 @@
-import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:whatsapp_application/main.dart';
 import 'package:whatsapp_application/models/user.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:whatsapp_application/views/status_page/new_status_page.dart';
 import '../../constants/colors.dart';
 import '../../constants/persons.dart';
 import '../../widgets/common_widgets.dart';
@@ -35,6 +32,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     chats = persons.map((e) => User.fromJson(e)).toList();
+    chats.insert(0, rick);
     statusList =
         persons.map((e) => User.fromJson(e)).toList().reversed.toList();
     super.initState();

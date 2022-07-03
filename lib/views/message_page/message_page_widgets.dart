@@ -4,7 +4,7 @@ import 'package:line_icons/line_icons.dart';
 import 'package:simple_link_preview/simple_link_preview.dart';
 import 'package:whatsapp_application/constants/colors.dart';
 import 'package:whatsapp_application/helper/size_config.dart';
-import 'package:whatsapp_application/views/call_page/call_page.dart';
+import 'package:whatsapp_application/views/call_page/calling_page.dart';
 import '../../helper/music_slider.dart';
 
 Widget profileCircularWidget(BuildContext context, image) {

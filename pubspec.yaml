@@ -44,6 +44,14 @@ dependencies:
   story_view:
   giphy_api_client: ^0.1.3
   image_picker: ^0.8.5+3
+  sliding_up_panel: ^2.0.0+1
+  firebase_analytics:
+  firebase_core:
+  cloud_firestore: ^2.5.1
+  firebase_messaging: ^11.4.1
+  uuid: ^3.0.6
+  awesome_notifications:
+  flutter_webrtc:  ^0.6.6
 
 dev_dependencies:
   flutter_test:
