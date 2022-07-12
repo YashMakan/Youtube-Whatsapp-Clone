@@ -13,7 +13,7 @@ User user = User(
     name: "Yash Makan",
     email: "yashmakan.fake.email@gmail.com",
     gender: "Male",
-    phoneNumber: "9999999999",
+    phoneNumber: "+91 9999999999",
     birthDate: 498456350,
     location: Location(
         city: "Rohtak",

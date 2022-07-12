@@ -52,6 +52,8 @@ dependencies:
   uuid: ^3.0.6
   awesome_notifications:
   flutter_webrtc:  ^0.6.6
+  file_picker: ^4.6.1
+  scrollable_positioned_list:
 
 dev_dependencies:
   flutter_test:

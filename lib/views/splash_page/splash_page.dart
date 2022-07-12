@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:whatsapp_application/constants/colors.dart';
 import 'package:whatsapp_application/helper/size_config.dart';
+import 'package:whatsapp_application/views/onboarding_page/onboarding_page.dart';
 import 'package:whatsapp_application/widgets/common_widgets.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -12,6 +13,15 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  @override
+  void initState() {
+    Future.delayed(const Duration(seconds: 4), () {
+      Navigator.pushReplacement(context,
+          MaterialPageRoute(builder: (builder) => const OnBoardingPage()));
+    });
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);

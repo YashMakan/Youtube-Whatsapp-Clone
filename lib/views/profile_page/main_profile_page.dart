@@ -1,9 +1,11 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:whatsapp_application/helper/size_config.dart';
 import 'package:whatsapp_application/main.dart';
 import 'package:whatsapp_application/models/location.dart';
 import 'package:whatsapp_application/models/user.dart';
+import 'package:whatsapp_application/views/profile_page/profile_page.dart';
 import '../../constants/colors.dart';
 import 'main_profile_page_widgets.dart';
 
@@ -18,9 +20,7 @@ class MainProfilePage extends StatefulWidget {
 }
 
 class _MainProfilePageState extends State<MainProfilePage> {
-  bool isSearch = false;
   bool toggle = true;
-  TextEditingController controller = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -108,7 +108,13 @@ class _MainProfilePageState extends State<MainProfilePage> {
                           );
                         });
                   },
-                  onTap: () {}),
+                  onTap: () {
+                    Navigator.of(context).push(CupertinoPageRoute(
+                        builder: (context) => ProfilePage(
+                          user: user,
+                          profilePageStatus: ProfilePageStatus.personal,
+                        )));
+                  }),
               const SizedBox(
                 height: 20,
               ),

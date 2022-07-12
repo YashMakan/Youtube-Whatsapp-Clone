@@ -29,7 +29,8 @@ Widget profileWidget(
                     decoration: BoxDecoration(
                         borderRadius:
                             const BorderRadius.all(Radius.circular(10)),
-                        image: DecorationImage(image: NetworkImage(image), fit: BoxFit.cover)),
+                        image: DecorationImage(
+                            image: NetworkImage(image), fit: BoxFit.cover)),
                   ),
                   Positioned(
                     top: -5,
@@ -92,7 +93,8 @@ Widget profileWidget(
 
 Widget settingTile(
     {required IconData iconData,
-    required SettingTrailing settingTrailing,
+    SettingTrailing? settingTrailing,
+    bool shouldRedGlow = false,
     required String title,
     bool? toggle,
     ValueSetter<bool>? onToggle}) {
@@ -109,14 +111,14 @@ Widget settingTile(
               child: Row(
                 children: [
                   Icon(iconData,
-                      color: blackColor(SizeConfig.cntxt).lightShade, size: 26),
+                      color: shouldRedGlow?Colors.redAccent:blackColor(SizeConfig.cntxt).lightShade, size: 26),
                   const SizedBox(
                     width: 20,
                   ),
                   Text(
                     title,
                     style: TextStyle(
-                        color: blackColor(SizeConfig.cntxt).darkShade,
+                        color: shouldRedGlow?Colors.redAccent:blackColor(SizeConfig.cntxt).darkShade,
                         fontSize: 17),
                   )
                 ],
