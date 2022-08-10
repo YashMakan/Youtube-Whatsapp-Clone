@@ -4,6 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:whatsapp_application/constants/colors.dart';
+import 'package:whatsapp_application/getit.dart';
 import 'package:whatsapp_application/models/user.dart';
 import 'package:uuid/uuid.dart';
 import 'package:whatsapp_application/views/root_page.dart';
@@ -109,6 +110,7 @@ void main() async {
   );
   await Firebase.initializeApp();
   FirebaseMessaging.onBackgroundMessage(myBackgroundMessageHandler);
+  setup();
   runApp(const MyApp());
 }
 

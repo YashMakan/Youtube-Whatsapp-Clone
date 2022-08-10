@@ -47,10 +47,12 @@ Widget storyWidget(
         ),
         SizedBox(
           width: size,
-          child: Text(
-            text,
-            overflow: TextOverflow.ellipsis,
-            style: TextStyle(color: grayColor(SizeConfig.cntxt).lightShade),
+          child: Center(
+            child: Text(
+              text,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(color: grayColor(SizeConfig.cntxt).lightShade),
+            ),
           ),
         )
       ],
@@ -58,7 +60,7 @@ Widget storyWidget(
   );
 }
 
-Widget searchBar({required TextEditingController controller}) {
+Widget searchBar({required TextEditingController controller, ValueChanged<String>? onChanged}) {
   return Column(
     key: const ValueKey<int>(0),
     children: [
@@ -77,7 +79,7 @@ Widget searchBar({required TextEditingController controller}) {
               child: TextField(
                 controller: controller,
                 onSubmitted: (v) {},
-                onChanged: (v) {},
+                onChanged: onChanged,
                 style: TextStyle(
                     color: backgroundColor(SizeConfig.cntxt, invert: true)),
                 decoration: InputDecoration(

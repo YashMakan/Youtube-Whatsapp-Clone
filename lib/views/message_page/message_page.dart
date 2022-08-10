@@ -1,15 +1,26 @@
+import 'package:flutter_contacts/flutter_contacts.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:upi_india/upi_india.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:giphy_api_client/giphy_api_client.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:line_icons/line_icons.dart';
+import 'package:whatsapp_application/getit.dart';
 import 'package:whatsapp_application/models/document.dart';
 import 'package:whatsapp_application/models/user.dart';
+import 'package:whatsapp_application/provider/provider.dart';
+import 'package:whatsapp_application/views/contact_page/contact_page.dart';
+import 'package:whatsapp_application/views/message_page/components/header_section.dart';
+import 'package:whatsapp_application/views/message_page/components/map_screen.dart';
 import 'package:whatsapp_application/views/message_page/message_page_widgets.dart';
 import 'package:whatsapp_application/widgets/common_widgets.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
+import 'package:latlong2/latlong.dart';
 import '../../constants/colors.dart';
 import '../../helper/size_config.dart';
+import '../../models/upi_payment.dart';
 
 class MessagePage extends StatefulWidget {
   const MessagePage({Key? key, required this.user}) : super(key: key);
@@ -24,11 +35,14 @@ class _MessagePageState extends State<MessagePage> {
   bool isSearch = false;
   bool isGifClicked = false;
   bool isRecordingStarted = false;
+  bool isRecordingInDraft = false;
   bool isMenuPopupOpened = false;
   TextEditingController messageController = TextEditingController();
   TextEditingController gifController = TextEditingController();
   final client = GiphyClient(apiKey: 'NMFj5k2Slp67Tg2lSUANshwMFS9qTiB1');
-  final ItemScrollController  scrollController = ItemScrollController();
+  final ItemScrollController scrollController = ItemScrollController();
+  final AudioProvider provider = getIt<AudioProvider>();
+
   // final ScrollController scrollController = ScrollController();
   List<MainMenu> mainMenus = [
     MainMenu("Document", LineIcons.file, "document"),
@@ -55,7 +69,7 @@ class _MessagePageState extends State<MessagePage> {
       circularMessage(
           fromFriend: true,
           messageType: MessageType.imageMedia,
-          imageMedia: "https://i.giphy.com/media/oOTTyHRHj0HYY/giphy.webp"),
+          gifUrl: "https://i.giphy.com/media/oOTTyHRHj0HYY/giphy.webp"),
       circularMessage(
           fromFriend: false,
           messageType: MessageType.url,
@@ -76,17 +90,16 @@ class _MessagePageState extends State<MessagePage> {
       circularMessage(
           fromFriend: false,
           messageType: MessageType.doc,
-        file: Document("arts.zip", 3258421, "zip")
-      ),
+          file: Document("arts.zip", 3258421, "zip")),
     ];
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
+      scrollToBottom(jump: true);
+    });
   }
 
   @override
   void initState() {
     getMessages();
-    WidgetsBinding.instance?.addPostFrameCallback((_) {
-      scrollToBottom();
-    });
     super.initState();
   }
 
@@ -96,7 +109,7 @@ class _MessagePageState extends State<MessagePage> {
       backgroundColor: backgroundColor(context),
       body: Column(
         children: [
-          headerSection(context, widget.user),
+          HeaderSection(user: widget.user),
           Expanded(
               child: Padding(
             padding: const EdgeInsets.only(left: 16, right: 16),
@@ -198,17 +211,21 @@ class _MessagePageState extends State<MessagePage> {
                                   circularIconButton(
                                       iconData: LineIcons.microphone,
                                       onLongPressStart: (details) {
-                                        setState(() {
-                                          isRecordingStarted = true;
-                                        });
+                                        messages.add(circularMessage(
+                                            fromFriend: false,
+                                            messageType: MessageType.audio));
+                                        setState(() {});
+                                        scrollToBottom();
                                       },
                                       onLongPressEnd: (details) {
                                         if (details.localPosition.dx > 50) {
-                                          print("canceled");
+                                          messages.removeLast();
+                                        } else {
+                                          isRecordingInDraft = true;
                                         }
-                                        setState(() {
-                                          isRecordingStarted = false;
-                                        });
+                                        provider.stopRecording();
+                                        setState(() {});
+                                        scrollToBottom();
                                       }),
                                   const SizedBox(
                                     width: 8.0,
@@ -263,11 +280,22 @@ class _MessagePageState extends State<MessagePage> {
                                   padding: EdgeInsets.zero,
                                   itemCount: gifs.length,
                                   itemBuilder: (context, index) {
-                                    return Image.network(
-                                      gifs[index]?.images?.original?.url ?? "",
-                                      width: 50,
-                                      height: 30,
-                                      fit: BoxFit.cover,
+                                    return InkWell(
+                                      onTap: () {
+                                        Widget message = convertImageToMessage(
+                                            gifs[index]?.images?.original?.url);
+                                        messages.add(message);
+                                        isGifClicked = false;
+                                        setState(() {});
+                                        scrollToBottom();
+                                      },
+                                      child: Image.network(
+                                        gifs[index]?.images?.original?.url ??
+                                            "",
+                                        width: 50,
+                                        height: 30,
+                                        fit: BoxFit.cover,
+                                      ),
                                     );
                                   }),
                             );
@@ -285,8 +313,13 @@ class _MessagePageState extends State<MessagePage> {
     );
   }
 
-  scrollToBottom(){
-    scrollController.scrollTo(index: messages.length, duration: const Duration(milliseconds: 600));
+  scrollToBottom({bool jump = false}) {
+    if (jump) {
+      scrollController.jumpTo(index: messages.length);
+    } else {
+      scrollController.scrollTo(
+          index: messages.length, duration: const Duration(milliseconds: 600));
+    }
   }
 
   showManinMenuBottomSheet() {
@@ -318,8 +351,8 @@ class _MessagePageState extends State<MessagePage> {
                         case "document":
                           FilePickerResult? result =
                               await FilePicker.platform.pickFiles(
-                                allowMultiple: true,
-                              );
+                            allowMultiple: true,
+                          );
                           List<Widget> _messages =
                               convertFilesToMessages(result?.files);
                           messages.addAll(_messages);
@@ -331,7 +364,10 @@ class _MessagePageState extends State<MessagePage> {
                           final XFile? image = await _picker.pickImage(
                               source: ImageSource.camera);
                           if (image != null) {
-                            Widget message = circularMessage(fromFriend: false, messageType: MessageType.imageMedia, imageMedia: await image.readAsBytes());
+                            Widget message = circularMessage(
+                                fromFriend: false,
+                                messageType: MessageType.imageMedia,
+                                gifBytes: await image.readAsBytes());
                             messages.add(message);
                             setState(() {});
                             scrollToBottom();
@@ -342,7 +378,12 @@ class _MessagePageState extends State<MessagePage> {
                           final List<XFile>? images =
                               await _picker.pickMultiImage();
                           if (images != null) {
-                            var _messages = images.map((image) async => circularMessage(fromFriend: false, messageType: MessageType.imageMedia, imageMedia: await image.readAsBytes())).toList();
+                            var _messages = images
+                                .map((image) async => circularMessage(
+                                    fromFriend: false,
+                                    messageType: MessageType.imageMedia,
+                                    gifBytes: await image.readAsBytes()))
+                                .toList();
                             _messages.forEach((message) async {
                               messages.add(await message);
                             });
@@ -362,10 +403,28 @@ class _MessagePageState extends State<MessagePage> {
                           scrollToBottom();
                           break;
                         case "payment":
+                          showUpiApps();
                           break;
                         case "location":
+                          LatLng latLng = await Navigator.of(context).push(
+                              CupertinoPageRoute(
+                                  builder: (context) => const MapScreen()));
+                          Widget message = convertLocationToMessage(latLng);
+                          messages.add(message);
+                          setState(() {});
+                          scrollToBottom();
                           break;
                         case "contact":
+                          List<User>? selectedContacts =
+                              await Navigator.of(context).push(
+                                  CupertinoPageRoute(
+                                      builder: (context) =>
+                                          const ContactPage()));
+                          List<Widget> _messages =
+                              convertContactsToMessages(selectedContacts);
+                          messages.addAll(_messages);
+                          setState(() {});
+                          scrollToBottom();
                           break;
                       }
                     },
@@ -379,6 +438,93 @@ class _MessagePageState extends State<MessagePage> {
             ),
           );
         });
+  }
+
+  showUpiApps() async {
+    UpiIndia upiIndia = UpiIndia();
+    List<UpiApp> apps = await upiIndia.getAllUpiApps(
+        allowNonVerifiedApps: false, mandatoryTransactionId: false);
+    showModalBottomSheet(
+        context: context,
+        backgroundColor: Colors.transparent,
+        barrierColor: Colors.transparent,
+        builder: (context) {
+          return Padding(
+            padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 80),
+            child: Container(
+              width: SizeConfig.screenWidth,
+              height: 340,
+              decoration: const BoxDecoration(
+                  color: Color(0xFF101010),
+                  borderRadius: BorderRadius.all(Radius.circular(22))),
+              child: GridView.builder(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 3,
+                    crossAxisSpacing: 15.0,
+                    mainAxisSpacing: 15.0),
+                itemCount: apps.length,
+                padding: const EdgeInsets.all(16),
+                itemBuilder: (context, index) {
+                  return GestureDetector(
+                    onTap: () async {
+                      Navigator.pop(context);
+                      UpiPayment _upiPayment = UpiPayment(
+                          receiverUpiId: "9999999999@paytm",
+                          receiverName: "Rajat Makan",
+                          transactionRefId: "WhatsApp",
+                          transactionNote: "Money sent using WhatsApp",
+                          isTransactionSuccessful: true,
+                          upiApp: apps[index],
+                          amount: 1);
+                      UpiPayment _upiPaymentWithStatus =
+                          await initiateTransaction(_upiPayment);
+                      if (_upiPaymentWithStatus.isTransactionSuccessful) {
+                        messages.add(circularMessage(
+                            fromFriend: false,
+                            upiPayment: _upiPaymentWithStatus,
+                            messageType: MessageType.upiPayment));
+                        setState(() {});
+                        scrollToBottom();
+                      } else {
+                        Fluttertoast.showToast(
+                          msg: "Unable to clear the Transaction",
+                          toastLength: Toast.LENGTH_SHORT,
+                          gravity: ToastGravity.CENTER,
+                        );
+                      }
+                    },
+                    child: gradientIconButton(
+                        size: 60,
+                        imageBytes: apps[index].icon,
+                        text: apps[index].name),
+                  );
+                },
+              ),
+            ),
+          );
+        });
+  }
+
+  Future<UpiPayment> initiateTransaction(UpiPayment upiPayment) async {
+    UpiIndia upiIndia = UpiIndia();
+    UpiResponse upiResponse = await upiIndia.startTransaction(
+      app: upiPayment.upiApp,
+      receiverUpiId: upiPayment.receiverUpiId,
+      receiverName: upiPayment.receiverName,
+      transactionRefId: upiPayment.transactionRefId,
+      transactionNote: upiPayment.transactionNote,
+      amount: upiPayment.amount,
+    );
+    switch (upiResponse.status) {
+      case UpiPaymentStatus.SUCCESS:
+        upiPayment.isTransactionSuccessful = true;
+        upiPayment.transactionId = upiResponse.transactionId;
+        break;
+      default:
+        upiPayment.isTransactionSuccessful = false;
+        break;
+    }
+    return upiPayment;
   }
 
   Future convertXFilesToMessages(List<XFile>? files) async {
@@ -406,6 +552,31 @@ class _MessagePageState extends State<MessagePage> {
     } else {
       return [];
     }
+  }
+
+  List<Widget> convertContactsToMessages(List<User>? messages) {
+    if (messages != null) {
+      return messages
+          .map((e) => circularMessage(
+              fromFriend: false,
+              messageType: MessageType.contact,
+              contact: Contact(
+                  name: Name(first: e.firstName, last: e.lastName),
+                  phones: [Phone(e.phoneNumber)])))
+          .toList();
+    } else {
+      return [];
+    }
+  }
+
+  Widget convertImageToMessage(String? gifUrl) {
+    return circularMessage(
+        fromFriend: false, messageType: MessageType.imageMedia, gifUrl: gifUrl);
+  }
+
+  Widget convertLocationToMessage(LatLng latLng) {
+    return circularMessage(
+        fromFriend: false, messageType: MessageType.location, latLng: latLng);
   }
 
   Widget convertStringToMessage(String text) {

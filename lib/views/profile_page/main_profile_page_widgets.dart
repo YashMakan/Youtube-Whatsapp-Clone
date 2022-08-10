@@ -94,12 +94,14 @@ Widget profileWidget(
 Widget settingTile(
     {required IconData iconData,
     SettingTrailing? settingTrailing,
+    GestureTapCallback? onTap,
     bool shouldRedGlow = false,
+    bool shouldGreenGlow = false,
     required String title,
     bool? toggle,
     ValueSetter<bool>? onToggle}) {
   return InkWell(
-    onTap: () {},
+    onTap: onTap,
     child: SizedBox(
       width: SizeConfig.screenWidth,
       height: 55,
@@ -111,14 +113,21 @@ Widget settingTile(
               child: Row(
                 children: [
                   Icon(iconData,
-                      color: shouldRedGlow?Colors.redAccent:blackColor(SizeConfig.cntxt).lightShade, size: 26),
+                      color: shouldRedGlow
+                          ? Colors.redAccent
+                          : shouldGreenGlow
+                              ? greenColor
+                              : blackColor(SizeConfig.cntxt).lightShade,
+                      size: 26),
                   const SizedBox(
                     width: 20,
                   ),
                   Text(
                     title,
                     style: TextStyle(
-                        color: shouldRedGlow?Colors.redAccent:blackColor(SizeConfig.cntxt).darkShade,
+                        color: shouldRedGlow
+                            ? Colors.redAccent
+                            : blackColor(SizeConfig.cntxt).darkShade,
                         fontSize: 17),
                   )
                 ],

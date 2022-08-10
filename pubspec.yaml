@@ -54,6 +54,19 @@ dependencies:
   flutter_webrtc:  ^0.6.6
   file_picker: ^4.6.1
   scrollable_positioned_list:
+  mic_stream: ^0.6.1
+  flutter_audio_waveforms:
+  get_it:
+  provider:
+  flutter_contacts: ^1.1.5
+  fluttertoast:
+  upi_india: ^3.0.1
+  geolocator: 8.2.1
+  share_plus:
+  passcode_screen:
+  settings_ui: ^2.0.2
+  flutter_map:
+  geocoding: ^2.0.4
 
 dev_dependencies:
   flutter_test:

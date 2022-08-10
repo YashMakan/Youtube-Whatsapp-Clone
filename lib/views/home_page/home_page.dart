@@ -7,13 +7,14 @@ import 'package:whatsapp_application/models/user.dart';
 import '../../constants/colors.dart';
 import '../../constants/persons.dart';
 import '../../widgets/common_widgets.dart';
+import '../contact_page/contact_page.dart';
 import '../message_page/message_page.dart';
 import 'home_widgets.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key, required this.scrollController}) : super(key: key);
+  const HomePage({Key? key, this.scrollController}) : super(key: key);
 
-  final ScrollController scrollController;
+  final ScrollController? scrollController;
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -21,7 +22,6 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   bool isSearch = false;
-  bool isNewContact = false;
   TextEditingController controller = TextEditingController();
   List<User> chats = [];
   List<User> statusList = [];
@@ -42,12 +42,11 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: backgroundColor(context),
-      floatingActionButton: !isNewContact && !isSearch
+      floatingActionButton: !isSearch
           ? FloatingActionButton(
               onPressed: () {
-                setState(() {
-                  isNewContact = true;
-                });
+                Navigator.of(context).push(CupertinoPageRoute(
+                    builder: (context) => const ContactPage()));
               },
               backgroundColor: Colors.transparent,
               child: gradientIconButton(size: 55, iconData: Icons.group_add),
@@ -68,11 +67,7 @@ class _HomePageState extends State<HomePage> {
                   Padding(
                     padding: const EdgeInsets.only(left: 16.0),
                     child: Text(
-                      isSearch
-                          ? "Search"
-                          : isNewContact
-                              ? "New Contacts"
-                              : "Chats",
+                      isSearch ? "Search" : "Chats",
                       style: TextStyle(
                           fontSize: 26,
                           fontWeight: FontWeight.w800,
@@ -82,18 +77,14 @@ class _HomePageState extends State<HomePage> {
                   Padding(
                     padding: const EdgeInsets.only(right: 16.0),
                     child: IconButton(
-                      icon: Icon(
-                          isSearch || isNewContact ? Icons.close : Icons.search,
-                          size: 32),
+                      icon:
+                          Icon(isSearch ? Icons.close : Icons.search, size: 32),
                       splashRadius: 20,
                       onPressed: () {
                         setState(() {
                           if (isSearch) {
                             isSearch = false;
-                          } else if (!isNewContact) {
-                            isSearch = true;
                           }
-                          isNewContact = false;
                           controller.clear();
                         });
                       },
@@ -105,80 +96,85 @@ class _HomePageState extends State<HomePage> {
               const SizedBox(
                 height: 10,
               ),
-              isSearch || isNewContact
+              isSearch
                   ? searchBar(controller: controller)
-                  : statusBar(statusList: statusList, onNewStatusClicked: () async {
-                showModalBottomSheet(
-                    context: context,
-                    backgroundColor: Colors.transparent,
-                    builder: (context) {
-                      return Container(
-                        margin: const EdgeInsets.only(
-                            left: 25, right: 25, bottom: 70),
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 20, horizontal: 20),
-                        decoration: BoxDecoration(
-                            color: context.isDarkMode()
-                                ? Colors.black26
-                                : Colors.white,
-                            borderRadius: const BorderRadius.all(
-                                Radius.circular(10))),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Text(
-                              "Are you sure to logout ?",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                  color: blackColor(context).darkShade,
-                                  fontSize: 19),
-                            ),
-                            const SizedBox(
-                              height: 16,
-                            ),
-                            ButtonBar(
-                              buttonPadding: EdgeInsets.zero,
-                              alignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                ElevatedButton(
-                                  child: const Text(
-                                    'Yes, log out!',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w500,
+                  : statusBar(
+                      statusList: statusList,
+                      onNewStatusClicked: () async {
+                        showModalBottomSheet(
+                            context: context,
+                            backgroundColor: Colors.transparent,
+                            builder: (context) {
+                              return Container(
+                                margin: const EdgeInsets.only(
+                                    left: 25, right: 25, bottom: 70),
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 20, horizontal: 20),
+                                decoration: BoxDecoration(
+                                    color: context.isDarkMode()
+                                        ? Colors.black26
+                                        : Colors.white,
+                                    borderRadius: const BorderRadius.all(
+                                        Radius.circular(10))),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    Text(
+                                      "Are you sure to logout ?",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w600,
+                                          color: blackColor(context).darkShade,
+                                          fontSize: 19),
                                     ),
-                                  ),
-                                  style: ButtonStyle(
-                                      fixedSize: MaterialStateProperty.all(
-                                          const Size(150, 30)),
-                                      backgroundColor:
-                                      MaterialStateProperty.all(
-                                          greenColor)),
-                                  onPressed: () {},
+                                    const SizedBox(
+                                      height: 16,
+                                    ),
+                                    ButtonBar(
+                                      buttonPadding: EdgeInsets.zero,
+                                      alignment: MainAxisAlignment.spaceBetween,
+                                      children: <Widget>[
+                                        ElevatedButton(
+                                          child: const Text(
+                                            'Yes, log out!',
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                          style: ButtonStyle(
+                                              fixedSize:
+                                                  MaterialStateProperty.all(
+                                                      const Size(150, 30)),
+                                              backgroundColor:
+                                                  MaterialStateProperty.all(
+                                                      greenColor)),
+                                          onPressed: () {},
+                                        ),
+                                        ElevatedButton(
+                                          child: const Text('Cancel',
+                                              style:
+                                                  TextStyle(color: greenColor)),
+                                          style: ButtonStyle(
+                                              fixedSize:
+                                                  MaterialStateProperty.all(
+                                                      const Size(100, 30)),
+                                              backgroundColor:
+                                                  MaterialStateProperty.all(
+                                                      backgroundColor(context)),
+                                              side: MaterialStateProperty.all(
+                                                  const BorderSide(
+                                                      color: greenColor))),
+                                          onPressed: () {},
+                                        ),
+                                      ],
+                                    ),
+                                  ],
                                 ),
-                                ElevatedButton(
-                                  child: const Text('Cancel',
-                                      style: TextStyle(color: greenColor)),
-                                  style: ButtonStyle(
-                                      fixedSize: MaterialStateProperty.all(
-                                          const Size(100, 30)),
-                                      backgroundColor:
-                                      MaterialStateProperty.all(
-                                          backgroundColor(context)),
-                                      side: MaterialStateProperty.all(
-                                          const BorderSide(
-                                              color: greenColor))),
-                                  onPressed: () {},
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      );
-                    });
+                              );
+                            });
 //                final ImagePicker _picker = ImagePicker();
 //                final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
-              })
+                      })
             ],
           ),
           Expanded(
