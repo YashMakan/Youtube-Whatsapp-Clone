@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "178433718435",
+    "project_id": "whatsapp-redesign-a4790",
+    "storage_bucket": "whatsapp-redesign-a4790.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:178433718435:android:18eb5d5843a07ee5d46716",
+        "android_client_info": {
+          "package_name": "com.makan.whatsapp_application"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "178433718435-fgpbr46r5j5jhfspat7js79ofv20lkaa.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB2cu6UNuLlg1TalmA6Rpq_Br0FqWH1CNE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "178433718435-fgpbr46r5j5jhfspat7js79ofv20lkaa.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,14 +1,16 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:line_icons/line_icons.dart';
+import 'package:whatsapp_application/models/user.dart';
+import 'package:whatsapp_application/views/status_page/status_page.dart';
 import 'package:whatsapp_application/widgets/common_widgets.dart';
 import '../../constants/colors.dart';
-import '../../constants/persons.dart';
+import '../../helper/size_config.dart';
 
 Widget storyWidget(
     {required double size,
     required String imageUrl,
     required String text,
-    required BuildContext context,
     bool showGreenStrip = false}) {
   return Padding(
     padding: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -45,10 +47,12 @@ Widget storyWidget(
         ),
         SizedBox(
           width: size,
-          child: Text(
-            text,
-            overflow: TextOverflow.ellipsis,
-            style: TextStyle(color: grayColor(context).lightShade),
+          child: Center(
+            child: Text(
+              text,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(color: grayColor(SizeConfig.cntxt).lightShade),
+            ),
           ),
         )
       ],
@@ -56,9 +60,7 @@ Widget storyWidget(
   );
 }
 
-Widget searchBar(
-    {required BuildContext context,
-    required TextEditingController controller}) {
+Widget searchBar({required TextEditingController controller, ValueChanged<String>? onChanged}) {
   return Column(
     key: const ValueKey<int>(0),
     children: [
@@ -66,7 +68,7 @@ Widget searchBar(
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 200),
-          width: MediaQuery.of(context).size.width,
+          width: SizeConfig.screenWidth,
           decoration: const BoxDecoration(
             borderRadius: BorderRadius.all(Radius.circular(5.0)),
             color: Color.fromRGBO(142, 142, 147, .15),
@@ -77,27 +79,28 @@ Widget searchBar(
               child: TextField(
                 controller: controller,
                 onSubmitted: (v) {},
-                onChanged: (v) {},
-                style: TextStyle(color: backgroundColor(context, invert: true)),
+                onChanged: onChanged,
+                style: TextStyle(
+                    color: backgroundColor(SizeConfig.cntxt, invert: true)),
                 decoration: InputDecoration(
                   icon: Padding(
                     padding: const EdgeInsets.only(left: 8.0),
                     child: Icon(
                       Icons.search,
                       size: 22,
-                      color: backgroundColor(context, invert: true),
+                      color: backgroundColor(SizeConfig.cntxt, invert: true),
                     ),
                   ),
                   border: InputBorder.none,
                   hintText: "Search here...",
                   hintStyle: TextStyle(
-                      color: !context.isDarkMode()
+                      color: !SizeConfig.cntxt.isDarkMode()
                           ? const Color.fromRGBO(142, 142, 147, 1)
                           : Colors.white60),
                 ),
               ),
-              data: Theme.of(context).copyWith(
-                primaryColor: backgroundColor(context, invert: true),
+              data: Theme.of(SizeConfig.cntxt).copyWith(
+                primaryColor: backgroundColor(SizeConfig.cntxt, invert: true),
               ),
             ),
           ),
@@ -111,7 +114,7 @@ Widget searchBar(
 }
 
 Widget statusBar(
-    {required BuildContext context, addWidget = true, seeAllWidget = true}) {
+    {required List<User> statusList, GestureTapCallback? onNewStatusClicked, addWidget = true, seeAllWidget = true}) {
   return Column(
     key: const ValueKey<int>(1),
     children: [
@@ -124,11 +127,11 @@ Widget statusBar(
             padding: const EdgeInsets.only(left: 16),
             children: [
               addWidget
-                  ? gradientIconButton(
-                      size: 60,
-                      iconData: Icons.add,
-                      text: "New Status",
-                      context: context)
+                  ? GestureDetector(
+                      onTap: onNewStatusClicked,
+                      child: gradientIconButton(
+                          size: 60, iconData: Icons.add, text: "New Status"),
+                    )
                   : const SizedBox(),
               addWidget
                   ? const SizedBox(
@@ -139,23 +142,23 @@ Widget statusBar(
                 height: 100,
                 child: ListView.builder(
                   shrinkWrap: true,
-                  itemCount: persons.length,
+                  itemCount: statusList.length,
                   scrollDirection: Axis.horizontal,
                   itemBuilder: (context, index) {
-                    return storyWidget(
-                        size: 60,
-                        showGreenStrip: addWidget && (index == 2 || index == 3),
-                        text: persons.reversed
-                                .toList()[index]['first_name']
-                                .toString() +
-                            " " +
-                            persons.reversed
-                                .toList()[index]['last_name']
-                                .toString(),
-                        imageUrl: persons.reversed
-                            .toList()[index]['picture']
-                            .toString(),
-                        context: context);
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.of(context).push(CupertinoPageRoute(
+                            builder: (context) => const StatusPage()));
+                      },
+                      child: storyWidget(
+                          size: 60,
+                          showGreenStrip:
+                              addWidget && (index == 2 || index == 3),
+                          text: statusList[index].firstName +
+                              " " +
+                              statusList[index].lastName,
+                          imageUrl: statusList[index].picture),
+                    );
                   },
                 ),
               ),

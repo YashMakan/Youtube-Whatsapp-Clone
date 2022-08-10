@@ -39,6 +39,34 @@ dependencies:
   line_icons: ^2.0.1
   flutter_switch: ^0.3.2
   lottie: ^1.3.0
+  flutter_slidable:
+  simple_link_preview: ^1.0.2
+  story_view:
+  giphy_api_client: ^0.1.3
+  image_picker: ^0.8.5+3
+  sliding_up_panel: ^2.0.0+1
+  firebase_analytics:
+  firebase_core:
+  cloud_firestore: ^2.5.1
+  firebase_messaging: ^11.4.1
+  uuid: ^3.0.6
+  awesome_notifications:
+  flutter_webrtc:  ^0.6.6
+  file_picker: ^4.6.1
+  scrollable_positioned_list:
+  mic_stream: ^0.6.1
+  flutter_audio_waveforms:
+  get_it:
+  provider:
+  flutter_contacts: ^1.1.5
+  fluttertoast:
+  upi_india: ^3.0.1
+  geolocator: 8.2.1
+  share_plus:
+  passcode_screen:
+  settings_ui: ^2.0.2
+  flutter_map:
+  geocoding: ^2.0.4
 
 dev_dependencies:
   flutter_test:
@@ -63,6 +91,7 @@ flutter:
   uses-material-design: true
   assets:
     - assets/
+    - assets/images/
   fonts:
     - family: SFProText
       fonts:

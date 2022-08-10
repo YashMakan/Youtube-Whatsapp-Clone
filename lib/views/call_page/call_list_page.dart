@@ -1,22 +1,31 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:whatsapp_application/constants/persons.dart';
+import 'package:whatsapp_application/models/user.dart';
 import '../../constants/colors.dart';
 import '../../widgets/common_widgets.dart';
 import '../home_page/home_widgets.dart';
 
-class CallPage extends StatefulWidget {
-  const CallPage({Key? key, required this.scrollController}) : super(key: key);
+class CallListPage extends StatefulWidget {
+  const CallListPage({Key? key, required this.scrollController})
+      : super(key: key);
 
   final ScrollController scrollController;
 
   @override
-  _CallPageState createState() => _CallPageState();
+  _CallListPageState createState() => _CallListPageState();
 }
 
-class _CallPageState extends State<CallPage> {
+class _CallListPageState extends State<CallListPage> {
   bool isSearch = false;
   TextEditingController controller = TextEditingController();
+  List<User> users = [];
+
+  @override
+  void initState() {
+    users = persons.map((e) => User.fromJson(e)).toList();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,8 +34,7 @@ class _CallPageState extends State<CallPage> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {},
         backgroundColor: Colors.transparent,
-        child: gradientIconButton(
-            size: 55, iconData: Icons.phone_forwarded, context: context),
+        child: gradientIconButton(size: 55, iconData: Icons.phone_forwarded),
       ),
       body: SafeArea(
           child: Column(
@@ -73,26 +81,24 @@ class _CallPageState extends State<CallPage> {
                 height: 10,
               ),
               isSearch
-                  ? searchBar(context: context, controller: controller)
+                  ? searchBar(controller: controller)
                   : statusBar(
-                      addWidget: false, seeAllWidget: false, context: context)
+                      addWidget: false, seeAllWidget: false, statusList: users)
             ],
           ),
           Expanded(
             child: ListView.separated(
               padding: const EdgeInsets.only(top: 10),
               controller: widget.scrollController,
-              itemCount: persons.length,
+              itemCount: users.length,
               separatorBuilder: (context, index) {
                 return const Divider(
                   thickness: 0.3,
                 );
               },
               itemBuilder: (context, index) => customListTile(
-                  context: context,
-                  imageUrl: persons[index]['picture'].toString(),
-                  title:
-                      "${persons[index]['first_name']} ${persons[index]['last_name']}",
+                  imageUrl: users[index].picture,
+                  title: "${users[index].firstName} ${users[index].lastName}",
                   subTitle: "May 7, 6:29 PM",
                   onTap: () {},
                   numberOfCalls: 2,

@@ -1,73 +1,125 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:lottie/lottie.dart';
 import '../constants/colors.dart';
+import '../helper/size_config.dart';
 
-enum CustomListTileType { message, group, call }
+enum CustomListTileType { message, group, call, contact }
 enum CallStatus { missed, declined, accepted }
+
+class GradientText extends StatelessWidget {
+  const GradientText(
+    this.text, {
+    Key? key,
+    required this.gradient,
+    this.style,
+  }) : super(key: key);
+
+  final String text;
+  final TextStyle? style;
+  final Gradient gradient;
+
+  @override
+  Widget build(BuildContext context) {
+    return ShaderMask(
+      blendMode: BlendMode.srcIn,
+      shaderCallback: (bounds) => gradient.createShader(
+        Rect.fromLTWH(0, 0, bounds.width, bounds.height),
+      ),
+      child: Text(text, style: style),
+    );
+  }
+}
 
 Widget gradientIconButton(
     {required double size,
-    required BuildContext context,
+    double? iconSize,
     IconData? iconData,
+    Uint8List? imageBytes,
     int? counterText,
+    bool isEnabled = true,
+    GestureTapCallback? onTap,
     String? text}) {
-  return Column(
-    children: [
-      Container(
-        width: size,
-        height: size,
-        decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            gradient: LinearGradient(colors: [
-              greenGradient.lightShade,
-              greenGradient.darkShade,
-            ])),
-        child: iconData != null
-            ? Icon(
-                iconData,
-                color: Colors.white,
-              )
-            : counterText != null
+  return InkWell(
+    onTap: onTap,
+    child: SizedBox(
+      child: Column(
+        children: [
+          Container(
+            width: size,
+            height: size,
+            decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: isEnabled
+                    ? LinearGradient(colors: [
+                        greenGradient.lightShade,
+                        greenGradient.darkShade,
+                      ])
+                    : LinearGradient(colors: [
+                        Colors.grey,
+                        Colors.grey.shade600,
+                      ])),
+            child: iconData != null
                 ? Center(
-                    child: Text(
-                    counterText.toString(),
-                    style: const TextStyle(color: Colors.white),
-                  ))
-                : const SizedBox(),
+                    child: Icon(
+                      iconData,
+                      size: iconSize,
+                      color: Colors.white,
+                    ),
+                  )
+                : counterText != null
+                    ? Center(
+                        child: Text(
+                        counterText.toString(),
+                        style: const TextStyle(color: Colors.white),
+                      ))
+                    : imageBytes != null
+                        ? Image.memory(
+                            imageBytes,
+                            width: 24,
+                          )
+                        : const SizedBox(),
+          ),
+          text != null
+              ? const SizedBox(
+                  height: 10,
+                )
+              : const SizedBox(),
+          text != null
+              ? Text(
+                  text,
+                  style:
+                      TextStyle(color: grayColor(SizeConfig.cntxt).lightShade),
+                )
+              : const SizedBox()
+        ],
       ),
-      text != null
-          ? const SizedBox(
-              height: 10,
-            )
-          : const SizedBox(),
-      text != null
-          ? Text(
-              text,
-              style: TextStyle(color: grayColor(context).lightShade),
-            )
-          : const SizedBox()
-    ],
+    ),
   );
 }
 
 Widget customListTile(
-    {required BuildContext context,
-    required String imageUrl,
+    {String? imageUrl,
+    Uint8List? imageBytes,
     required String title,
     required String subTitle,
     required CustomListTileType customListTileType,
     required GestureTapCallback onTap,
+    GestureTapCallback? onLongPress,
     String? timeFrame,
     int? numberOfCalls,
     CallStatus? callStatus,
     List<String>? participantImages,
     int? messageCounter,
-    bool isOnline = false}) {
+    bool isOnline = false,
+    bool isSelected = false}) {
   return InkWell(
     onTap: onTap,
+    onLongPress: onLongPress,
     child: SizedBox(
-      width: MediaQuery.of(context).size.width,
+      width: SizeConfig.screenWidth,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12),
         child: Row(
@@ -98,14 +150,42 @@ Widget customListTile(
                               ),
                         participantImages == null ||
                                 participantImages.length == 1
-                            ? Container(
-                                width: 70,
-                                height: 70,
-                                decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    image: DecorationImage(
-                                        fit: BoxFit.cover,
-                                        image: NetworkImage(imageUrl))),
+                            ? Stack(
+                                children: [
+                                  Container(
+                                    width: 70,
+                                    height: 70,
+                                    decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        image: imageBytes != null
+                                            ? DecorationImage(
+                                                fit: BoxFit.cover,
+                                                image: MemoryImage(imageBytes))
+                                            : DecorationImage(
+                                                image: NetworkImage(imageUrl!),
+                                                fit: BoxFit.cover)),
+                                  ),
+                                  if (isSelected)
+                                    Container(
+                                      width: 70,
+                                      height: 70,
+                                      child: const Center(
+                                        child: Icon(
+                                          Icons.check,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        gradient: LinearGradient(colors: [
+                                          greenGradient.lightShade
+                                              .withOpacity(0.5),
+                                          greenGradient.darkShade
+                                              .withOpacity(0.5),
+                                        ]),
+                                      ),
+                                    )
+                                ],
                               )
                             : Container(
                                 width: 50,
@@ -113,7 +193,8 @@ Widget customListTile(
                                 decoration: BoxDecoration(
                                     shape: BoxShape.circle,
                                     border: Border.all(
-                                        color: backgroundColor(context),
+                                        color:
+                                            backgroundColor(SizeConfig.cntxt),
                                         width: 3),
                                     image: DecorationImage(
                                         fit: BoxFit.cover,
@@ -132,7 +213,8 @@ Widget customListTile(
                           decoration: BoxDecoration(
                               shape: BoxShape.circle,
                               border: Border.all(
-                                  color: backgroundColor(context), width: 2),
+                                  color: backgroundColor(SizeConfig.cntxt),
+                                  width: 2),
                               color: greenColor),
                         ),
                       )
@@ -150,20 +232,31 @@ Widget customListTile(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     SizedBox(
-                      width: MediaQuery.of(context).size.width - 120,
+                      width: SizeConfig.screenWidth - 120,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
-                            title,
-                            style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.w600,
-                                color: blackColor(context).darkShade),
+                          SizedBox(
+                            width:
+                                CustomListTileType.contact == customListTileType
+                                    ? SizeConfig.screenWidth - 120
+                                    : null,
+                            child: Text(
+                              title,
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
+                              style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w600,
+                                  color:
+                                      blackColor(SizeConfig.cntxt).darkShade),
+                            ),
                           ),
                           customListTileType != CustomListTileType.call
                               ? Text(timeFrame!,
-                                  style: TextStyle(color: grayColor(context).lightShade))
+                                  style: TextStyle(
+                                      color: grayColor(SizeConfig.cntxt)
+                                          .lightShade))
                               : const Icon(
                                   LineIcons.video,
                                   color: greenColor,
@@ -207,7 +300,8 @@ Widget customListTile(
                             "($numberOfCalls)",
                             overflow: TextOverflow.ellipsis,
                             maxLines: 2,
-                            style: TextStyle(color: grayColor(context).lightShade),
+                            style: TextStyle(
+                                color: grayColor(SizeConfig.cntxt).lightShade),
                           ),
                         if (numberOfCalls != null)
                           const SizedBox(
@@ -215,13 +309,14 @@ Widget customListTile(
                           ),
                         SizedBox(
                           width: customListTileType == CustomListTileType.call
-                              ? MediaQuery.of(context).size.width - 200
-                              : MediaQuery.of(context).size.width - 160,
+                              ? SizeConfig.screenWidth - 200
+                              : SizeConfig.screenWidth - 160,
                           child: Text(
                             subTitle,
                             overflow: TextOverflow.ellipsis,
                             maxLines: 2,
-                            style: TextStyle(color: grayColor(context).lightShade),
+                            style: TextStyle(
+                                color: grayColor(SizeConfig.cntxt).lightShade),
                           ),
                         ),
                         const SizedBox(
@@ -229,7 +324,7 @@ Widget customListTile(
                         ),
                         messageCounter != null
                             ? gradientIconButton(
-                                size: 23, counterText: messageCounter, context: context)
+                                size: 23, counterText: messageCounter)
                             : const SizedBox()
                       ],
                     )
@@ -244,10 +339,11 @@ Widget customListTile(
   );
 }
 
-Widget customLoader(context){
-  return Lottie.asset('assets/loader.json', width: MediaQuery.of(context).size.width*0.3);
+Widget customLoader(context) {
+  return Lottie.asset('assets/loader.json',
+      width: SizeConfig.screenWidth * 0.3);
 }
 
-Widget customBottomSheet(){
+Widget customBottomSheet() {
   return const SizedBox();
 }

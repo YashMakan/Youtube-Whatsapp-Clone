@@ -3,11 +3,12 @@ import 'package:flutter_switch/flutter_switch.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:whatsapp_application/constants/colors.dart';
 
+import '../../helper/size_config.dart';
+
 enum SettingTrailing { toggle, arrow }
 
 Widget profileWidget(
-    {required BuildContext context,
-    required String name,
+    {required String name,
     required String image,
     required GestureTapCallback onLogoutClick,
     required GestureTapCallback onTap}) {
@@ -28,7 +29,8 @@ Widget profileWidget(
                     decoration: BoxDecoration(
                         borderRadius:
                             const BorderRadius.all(Radius.circular(10)),
-                        image: DecorationImage(image: NetworkImage(image))),
+                        image: DecorationImage(
+                            image: NetworkImage(image), fit: BoxFit.cover)),
                   ),
                   Positioned(
                     top: -5,
@@ -37,7 +39,8 @@ Widget profileWidget(
                       decoration: BoxDecoration(
                           color: Colors.black,
                           border: Border.all(
-                              width: 3, color: backgroundColor(context)),
+                              width: 3,
+                              color: backgroundColor(SizeConfig.cntxt)),
                           shape: BoxShape.circle),
                       child: const Padding(
                         padding: EdgeInsets.all(4.0),
@@ -57,7 +60,7 @@ Widget profileWidget(
                   Text(
                     name,
                     style: TextStyle(
-                        color: blackColor(context).darkShade,
+                        color: blackColor(SizeConfig.cntxt).darkShade,
                         fontSize: 22,
                         fontWeight: FontWeight.w700),
                   ),
@@ -66,7 +69,8 @@ Widget profileWidget(
                   ),
                   Text(
                     "View profile",
-                    style: TextStyle(color: blackColor(context).lightShade),
+                    style: TextStyle(
+                        color: blackColor(SizeConfig.cntxt).lightShade),
                   ),
                 ],
               ),
@@ -74,12 +78,12 @@ Widget profileWidget(
               Padding(
                 padding: const EdgeInsets.only(right: 2.0),
                 child: GestureDetector(
-                  onTap: onLogoutClick,
+                    onTap: onLogoutClick,
                     child: const Icon(
-                  LineIcons.alternateSignOut,
-                  size: 30,
-                  color: Colors.redAccent,
-                )),
+                      LineIcons.alternateSignOut,
+                      size: 30,
+                      color: Colors.redAccent,
+                    )),
               )
             ],
           ),
@@ -88,14 +92,18 @@ Widget profileWidget(
 }
 
 Widget settingTile(
-    {required BuildContext context,
-    required IconData iconData,
-    required SettingTrailing settingTrailing,
-    required String title, bool? toggle, ValueSetter<bool>? onToggle}) {
+    {required IconData iconData,
+    SettingTrailing? settingTrailing,
+    GestureTapCallback? onTap,
+    bool shouldRedGlow = false,
+    bool shouldGreenGlow = false,
+    required String title,
+    bool? toggle,
+    ValueSetter<bool>? onToggle}) {
   return InkWell(
-    onTap: () {},
+    onTap: onTap,
     child: SizedBox(
-      width: MediaQuery.of(context).size.width,
+      width: SizeConfig.screenWidth,
       height: 55,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -105,14 +113,22 @@ Widget settingTile(
               child: Row(
                 children: [
                   Icon(iconData,
-                      color: blackColor(context).lightShade, size: 26),
+                      color: shouldRedGlow
+                          ? Colors.redAccent
+                          : shouldGreenGlow
+                              ? greenColor
+                              : blackColor(SizeConfig.cntxt).lightShade,
+                      size: 26),
                   const SizedBox(
                     width: 20,
                   ),
                   Text(
                     title,
                     style: TextStyle(
-                        color: blackColor(context).darkShade, fontSize: 17),
+                        color: shouldRedGlow
+                            ? Colors.redAccent
+                            : blackColor(SizeConfig.cntxt).darkShade,
+                        fontSize: 17),
                   )
                 ],
               ),
@@ -122,13 +138,14 @@ Widget settingTile(
               FlutterSwitch(
                 width: 50,
                 padding: 1,
-                activeColor: greenColor,
+                activeColor: Colors.redAccent,
                 height: 25,
                 value: toggle!,
                 onToggle: onToggle!,
               ),
             if (settingTrailing == SettingTrailing.arrow)
-              Icon(LineIcons.angleRight, color: blackColor(context).lightShade)
+              Icon(LineIcons.angleRight,
+                  color: blackColor(SizeConfig.cntxt).lightShade)
           ],
         ),
       ),
