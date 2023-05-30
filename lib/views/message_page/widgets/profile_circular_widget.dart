@@ -3,7 +3,9 @@ import 'package:whatsapp_application/constants/colors.dart';
 
 class ProfileCircularWidget extends StatefulWidget {
   final String image;
-  const ProfileCircularWidget({Key? key, required this.image}) : super(key: key);
+
+  const ProfileCircularWidget({Key? key, required this.image})
+      : super(key: key);
 
   @override
   State<ProfileCircularWidget> createState() => _ProfileCircularWidgetState();

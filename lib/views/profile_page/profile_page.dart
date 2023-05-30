@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:line_icons/line_icons.dart';
+import 'package:whatsapp_application/constants/enums.dart';
 import 'package:whatsapp_application/models/user.dart';
 import '../../constants/colors.dart';
 import 'main_profile_page_widgets.dart';
-
-enum ProfilePageStatus { view, personal }
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage(

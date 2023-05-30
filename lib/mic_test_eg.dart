@@ -3,7 +3,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_audio_waveforms/flutter_audio_waveforms.dart';
 import 'package:mic_stream/mic_stream.dart';
-import 'package:whatsapp_application/wave_model.dart';
+import 'package:whatsapp_application/models/audio_wave_form_data.dart';
 
 class ClipperView extends StatefulWidget {
   const ClipperView({Key? key}) : super(key: key);
@@ -58,12 +58,15 @@ class _ClipperViewState extends State<ClipperView> {
                         } else {
                           height = constraints.maxHeight;
                         }
-                        WaveformData waveFormData;
-                        waveFormData = WaveformData(
+                        AudioWaveFormData waveFormData;
+                        waveFormData = AudioWaveFormData(
                             bits: bits ?? 16,
-                            data: snapshot.data?.map((e) => e).toList() ?? Uint8List(0));
+                            data: snapshot.data?.map((e) => e).toList() ??
+                                Uint8List(0));
                         return PolygonWaveform(
-                          samples: waveFormData.data.map((e) => e.toDouble()).toList(),
+                          samples: waveFormData.data
+                              .map((e) => e.toDouble())
+                              .toList(),
                           height: 600,
                           absolute: true,
                           width: MediaQuery.of(context).size.width,
@@ -103,11 +106,10 @@ class _ClipperViewState extends State<ClipperView> {
   }
 }
 
-
 class WaveformClipper extends CustomClipper<Path> {
   WaveformClipper(this.data);
 
-  final WaveformData data;
+  final AudioWaveFormData data;
 
   @override
   Path getClip(Size size) {

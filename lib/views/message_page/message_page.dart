@@ -7,19 +7,22 @@ import 'package:flutter/material.dart';
 import 'package:giphy_api_client/giphy_api_client.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:line_icons/line_icons.dart';
+import 'package:whatsapp_application/constants/enums.dart';
 import 'package:whatsapp_application/getit.dart';
 import 'package:whatsapp_application/models/document.dart';
 import 'package:whatsapp_application/models/user.dart';
-import 'package:whatsapp_application/provider/provider.dart';
+import 'package:whatsapp_application/provider/audio_provider.dart';
 import 'package:whatsapp_application/views/contact_page/contact_page.dart';
-import 'package:whatsapp_application/views/message_page/components/header_section.dart';
-import 'package:whatsapp_application/views/message_page/components/map_screen.dart';
-import 'package:whatsapp_application/views/message_page/message_page_widgets.dart';
-import 'package:whatsapp_application/widgets/common_widgets.dart';
+import 'package:whatsapp_application/views/message_page/circular_text_field.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:whatsapp_application/views/message_page/widgets/circular_icon_button.dart';
+import 'package:whatsapp_application/views/message_page/widgets/circular_message.dart';
+import 'package:whatsapp_application/views/message_page/widgets/header_section.dart';
+import 'package:whatsapp_application/views/message_page/widgets/map_screen.dart';
+import 'package:whatsapp_application/widgets/gradient_icon_button.dart';
 import '../../constants/colors.dart';
-import '../../helper/size_config.dart';
+import '../../models/size_config.dart';
 import '../../models/upi_payment.dart';
 
 class MessagePage extends StatefulWidget {
@@ -57,42 +60,42 @@ class _MessagePageState extends State<MessagePage> {
 
   getMessages() {
     messages = [
-      circularMessage(
+      const CircularMessage(
           fromFriend: true,
           messageType: MessageType.text,
           message: "Whatcha doing bro? 🤔"),
-      circularMessage(
+      const CircularMessage(
           fromFriend: false,
           messageType: MessageType.text,
           message:
               "nah! bro, nothing much but I found a great channel on YouTube"),
-      circularMessage(
+      const CircularMessage(
           fromFriend: true,
           messageType: MessageType.imageMedia,
           gifUrl: "https://i.giphy.com/media/oOTTyHRHj0HYY/giphy.webp"),
-      circularMessage(
+      const CircularMessage(
           fromFriend: false,
           messageType: MessageType.url,
           url: "https://www.youtube.com/watch?v=yqsb3gKP_N4"),
-      circularMessage(
+      const CircularMessage(
           fromFriend: false,
           messageType: MessageType.text,
           message:
               "Yeah! You can watch this video where he is explaining about a whatsapp clone!"),
-      circularMessage(
+      const CircularMessage(
           fromFriend: true,
           messageType: MessageType.text,
           message: "Wowww! That does sound cool"),
-      circularMessage(
+      const CircularMessage(
           fromFriend: true,
           messageType: MessageType.text,
           message: "I am going to subscribe the channel right NOW!!!"),
-      circularMessage(
+      CircularMessage(
           fromFriend: false,
           messageType: MessageType.doc,
           file: Document("arts.zip", 3258421, "zip")),
     ];
-    WidgetsBinding.instance?.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       scrollToBottom(jump: true);
     });
   }
@@ -133,7 +136,7 @@ class _MessagePageState extends State<MessagePage> {
                         horizontal: 16.0, vertical: 16.0),
                     child: Row(
                       children: [
-                        circularIconButton(
+                        CircularIconButton(
                             iconData: Icons.gif,
                             onTap: () {
                               setState(() {
@@ -144,7 +147,7 @@ class _MessagePageState extends State<MessagePage> {
                           width: 8.0,
                         ),
                         Expanded(
-                            child: circularTextField(
+                            child: CircularTextField(
                                 controller: gifController,
                                 onChanged: (value) {
                                   if (value.length < 2) {
@@ -155,7 +158,7 @@ class _MessagePageState extends State<MessagePage> {
                         const SizedBox(
                           width: 8.0,
                         ),
-                        circularIconButton(
+                        CircularIconButton(
                             iconData: LineIcons.search,
                             onTap: () {
                               setState(() {
@@ -173,7 +176,7 @@ class _MessagePageState extends State<MessagePage> {
                         horizontal: 16.0, vertical: 16.0),
                     child: Row(
                       children: [
-                        circularIconButton(
+                        CircularIconButton(
                             iconData: Icons.gif,
                             onTap: () {
                               setState(() {
@@ -187,7 +190,7 @@ class _MessagePageState extends State<MessagePage> {
                           width: 8.0,
                         ),
                         Expanded(
-                            child: circularTextField(
+                            child: CircularTextField(
                                 controller: messageController,
                                 onFieldSubmitted: (value) {
                                   Widget message =
@@ -208,10 +211,10 @@ class _MessagePageState extends State<MessagePage> {
                         messageController.text.isEmpty
                             ? Row(
                                 children: [
-                                  circularIconButton(
+                                  CircularIconButton(
                                       iconData: LineIcons.microphone,
                                       onLongPressStart: (details) {
-                                        messages.add(circularMessage(
+                                        messages.add(const CircularMessage(
                                             fromFriend: false,
                                             messageType: MessageType.audio));
                                         setState(() {});
@@ -230,7 +233,7 @@ class _MessagePageState extends State<MessagePage> {
                                   const SizedBox(
                                     width: 8.0,
                                   ),
-                                  circularIconButton(
+                                  CircularIconButton(
                                       iconData: isRecordingStarted
                                           ? Icons.delete_outline
                                           : LineIcons.horizontalEllipsis,
@@ -240,7 +243,7 @@ class _MessagePageState extends State<MessagePage> {
                                 ],
                               )
                             : Transform.rotate(
-                                child: circularIconButton(
+                                child: CircularIconButton(
                                     iconData: Icons.send_outlined,
                                     onTap: () async {
                                       Widget message = convertStringToMessage(
@@ -364,7 +367,7 @@ class _MessagePageState extends State<MessagePage> {
                           final XFile? image = await _picker.pickImage(
                               source: ImageSource.camera);
                           if (image != null) {
-                            Widget message = circularMessage(
+                            Widget message = CircularMessage(
                                 fromFriend: false,
                                 messageType: MessageType.imageMedia,
                                 gifBytes: await image.readAsBytes());
@@ -379,14 +382,14 @@ class _MessagePageState extends State<MessagePage> {
                               await _picker.pickMultiImage();
                           if (images != null) {
                             var _messages = images
-                                .map((image) async => circularMessage(
+                                .map((image) async => CircularMessage(
                                     fromFriend: false,
                                     messageType: MessageType.imageMedia,
                                     gifBytes: await image.readAsBytes()))
                                 .toList();
-                            _messages.forEach((message) async {
+                            for (var message in _messages) {
                               messages.add(await message);
-                            });
+                            }
                             setState(() {});
                             scrollToBottom();
                           }
@@ -428,7 +431,7 @@ class _MessagePageState extends State<MessagePage> {
                           break;
                       }
                     },
-                    child: gradientIconButton(
+                    child: GradientIconButton(
                         size: 60,
                         iconData: mainMenus[index].iconData,
                         text: mainMenus[index].text),
@@ -479,7 +482,7 @@ class _MessagePageState extends State<MessagePage> {
                       UpiPayment _upiPaymentWithStatus =
                           await initiateTransaction(_upiPayment);
                       if (_upiPaymentWithStatus.isTransactionSuccessful) {
-                        messages.add(circularMessage(
+                        messages.add(CircularMessage(
                             fromFriend: false,
                             upiPayment: _upiPaymentWithStatus,
                             messageType: MessageType.upiPayment));
@@ -493,7 +496,7 @@ class _MessagePageState extends State<MessagePage> {
                         );
                       }
                     },
-                    child: gradientIconButton(
+                    child: GradientIconButton(
                         size: 60,
                         imageBytes: apps[index].icon,
                         text: apps[index].name),
@@ -530,7 +533,7 @@ class _MessagePageState extends State<MessagePage> {
   Future convertXFilesToMessages(List<XFile>? files) async {
     if (files != null) {
       return files
-          .map((e) async => circularMessage(
+          .map((e) async => CircularMessage(
               fromFriend: false,
               messageType: MessageType.doc,
               file: Document(
@@ -544,7 +547,7 @@ class _MessagePageState extends State<MessagePage> {
   List<Widget> convertFilesToMessages(List<PlatformFile>? files) {
     if (files != null) {
       return files
-          .map((e) => circularMessage(
+          .map((e) => CircularMessage(
               fromFriend: false,
               messageType: MessageType.doc,
               file: Document(e.name, e.size, e.extension ?? "")))
@@ -557,7 +560,7 @@ class _MessagePageState extends State<MessagePage> {
   List<Widget> convertContactsToMessages(List<User>? messages) {
     if (messages != null) {
       return messages
-          .map((e) => circularMessage(
+          .map((e) => CircularMessage(
               fromFriend: false,
               messageType: MessageType.contact,
               contact: Contact(
@@ -570,17 +573,17 @@ class _MessagePageState extends State<MessagePage> {
   }
 
   Widget convertImageToMessage(String? gifUrl) {
-    return circularMessage(
+    return CircularMessage(
         fromFriend: false, messageType: MessageType.imageMedia, gifUrl: gifUrl);
   }
 
   Widget convertLocationToMessage(LatLng latLng) {
-    return circularMessage(
+    return CircularMessage(
         fromFriend: false, messageType: MessageType.location, latLng: latLng);
   }
 
   Widget convertStringToMessage(String text) {
-    return circularMessage(
+    return CircularMessage(
         fromFriend: false, messageType: MessageType.text, message: text);
   }
 }

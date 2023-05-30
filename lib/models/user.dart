@@ -59,8 +59,8 @@ class User {
         firstName: json[firstNameKey],
         lastName: json[lastNameKey],
         title: json[titleKey],
-        firebaseToken: json[firebaseTokenKey]??"",
-        uuid: json[uuidKey]??"",
+        firebaseToken: json[firebaseTokenKey] ?? "",
+        uuid: json[uuidKey] ?? "",
         picture: json[pictureKey],
       );
 

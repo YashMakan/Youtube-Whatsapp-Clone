@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:whatsapp_application/constants/colors.dart';
-import 'package:whatsapp_application/helper/size_config.dart';
+import 'package:whatsapp_application/models/size_config.dart';
 import 'package:whatsapp_application/views/onboarding_page/onboarding_page.dart';
-import 'package:whatsapp_application/widgets/common_widgets.dart';
+import 'package:whatsapp_application/widgets/gradient_text.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);

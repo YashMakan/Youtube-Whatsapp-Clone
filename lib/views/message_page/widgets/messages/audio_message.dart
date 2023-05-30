@@ -5,15 +5,16 @@ import 'package:flutter_audio_waveforms/flutter_audio_waveforms.dart';
 import 'package:mic_stream/mic_stream.dart';
 import 'package:whatsapp_application/constants/colors.dart';
 import 'package:whatsapp_application/getit.dart';
-import 'package:whatsapp_application/helper/size_config.dart';
-import 'package:whatsapp_application/provider/provider.dart';
-import 'package:whatsapp_application/wave_model.dart';
+import 'package:whatsapp_application/models/size_config.dart';
+import 'package:whatsapp_application/provider/audio_provider.dart';
+import 'package:whatsapp_application/models/audio_wave_form_data.dart';
 
 class AudioMessage extends StatefulWidget {
   final Uint8List? samples;
   final bool fromFriend;
 
-  const AudioMessage({Key? key, this.samples, required this.fromFriend}) : super(key: key);
+  const AudioMessage({Key? key, this.samples, required this.fromFriend})
+      : super(key: key);
 
   @override
   State<AudioMessage> createState() => _AudioMessageState();
@@ -55,10 +56,11 @@ class _AudioMessageState extends State<AudioMessage> {
       padding: const EdgeInsets.only(bottom: 20),
       child: Row(
         mainAxisAlignment:
-        fromFriend ? MainAxisAlignment.start : MainAxisAlignment.end,
+            fromFriend ? MainAxisAlignment.start : MainAxisAlignment.end,
         children: [
           Container(
-              constraints: BoxConstraints(maxWidth: SizeConfig.screenWidth * 0.8),
+              constraints:
+                  BoxConstraints(maxWidth: SizeConfig.screenWidth * 0.8),
               height: 100,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.only(
@@ -70,21 +72,23 @@ class _AudioMessageState extends State<AudioMessage> {
                 gradient: fromFriend
                     ? null
                     : LinearGradient(colors: [
-                  greenGradient.lightShade,
-                  greenGradient.darkShade,
-                ]),
+                        greenGradient.lightShade,
+                        greenGradient.darkShade,
+                      ]),
               ),
               child: Center(
                 child: StreamBuilder<Uint8List>(
                   stream: provider.audioStream,
                   builder: (context, AsyncSnapshot<Uint8List> snapshot) {
                     if (snapshot.hasData) {
-                      WaveformData waveFormData;
-                      waveFormData = WaveformData(
+                      AudioWaveFormData waveFormData;
+                      waveFormData = AudioWaveFormData(
                           bits: bits ?? 16,
-                          data: snapshot.data?.map((e) => e).toList() ?? Uint8List(0));
+                          data: snapshot.data?.map((e) => e).toList() ??
+                              Uint8List(0));
                       return RectangleWaveform(
-                        samples: waveFormData.data.map((e) => e.toDouble()).toList(),
+                        samples:
+                            waveFormData.data.map((e) => e.toDouble()).toList(),
                         height: 50,
                         absolute: true,
                         width: MediaQuery.of(context).size.width,
@@ -102,7 +106,6 @@ class _AudioMessageState extends State<AudioMessage> {
     );
   }
 }
-
 
 /// todo:
 /// 1. AudioWaveFormWork(2), Contact Picker(1), Location Picker(1), Payment Picker(1) and Sending

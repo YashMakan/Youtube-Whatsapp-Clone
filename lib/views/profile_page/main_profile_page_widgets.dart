@@ -2,10 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:whatsapp_application/constants/colors.dart';
+import 'package:whatsapp_application/constants/enums.dart';
 
-import '../../helper/size_config.dart';
-
-enum SettingTrailing { toggle, arrow }
+import '../../models/size_config.dart';
 
 Widget profileWidget(
     {required String name,

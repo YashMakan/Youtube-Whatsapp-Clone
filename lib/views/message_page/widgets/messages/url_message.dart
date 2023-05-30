@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:simple_link_preview/simple_link_preview.dart';
 import 'package:whatsapp_application/constants/colors.dart';
-import 'package:whatsapp_application/helper/size_config.dart';
+import 'package:whatsapp_application/models/size_config.dart';
 
 class UrlMessage extends StatefulWidget {
   final String url;

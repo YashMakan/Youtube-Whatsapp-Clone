@@ -4,7 +4,7 @@ import 'package:flutter_webrtc/flutter_webrtc.dart';
 
 typedef StreamStateCallback = void Function(MediaStream stream);
 
-class WebRTCLogic {
+class WebRtcService {
   Map<String, dynamic> configuration = {
     'iceServers': [
       {

@@ -1,22 +1,19 @@
 import 'dart:ui';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
-import 'package:whatsapp_application/api/api.dart';
-import 'package:whatsapp_application/helper/countup.dart';
-import 'package:whatsapp_application/helper/size_config.dart';
+import 'package:whatsapp_application/constants/colors.dart';
+import 'package:whatsapp_application/constants/enums.dart';
+import 'package:whatsapp_application/services/webrtc_service.dart';
+import 'package:whatsapp_application/views/onboarding_page/widgets/count_down_dialer.dart';
+import 'package:whatsapp_application/models/size_config.dart';
 import 'package:whatsapp_application/models/user.dart';
-import 'package:whatsapp_application/views/call_page/webrtc_logic.dart';
-import '../../constants/colors.dart';
-
-enum CallStatus { calling, accepted, ringing }
 
 class CallAcceptDeclinePage extends StatefulWidget {
   final User user;
-  final CallStatus? callStatus;
+  final DuringCallStatus? callStatus;
   final String? roomId;
 
   const CallAcceptDeclinePage(
@@ -28,7 +25,7 @@ class CallAcceptDeclinePage extends StatefulWidget {
 }
 
 class _CallAcceptDeclinePageState extends State<CallAcceptDeclinePage> {
-  late CallStatus callStatus;
+  late DuringCallStatus callStatus;
   List<IconData> bottomSheetIcons = [
     LineIcons.speakerDeck,
     LineIcons.bluetooth,
@@ -36,7 +33,7 @@ class _CallAcceptDeclinePageState extends State<CallAcceptDeclinePage> {
     LineIcons.microphoneSlash,
     LineIcons.phoneSlash
   ];
-  WebRTCLogic webrtcLogic = WebRTCLogic();
+  WebRtcService webrtcService = WebRtcService();
   final RTCVideoRenderer _localRenderer = RTCVideoRenderer();
   final RTCVideoRenderer _remoteRenderer = RTCVideoRenderer();
   String? roomId;
@@ -45,19 +42,19 @@ class _CallAcceptDeclinePageState extends State<CallAcceptDeclinePage> {
     _localRenderer.initialize();
     _remoteRenderer.initialize();
 
-    webrtcLogic.onAddRemoteStream = ((stream) {
+    webrtcService.onAddRemoteStream = ((stream) {
       _remoteRenderer.srcObject = stream;
       setState(() {});
     });
 
-    webrtcLogic.openUserMedia(_localRenderer, _remoteRenderer);
-    if (callStatus == CallStatus.calling) {
-      roomId = await webrtcLogic.createRoom(_remoteRenderer);
-      print("roomID: $roomId");
-      Api.sendNotificationRequestToFriendToAcceptCall(roomId!, widget.user);
+    webrtcService.openUserMedia(_localRenderer, _remoteRenderer);
+    if (callStatus == DuringCallStatus.calling) {
+      roomId = await webrtcService.createRoom(_remoteRenderer);
+      debugPrint("roomID: $roomId");
+      // Api.sendNotificationRequestToFriendToAcceptCall(roomId!, widget.user);
     } else {
       roomId = widget.roomId;
-      webrtcLogic.joinRoom(
+      webrtcService.joinRoom(
         roomId!,
         _remoteRenderer,
       );
@@ -70,7 +67,7 @@ class _CallAcceptDeclinePageState extends State<CallAcceptDeclinePage> {
 
   @override
   void initState() {
-    callStatus = widget.callStatus ?? CallStatus.calling;
+    callStatus = widget.callStatus ?? DuringCallStatus.calling;
     initializeWebRTC();
     super.initState();
   }
@@ -79,13 +76,13 @@ class _CallAcceptDeclinePageState extends State<CallAcceptDeclinePage> {
   void dispose() {
     _localRenderer.dispose();
     _remoteRenderer.dispose();
-    webrtcLogic.hangUp(_localRenderer);
+    webrtcService.hangUp(_localRenderer);
     super.dispose();
   }
 
   Widget getBody() {
     switch (callStatus) {
-      case CallStatus.calling:
+      case DuringCallStatus.calling:
         return Center(
           child: Column(
             children: [
@@ -130,7 +127,7 @@ class _CallAcceptDeclinePageState extends State<CallAcceptDeclinePage> {
             ],
           ),
         );
-      case CallStatus.accepted:
+      case DuringCallStatus.accepted:
         return Center(
           child: Column(
             children: [
@@ -161,8 +158,8 @@ class _CallAcceptDeclinePageState extends State<CallAcceptDeclinePage> {
                   const SizedBox(
                     height: 8,
                   ),
-                  Countup(
-                    style: const TextStyle(
+                  const CountDownDialer(
+                    style: TextStyle(
                         color: Colors.white,
                         shadows: [
                           BoxShadow(color: Colors.black, blurRadius: 3)
@@ -174,7 +171,7 @@ class _CallAcceptDeclinePageState extends State<CallAcceptDeclinePage> {
             ],
           ),
         );
-      case CallStatus.ringing:
+      case DuringCallStatus.ringing:
         return Column(
           children: [
             const Spacer(),

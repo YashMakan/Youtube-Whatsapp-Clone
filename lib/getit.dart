@@ -1,5 +1,5 @@
 import 'package:get_it/get_it.dart';
-import 'package:whatsapp_application/provider/provider.dart';
+import 'package:whatsapp_application/provider/audio_provider.dart';
 
 final getIt = GetIt.instance;
 

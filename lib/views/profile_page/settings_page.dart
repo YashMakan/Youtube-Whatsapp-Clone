@@ -95,7 +95,5 @@ class SettingsPage extends StatelessWidget {
     );
   }
 
-  void toNotificationsScreen(BuildContext context) {
-
-  }
+  void toNotificationsScreen(BuildContext context) {}
 }

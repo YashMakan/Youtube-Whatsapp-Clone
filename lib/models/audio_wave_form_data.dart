@@ -4,23 +4,29 @@ import 'dart:math';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/painting.dart';
 
-class WaveformData {
+class AudioWaveFormData {
   int? version;
+
   // number of channels (only mono files are currently supported)
   int? channels;
+
   // original sample rate
   int? sampleRate;
+
   // indicates how many original samples have been analyzed per frame. 256 samples -> frame of min/max
   int? sampleSize;
+
   // bit depth of the data
   final int bits;
+
   // the number of frames contained in the data
   int? length;
+
   // data is in frames with min and max values for each sampled data point.
   final List<int> data;
   List<double>? _scaledData;
 
-  WaveformData({
+  AudioWaveFormData({
     this.version,
     this.channels,
     this.sampleRate,
@@ -37,29 +43,32 @@ class WaveformData {
     return _scaledData!;
   }
 
-  factory WaveformData.fromJson(String str) => WaveformData.fromMap(json.decode(str));
+  factory AudioWaveFormData.fromJson(String str) =>
+      AudioWaveFormData.fromMap(json.decode(str));
 
   String toJson() => json.encode(toMap());
 
-  factory WaveformData.fromMap(Map<String, dynamic> json) => WaveformData(
-    version: json["version"],
-    channels: json["channels"],
-    sampleRate: json["sample_rate"],
-    sampleSize: json["samples_per_pixel"],
-    bits: json["bits"],
-    length: json["length"],
-    data: json["data"] == null ? [] : List<int>.from(json["data"].map((x) => x)),
-  );
+  factory AudioWaveFormData.fromMap(Map<String, dynamic> json) => AudioWaveFormData(
+        version: json["version"],
+        channels: json["channels"],
+        sampleRate: json["sample_rate"],
+        sampleSize: json["samples_per_pixel"],
+        bits: json["bits"],
+        length: json["length"],
+        data: json["data"] == null
+            ? []
+            : List<int>.from(json["data"].map((x) => x)),
+      );
 
   Map<String, dynamic> toMap() => {
-    "version": version,
-    "channels": channels,
-    "sample_rate": sampleRate,
-    "samples_per_pixel": sampleSize,
-    "bits": bits,
-    "length": length,
-    "data": List<dynamic>.from(data.map((x) => x)),
-  };
+        "version": version,
+        "channels": channels,
+        "sample_rate": sampleRate,
+        "samples_per_pixel": sampleSize,
+        "bits": bits,
+        "length": length,
+        "data": List<dynamic>.from(data.map((x) => x)),
+      };
 
   // get the frame position at a specific percent of the waveform. Can use a 0-1 or 0-100 range.
   int frameIdxFromPercent(double? percent) {
@@ -107,7 +116,9 @@ class WaveformData {
       fromFrame = ((data.length / 2) * 0.98).floor();
     }
 
-    int endFrame = (fromFrame * 2 + ((_scaledData!.length - fromFrame * 2) * (1.0 - (zoomLevel / 100)))).floor();
+    int endFrame = (fromFrame * 2 +
+            ((_scaledData!.length - fromFrame * 2) * (1.0 - (zoomLevel / 100))))
+        .floor();
 
     return _path(_scaledData!.sublist(fromFrame * 2, endFrame), size);
   }

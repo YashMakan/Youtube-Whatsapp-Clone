@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:passcode_screen/passcode_screen.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:whatsapp_application/helper/size_config.dart';
+import 'package:whatsapp_application/constants/enums.dart';
+import 'package:whatsapp_application/models/size_config.dart';
 import 'package:whatsapp_application/main.dart';
 import 'package:whatsapp_application/views/profile_page/profile_page.dart';
 import 'package:whatsapp_application/views/profile_page/settings_page.dart';
@@ -23,12 +24,15 @@ class MainProfilePage extends StatefulWidget {
 
 class _MainProfilePageState extends State<MainProfilePage> {
   bool toggle = true;
-  final StreamController<bool> _verificationNotifier = StreamController<bool>.broadcast();
+  final StreamController<bool> _verificationNotifier =
+      StreamController<bool>.broadcast();
+
   @override
   void dispose() {
     _verificationNotifier.close();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -163,7 +167,7 @@ class _MainProfilePageState extends State<MainProfilePage> {
               SizedBox(
                 height: SizeConfig.screenHeight * 0.45,
                 child: Scrollbar(
-                  isAlwaysShown: true,
+                  thumbVisibility: true,
                   thickness: 2,
                   hoverThickness: 4,
                   interactive: true,
@@ -173,7 +177,7 @@ class _MainProfilePageState extends State<MainProfilePage> {
                       children: [
                         settingTile(
                             title: "Settings",
-                            onTap: (){
+                            onTap: () {
                               Navigator.of(context).push(CupertinoPageRoute(
                                   builder: (context) => const SettingsPage()));
                             },
@@ -194,39 +198,47 @@ class _MainProfilePageState extends State<MainProfilePage> {
                         settingTile(
                             title: "Change Password",
                             settingTrailing: SettingTrailing.arrow,
-                            onTap: (){
+                            onTap: () {
                               Navigator.push(
                                   context,
                                   PageRouteBuilder(
                                     opaque: false,
-                                    pageBuilder: (context, animation, secondaryAnimation) =>
+                                    pageBuilder: (context, animation,
+                                            secondaryAnimation) =>
                                         PasscodeScreen(
-                                          title: const Text(
-                                            'Enter App Passcode',
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(color: Colors.white, fontSize: 28),
-                                          ),
-                                          passwordEnteredCallback: (String enteredPassword){
-                                            bool isValid = '1234' == enteredPassword;
-                                            _verificationNotifier.add(isValid);
-                                          },
-                                          cancelButton: const Text(
-                                            'Cancel',
-                                            style: TextStyle(fontSize: 16, color: Colors.white),
-                                            semanticsLabel: 'Cancel',
-                                          ),
-                                          deleteButton: const Text(
-                                            'Delete',
-                                            style: TextStyle(fontSize: 16, color: Colors.white),
-                                            semanticsLabel: 'Delete',
-                                          ),
-                                          backgroundColor: Colors.black.withOpacity(0.8),
-                                          cancelCallback: (){
-                                            Navigator.pop(context);
-                                          },
-                                          passwordDigits: 4,
-                                          shouldTriggerVerification: _verificationNotifier.stream,
-                                        ),
+                                      title: const Text(
+                                        'Enter App Passcode',
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                            color: Colors.white, fontSize: 28),
+                                      ),
+                                      passwordEnteredCallback:
+                                          (String enteredPassword) {
+                                        bool isValid =
+                                            '1234' == enteredPassword;
+                                        _verificationNotifier.add(isValid);
+                                      },
+                                      cancelButton: const Text(
+                                        'Cancel',
+                                        style: TextStyle(
+                                            fontSize: 16, color: Colors.white),
+                                        semanticsLabel: 'Cancel',
+                                      ),
+                                      deleteButton: const Text(
+                                        'Delete',
+                                        style: TextStyle(
+                                            fontSize: 16, color: Colors.white),
+                                        semanticsLabel: 'Delete',
+                                      ),
+                                      backgroundColor:
+                                          Colors.black.withOpacity(0.8),
+                                      cancelCallback: () {
+                                        Navigator.pop(context);
+                                      },
+                                      passwordDigits: 4,
+                                      shouldTriggerVerification:
+                                          _verificationNotifier.stream,
+                                    ),
                                   ));
                             },
                             iconData: LineIcons.lock),

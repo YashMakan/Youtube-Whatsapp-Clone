@@ -3,13 +3,16 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:whatsapp_application/constants/colors.dart';
-import 'package:whatsapp_application/helper/size_config.dart';
+import 'package:whatsapp_application/models/size_config.dart';
 import 'package:whatsapp_application/models/document.dart';
 
 class DocumentMessage extends StatefulWidget {
   final Document file;
   final bool fromFriend;
-  const DocumentMessage({Key? key, required this.file, required this.fromFriend}) : super(key: key);
+
+  const DocumentMessage(
+      {Key? key, required this.file, required this.fromFriend})
+      : super(key: key);
 
   @override
   State<DocumentMessage> createState() => _DocumentMessageState();
@@ -18,19 +21,21 @@ class DocumentMessage extends StatefulWidget {
 class _DocumentMessageState extends State<DocumentMessage> {
   late Document file;
   late bool fromFriend;
+
   @override
   void initState() {
     file = widget.file;
     fromFriend = widget.fromFriend;
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 20),
       child: Row(
         mainAxisAlignment:
-        fromFriend ? MainAxisAlignment.start : MainAxisAlignment.end,
+            fromFriend ? MainAxisAlignment.start : MainAxisAlignment.end,
         children: [
           Container(
             width: SizeConfig.screenWidth * 0.8,
@@ -50,7 +55,7 @@ class _DocumentMessageState extends State<DocumentMessage> {
                         decoration: BoxDecoration(
                             color: Colors.grey.shade200.withOpacity(0.5),
                             borderRadius:
-                            const BorderRadius.all(Radius.circular(40))),
+                                const BorderRadius.all(Radius.circular(40))),
                         child: Row(
                           children: [
                             const SizedBox(
@@ -64,7 +69,9 @@ class _DocumentMessageState extends State<DocumentMessage> {
                                   Icon(
                                     Icons.insert_drive_file,
                                     size: 36,
-                                    color: fromFriend?Colors.white70:Colors.black87,
+                                    color: fromFriend
+                                        ? Colors.white70
+                                        : Colors.black87,
                                   ),
                                   Center(
                                     child: Text(
@@ -72,8 +79,10 @@ class _DocumentMessageState extends State<DocumentMessage> {
                                       style: TextStyle(
                                           fontWeight: FontWeight.w700,
                                           fontSize: 9,
-                                          color: fromFriend?Colors.black54:grayColor(SizeConfig.cntxt)
-                                              .lightShade),
+                                          color: fromFriend
+                                              ? Colors.black54
+                                              : grayColor(SizeConfig.cntxt)
+                                                  .lightShade),
                                     ),
                                   )
                                 ],
@@ -82,15 +91,24 @@ class _DocumentMessageState extends State<DocumentMessage> {
                             const SizedBox(
                               width: 8,
                             ),
-                            Text(file.fileName.length > 20
-                                ? file.fileName.substring(0, 8) +
-                                "..." +
-                                file.fileName.substring(
-                                    file.fileName.length - 9,
-                                    file.fileName.length)
-                                : file.fileName, style: TextStyle(color: fromFriend?Colors.white:Colors.black),),
+                            Text(
+                              file.fileName.length > 20
+                                  ? file.fileName.substring(0, 8) +
+                                      "..." +
+                                      file.fileName.substring(
+                                          file.fileName.length - 9,
+                                          file.fileName.length)
+                                  : file.fileName,
+                              style: TextStyle(
+                                  color:
+                                      fromFriend ? Colors.white : Colors.black),
+                            ),
                             const Spacer(),
-                            Icon(LineIcons.download, color: fromFriend?Colors.white70:Colors.black87,),
+                            Icon(
+                              LineIcons.download,
+                              color:
+                                  fromFriend ? Colors.white70 : Colors.black87,
+                            ),
                             const SizedBox(
                               width: 10,
                             ),
@@ -105,7 +123,7 @@ class _DocumentMessageState extends State<DocumentMessage> {
                   child: Row(
                     children: [
                       SizedBox(
-                        width: fromFriend?0:10,
+                        width: fromFriend ? 0 : 10,
                       ),
                       Padding(
                         padding: const EdgeInsets.only(left: 16.0),
@@ -113,7 +131,9 @@ class _DocumentMessageState extends State<DocumentMessage> {
                           (file.bytesSize / 1024 / 1000).toStringAsFixed(2) +
                               " MB",
                           style: TextStyle(
-                              color: fromFriend?Colors.white70:Colors.black87, fontSize: 12),
+                              color:
+                                  fromFriend ? Colors.white70 : Colors.black87,
+                              fontSize: 12),
                         ),
                       ),
                       const SizedBox(
@@ -122,10 +142,13 @@ class _DocumentMessageState extends State<DocumentMessage> {
                       const Spacer(),
                       Text(
                         "7:31 PM",
-                        style: TextStyle(fontSize: 12, color: fromFriend?Colors.white70:Colors.black87),
+                        style: TextStyle(
+                            fontSize: 12,
+                            color:
+                                fromFriend ? Colors.white70 : Colors.black87),
                       ),
                       SizedBox(
-                        width: fromFriend?30:10,
+                        width: fromFriend ? 30 : 10,
                       ),
                     ],
                   ),
@@ -142,9 +165,9 @@ class _DocumentMessageState extends State<DocumentMessage> {
               gradient: fromFriend
                   ? null
                   : LinearGradient(colors: [
-                greenGradient.lightShade,
-                greenGradient.darkShade,
-              ]),
+                      greenGradient.lightShade,
+                      greenGradient.darkShade,
+                    ]),
             ),
           ),
         ],

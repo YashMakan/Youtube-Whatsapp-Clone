@@ -1,10 +1,13 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:whatsapp_application/constants/colors.dart';
+import 'package:whatsapp_application/constants/enums.dart';
 import 'package:whatsapp_application/constants/persons.dart';
 import 'package:whatsapp_application/models/user.dart';
-import '../../constants/colors.dart';
-import '../../widgets/common_widgets.dart';
-import '../home_page/home_widgets.dart';
+import 'package:whatsapp_application/views/home_page/widgets/search_bar.dart';
+import 'package:whatsapp_application/views/home_page/widgets/status_bar.dart';
+import 'package:whatsapp_application/widgets/custom_listtile.dart';
+import 'package:whatsapp_application/widgets/gradient_icon_button.dart';
 
 class CallListPage extends StatefulWidget {
   const CallListPage({Key? key, required this.scrollController})
@@ -34,7 +37,8 @@ class _CallListPageState extends State<CallListPage> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {},
         backgroundColor: Colors.transparent,
-        child: gradientIconButton(size: 55, iconData: Icons.phone_forwarded),
+        child:
+            const GradientIconButton(size: 55, iconData: Icons.phone_forwarded),
       ),
       body: SafeArea(
           child: Column(
@@ -81,8 +85,8 @@ class _CallListPageState extends State<CallListPage> {
                 height: 10,
               ),
               isSearch
-                  ? searchBar(controller: controller)
-                  : statusBar(
+                  ? SearchBar(controller: controller)
+                  : StatusBar(
                       addWidget: false, seeAllWidget: false, statusList: users)
             ],
           ),
@@ -96,7 +100,7 @@ class _CallListPageState extends State<CallListPage> {
                   thickness: 0.3,
                 );
               },
-              itemBuilder: (context, index) => customListTile(
+              itemBuilder: (context, index) => CustomListTile(
                   imageUrl: users[index].picture,
                   title: "${users[index].firstName} ${users[index].lastName}",
                   subTitle: "May 7, 6:29 PM",

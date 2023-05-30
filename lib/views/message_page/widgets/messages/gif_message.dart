@@ -1,6 +1,6 @@
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
-import 'package:whatsapp_application/helper/size_config.dart';
+import 'package:whatsapp_application/models/size_config.dart';
 
 class GifMessage extends StatefulWidget {
   final String? gifUrl;
@@ -41,7 +41,7 @@ class _GifMessageState extends State<GifMessage> {
               height: SizeConfig.screenWidth * 0.5,
               decoration: BoxDecoration(
                 border: Border.all(color: Colors.white24.withOpacity(0.18)),
-                image: fromFriend || gifUrl!=null
+                image: fromFriend || gifUrl != null
                     ? DecorationImage(
                         image: NetworkImage(gifUrl!), fit: BoxFit.cover)
                     : DecorationImage(

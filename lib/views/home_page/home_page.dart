@@ -2,14 +2,18 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:line_icons/line_icons.dart';
+import 'package:whatsapp_application/constants/colors.dart';
+import 'package:whatsapp_application/constants/enums.dart';
+import 'package:whatsapp_application/constants/persons.dart';
 import 'package:whatsapp_application/main.dart';
 import 'package:whatsapp_application/models/user.dart';
-import '../../constants/colors.dart';
-import '../../constants/persons.dart';
-import '../../widgets/common_widgets.dart';
-import '../contact_page/contact_page.dart';
-import '../message_page/message_page.dart';
-import 'home_widgets.dart';
+import 'package:whatsapp_application/views/contact_page/contact_page.dart';
+import 'package:whatsapp_application/views/home_page/widgets/search_bar.dart';
+import 'package:whatsapp_application/views/home_page/widgets/status_bar.dart';
+import 'package:whatsapp_application/views/message_page/message_page.dart';
+import 'package:whatsapp_application/widgets/custom_listtile.dart';
+import 'package:whatsapp_application/widgets/custom_loader.dart';
+import 'package:whatsapp_application/widgets/gradient_icon_button.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key, this.scrollController}) : super(key: key);
@@ -49,7 +53,8 @@ class _HomePageState extends State<HomePage> {
                     builder: (context) => const ContactPage()));
               },
               backgroundColor: Colors.transparent,
-              child: gradientIconButton(size: 55, iconData: Icons.group_add),
+              child:
+                  const GradientIconButton(size: 55, iconData: Icons.group_add),
             )
           : const SizedBox(),
       body: SafeArea(
@@ -97,8 +102,8 @@ class _HomePageState extends State<HomePage> {
                 height: 10,
               ),
               isSearch
-                  ? searchBar(controller: controller)
-                  : statusBar(
+                  ? SearchBar(controller: controller)
+                  : StatusBar(
                       statusList: statusList,
                       onNewStatusClicked: () async {
                         showModalBottomSheet(
@@ -179,8 +184,8 @@ class _HomePageState extends State<HomePage> {
           ),
           Expanded(
             child: isSearch && controller.text.trim().isNotEmpty
-                ? Center(
-                    child: customLoader(context),
+                ? const Center(
+                    child: CustomLoader(),
                   )
                 : ListView.separated(
                     padding: const EdgeInsets.only(top: 10),
@@ -236,7 +241,7 @@ class _HomePageState extends State<HomePage> {
                           ),
                         ],
                       ),
-                      child: customListTile(
+                      child: CustomListTile(
                           isOnline: index == 3 ? false : true,
                           imageUrl: chats[index].picture,
                           title:

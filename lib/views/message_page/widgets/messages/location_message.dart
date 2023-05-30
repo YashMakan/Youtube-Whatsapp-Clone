@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:whatsapp_application/constants/colors.dart';
-import 'package:whatsapp_application/helper/size_config.dart';
+import 'package:whatsapp_application/models/size_config.dart';
 
 class LocationMessage extends StatefulWidget {
   final LatLng latLng;
@@ -67,7 +67,8 @@ class _LocationMessageState extends State<LocationMessage> {
                                 child: SizedBox.fromSize(
                                   size: const Size.fromRadius(50),
                                   child: Image.network(
-                                      "https://imgur.com/9nK254v.jpg", fit: BoxFit.fill),
+                                      "https://imgur.com/9nK254v.jpg",
+                                      fit: BoxFit.fill),
                                 ),
                               ),
                             ),
@@ -91,7 +92,7 @@ class _LocationMessageState extends State<LocationMessage> {
                                   future: getLocationName(latLng),
                                   builder:
                                       (context, AsyncSnapshot<String> data) {
-                                    if(data.hasData){
+                                    if (data.hasData) {
                                       return Text(
                                         data.data!,
                                         style: TextStyle(
@@ -100,7 +101,7 @@ class _LocationMessageState extends State<LocationMessage> {
                                                 ? Colors.white
                                                 : Colors.black),
                                       );
-                                    }else{
+                                    } else {
                                       return const SizedBox();
                                     }
                                   },
@@ -152,8 +153,10 @@ class _LocationMessageState extends State<LocationMessage> {
       ),
     );
   }
+
   Future<String> getLocationName(LatLng _latLng) async {
-    List<Placemark> placemarks = await placemarkFromCoordinates(_latLng.latitude, _latLng.longitude);
+    List<Placemark> placemarks =
+        await placemarkFromCoordinates(_latLng.latitude, _latLng.longitude);
     return "${placemarks.first.locality}, ${placemarks.first.country}";
   }
 }

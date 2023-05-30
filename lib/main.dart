@@ -26,7 +26,8 @@ User user = User(
     firstName: "Yash",
     lastName: "Makan",
     title: "Full Stack Developer",
-    firebaseToken: "e1E1sZR4T-ysib46L2idFq:APA91bFRtT1a2Q_HqIWMwN7iKX6TIt4nBHIum3sQPTl3lTYWYx0nSh1khX8Tg0ntOzTWlnZgsh_PowXEKl58MF_9tO2Sn5QFZ_6yRkdiU-B54EgwP680vozB4zfeIEi_vxI4IzOGWKcd",
+    firebaseToken:
+        "e1E1sZR4T-ysib46L2idFq:APA91bFRtT1a2Q_HqIWMwN7iKX6TIt4nBHIum3sQPTl3lTYWYx0nSh1khX8Tg0ntOzTWlnZgsh_PowXEKl58MF_9tO2Sn5QFZ_6yRkdiU-B54EgwP680vozB4zfeIEi_vxI4IzOGWKcd",
     uuid: "9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d",
     picture:
         "https://images.unsplash.com/photo-1453396450673-3fe83d2db2c4?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80");
@@ -47,10 +48,11 @@ User rick = User(
     firstName: "Rick",
     lastName: "Rolland",
     title: "Web Developer",
-    firebaseToken: "dvj3V4o_RL6Pxzciibm6Kc:APA91bGEAwG27eHHsraJ-b_4K0DXaUpwcUVPyjvr0M7AKJeyoR-UzmG3ey7rTqKKwVm40ellYiD0ZYUhyclpIGXcb0XFdY_LhaNDwUP6ooy_BIYQl4Ae_scfdTyCu8-Ojg4Q7QsTdzj1",
+    firebaseToken:
+        "dvj3V4o_RL6Pxzciibm6Kc:APA91bGEAwG27eHHsraJ-b_4K0DXaUpwcUVPyjvr0M7AKJeyoR-UzmG3ey7rTqKKwVm40ellYiD0ZYUhyclpIGXcb0XFdY_LhaNDwUP6ooy_BIYQl4Ae_scfdTyCu8-Ojg4Q7QsTdzj1",
     uuid: "b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6a",
     picture:
-    "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2");
+        "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2");
 
 Future<void> myBackgroundMessageHandler(RemoteMessage event) async {
   Map message = event.toMap();
@@ -65,27 +67,26 @@ Future<void> myBackgroundMessageHandler(RemoteMessage event) async {
 
   AwesomeNotifications().createNotification(
       content: NotificationContent(
-          id: 10,
-          channelKey: 'basic_channel',
-          title: '$callerName is calling...',
-          body: 'Pick upppp!!!',
+        id: 10,
+        channelKey: 'basic_channel',
+        title: '$callerName is calling...',
+        body: 'Pick upppp!!!',
       ),
-    actionButtons: [
-      NotificationActionButton(
-        label: 'Decline',
-        enabled: false,
-        isDangerousOption: true,
-        buttonType: ActionButtonType.Default,
-        key: 'decline',
-      ),
-      NotificationActionButton(
-        label: 'Accept',
-        enabled: true,
-        buttonType: ActionButtonType.Default,
-        key: 'accept-$roomId',
-      )
-    ]
-  );
+      actionButtons: [
+        NotificationActionButton(
+          label: 'Decline',
+          enabled: false,
+          isDangerousOption: true,
+          buttonType: ActionButtonType.Default,
+          key: 'decline',
+        ),
+        NotificationActionButton(
+          label: 'Accept',
+          enabled: true,
+          buttonType: ActionButtonType.Default,
+          key: 'accept-$roomId',
+        )
+      ]);
 }
 
 void main() async {
@@ -106,8 +107,7 @@ void main() async {
             channelGroupkey: 'basic_channel_group',
             channelGroupName: 'Basic group')
       ],
-      debug: true
-  );
+      debug: true);
   await Firebase.initializeApp();
   FirebaseMessaging.onBackgroundMessage(myBackgroundMessageHandler);
   setup();

@@ -1,30 +1,33 @@
 import 'dart:ui';
-
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_contacts/contact.dart';
 import 'package:whatsapp_application/constants/colors.dart';
-import 'package:whatsapp_application/helper/size_config.dart';
-import 'package:whatsapp_application/models/upi_payment.dart';
+import 'package:whatsapp_application/models/size_config.dart';
+import 'package:whatsapp_application/views/contact_page/contact_page.dart';
+import 'package:whatsapp_application/views/message_page/message_page.dart';
+import 'package:whatsapp_application/widgets/gradient_icon_button.dart';
 
-class PaymentMessage extends StatefulWidget {
-  final UpiPayment payment;
+class ContactMessage extends StatefulWidget {
+  final Contact contact;
   final bool fromFriend;
 
-  const PaymentMessage(
-      {Key? key, required this.payment, required this.fromFriend})
+  const ContactMessage(
+      {Key? key, required this.contact, required this.fromFriend})
       : super(key: key);
 
   @override
-  State<PaymentMessage> createState() => _PaymentMessageState();
+  State<ContactMessage> createState() => _ContactMessageState();
 }
 
-class _PaymentMessageState extends State<PaymentMessage> {
+class _ContactMessageState extends State<ContactMessage> {
   late bool fromFriend;
-  late UpiPayment payment;
+  late Contact contact;
 
   @override
   void initState() {
     fromFriend = widget.fromFriend;
-    payment = widget.payment;
+    contact = widget.contact;
     super.initState();
   }
 
@@ -56,6 +59,7 @@ class _PaymentMessageState extends State<PaymentMessage> {
                             borderRadius:
                                 const BorderRadius.all(Radius.circular(40))),
                         child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             const SizedBox(
                               width: 10,
@@ -65,8 +69,9 @@ class _PaymentMessageState extends State<PaymentMessage> {
                               height: 36,
                               child: ClipOval(
                                 child: SizedBox.fromSize(
-                                  size: Size.fromRadius(50),
-                                  child: Image.memory(payment.upiApp.icon),
+                                  size: const Size.fromRadius(50),
+                                  child: Image.network(
+                                      "https://raw.githubusercontent.com/pixelastic/fakeusers/master/pictures/men/38.jpg"),
                                 ),
                               ),
                             ),
@@ -78,7 +83,7 @@ class _PaymentMessageState extends State<PaymentMessage> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(
-                                  payment.receiverUpiId,
+                                  contact.name.first + " " + contact.name.last,
                                   style: TextStyle(
                                       fontSize: 10,
                                       fontWeight: FontWeight.w600,
@@ -87,7 +92,7 @@ class _PaymentMessageState extends State<PaymentMessage> {
                                           : Colors.black),
                                 ),
                                 Text(
-                                  payment.transactionNote,
+                                  contact.phones.first.number,
                                   style: TextStyle(
                                       fontSize: 8,
                                       color: fromFriend
@@ -97,12 +102,22 @@ class _PaymentMessageState extends State<PaymentMessage> {
                               ],
                             ),
                             const Spacer(),
-                            Text(
-                              "₹" + payment.amount.toStringAsFixed(2),
-                              style: TextStyle(
-                                  color: fromFriend
-                                      ? Colors.white70
-                                      : Colors.black87),
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                GradientIconButton(
+                                    size: 30,
+                                    iconData: Icons.message,
+                                    iconSize: 16,
+                                    onTap: () {
+                                      Navigator.of(context)
+                                          .push(CupertinoPageRoute(
+                                              builder: (context) => MessagePage(
+                                                    user: convertContactToUser(
+                                                        contact),
+                                                  )));
+                                    }),
+                              ],
                             ),
                             const SizedBox(
                               width: 10,
@@ -116,34 +131,8 @@ class _PaymentMessageState extends State<PaymentMessage> {
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 3.0),
                   child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      SizedBox(
-                        width: fromFriend ? 0 : 10,
-                      ),
-                      const SizedBox(width: 16,),
-                      if (payment.transactionId == null)
-                        const Padding(
-                          padding: EdgeInsets.only(right: 4.0),
-                          child: Icon(
-                            Icons.info_outlined,
-                            color: Colors.redAccent,
-                            size: 16,
-                          ),
-                        ),
-                      Text(
-                        payment.transactionId ?? "Failed Transaction",
-                        style: TextStyle(
-                            fontSize: 12,
-                            color: payment.transactionId != null
-                                ? fromFriend
-                                    ? Colors.white70
-                                    : Colors.black87
-                                : Colors.redAccent),
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      const Spacer(),
                       Text(
                         "7:31 PM",
                         style: TextStyle(

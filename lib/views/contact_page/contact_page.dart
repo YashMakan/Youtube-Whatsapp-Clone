@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:whatsapp_application/constants/colors.dart';
+import 'package:whatsapp_application/constants/enums.dart';
 import 'package:whatsapp_application/models/user.dart';
-import '../../constants/colors.dart';
-import '../../widgets/common_widgets.dart';
-import '../home_page/home_widgets.dart';
-import '../profile_page/main_profile_page_widgets.dart';
+import 'package:whatsapp_application/views/home_page/widgets/search_bar.dart';
+import 'package:whatsapp_application/views/home_page/widgets/status_bar.dart';
+import 'package:whatsapp_application/views/profile_page/widgets/setting_tile.dart';
+import 'package:whatsapp_application/widgets/custom_listtile.dart';
+import 'package:whatsapp_application/widgets/custom_loader.dart';
+import 'package:whatsapp_application/widgets/gradient_icon_button.dart';
 
 class ContactPage extends StatefulWidget {
   const ContactPage({Key? key, this.scrollController}) : super(key: key);
@@ -42,7 +46,7 @@ class _ContactPageState extends State<ContactPage> {
                 Navigator.pop(context, selectedContacts);
               },
               backgroundColor: Colors.transparent,
-              child: gradientIconButton(size: 55, iconData: Icons.send),
+              child: const GradientIconButton(size: 55, iconData: Icons.send),
             )
           : const SizedBox(),
       body: SafeArea(
@@ -107,7 +111,7 @@ class _ContactPageState extends State<ContactPage> {
                 height: 10,
               ),
               isSearch
-                  ? searchBar(
+                  ? SearchBar(
                       controller: controller,
                       onChanged: (value) {
                         contacts = initialContacts
@@ -118,7 +122,7 @@ class _ContactPageState extends State<ContactPage> {
                         setState(() {});
                       })
                   : selectedContacts.isNotEmpty
-                      ? statusBar(
+                      ? StatusBar(
                           statusList: selectedContacts,
                           addWidget: false,
                           seeAllWidget: false,
@@ -203,11 +207,11 @@ class _ContactPageState extends State<ContactPage> {
                           })
                       : Column(
                           children: [
-                            settingTile(
+                            const SettingTile(
                                 title: "New Group",
                                 shouldGreenGlow: true,
                                 iconData: Icons.group),
-                            settingTile(
+                            SettingTile(
                                 title: "New Contact",
                                 shouldGreenGlow: true,
                                 onTap: () {
@@ -232,7 +236,7 @@ class _ContactPageState extends State<ContactPage> {
                     },
                     itemBuilder: (context, index) {
                       Contact contact = contacts[index];
-                      return customListTile(
+                      return CustomListTile(
                           imageBytes: contact.photoOrThumbnail,
                           imageUrl:
                               "https://raw.githubusercontent.com/pixelastic/fakeusers/master/pictures/men/38.jpg",
@@ -273,7 +277,7 @@ class _ContactPageState extends State<ContactPage> {
                     })
                 : Column(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: [customLoader(context)],
+                    children: const [CustomLoader()],
                   ),
           )
         ],
@@ -312,6 +316,6 @@ User convertContactToUser(Contact contact) {
     'last_name': contact.name.last,
     'title': 'monsieur',
     'picture':
-    'https://raw.githubusercontent.com/pixelastic/fakeusers/master/pictures/men/38.jpg'
+        'https://raw.githubusercontent.com/pixelastic/fakeusers/master/pictures/men/38.jpg'
   });
 }

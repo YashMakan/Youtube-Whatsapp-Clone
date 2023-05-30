@@ -4,9 +4,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:lottie/lottie.dart';
-import 'package:whatsapp_application/helper/size_config.dart';
+import 'package:whatsapp_application/models/size_config.dart';
 import 'package:whatsapp_application/views/root_page.dart';
-import 'package:whatsapp_application/widgets/common_widgets.dart';
+import 'package:whatsapp_application/widgets/gradient_icon_button.dart';
+import 'package:whatsapp_application/widgets/gradient_text.dart';
 import '../../constants/colors.dart';
 
 class OnBoardingPage extends StatefulWidget {
@@ -278,7 +279,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                                       }
                                     }
                                   },
-                                  child: gradientIconButton(
+                                  child: GradientIconButton(
                                       size: 40,
                                       iconData: LineIcons.arrowLeft,
                                       isEnabled: selectedPageIndex != 0),
@@ -302,7 +303,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                                       }
                                     }
                                   },
-                                  child: gradientIconButton(
+                                  child: const GradientIconButton(
                                       size: 40, iconData: LineIcons.arrowRight),
                                 )
                               ],
@@ -460,7 +461,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                                       });
                                     },
                                     style: ElevatedButton.styleFrom(
-                                        primary: Colors.transparent,
+                                        backgroundColor: Colors.transparent,
                                         shadowColor: Colors.transparent),
                                     child: Container(
                                       height: 45.0,
@@ -549,7 +550,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                                           const SizedBox(
                                             width: 5,
                                           ),
-                                          gradientIconButton(
+                                          const GradientIconButton(
                                               size: 30,
                                               iconData: Icons.edit_outlined,
                                               iconSize: 15)
@@ -601,7 +602,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
 //                                          builder: (context) => const ProfilePage()));
                                     },
                                     style: ElevatedButton.styleFrom(
-                                        primary: Colors.transparent,
+                                        backgroundColor: Colors.transparent,
                                         shadowColor: Colors.transparent),
                                     child: Container(
                                       height: 45.0,

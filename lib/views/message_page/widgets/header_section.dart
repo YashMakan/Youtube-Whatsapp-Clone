@@ -1,15 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:line_icons/line_icons.dart';
-import 'package:whatsapp_application/views/message_page/components/profile_circular_widget.dart';
-
-import '../../../constants/colors.dart';
-import '../../../models/user.dart';
-import '../../call_page/calling_page.dart';
-import '../../profile_page/profile_page.dart';
+import 'package:whatsapp_application/constants/colors.dart';
+import 'package:whatsapp_application/constants/enums.dart';
+import 'package:whatsapp_application/models/user.dart';
+import 'package:whatsapp_application/views/call_page/calling_page.dart';
+import 'package:whatsapp_application/views/message_page/widgets/profile_circular_widget.dart';
+import 'package:whatsapp_application/views/profile_page/profile_page.dart';
 
 class HeaderSection extends StatefulWidget {
   final User user;
+
   const HeaderSection({Key? key, required this.user}) : super(key: key);
 
   @override
@@ -18,11 +19,13 @@ class HeaderSection extends StatefulWidget {
 
 class _HeaderSectionState extends State<HeaderSection> {
   late User user;
+
   @override
   void initState() {
     user = widget.user;
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -30,9 +33,9 @@ class _HeaderSectionState extends State<HeaderSection> {
         onTap: () {
           Navigator.of(context).push(CupertinoPageRoute(
               builder: (context) => ProfilePage(
-                user: user,
-                profilePageStatus: ProfilePageStatus.view,
-              )));
+                    user: user,
+                    profilePageStatus: ProfilePageStatus.view,
+                  )));
         },
         child: SizedBox(
           child: Column(
@@ -80,9 +83,10 @@ class _HeaderSectionState extends State<HeaderSection> {
                             GestureDetector(
                                 onTap: () {
                                   Navigator.of(context).push(CupertinoPageRoute(
-                                      builder: (context) => CallAcceptDeclinePage(
-                                        user: user,
-                                      )));
+                                      builder: (context) =>
+                                          CallAcceptDeclinePage(
+                                            user: user,
+                                          )));
                                 },
                                 child: const Icon(
                                   LineIcons.phone,

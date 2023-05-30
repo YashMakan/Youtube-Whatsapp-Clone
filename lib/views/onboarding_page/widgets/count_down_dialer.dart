@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 
-class Countup extends StatefulWidget {
+class CountDownDialer extends StatefulWidget {
   final double begin;
   final double end;
   final int precision;
@@ -18,7 +18,7 @@ class Countup extends StatefulWidget {
   final String prefix;
   final String suffix;
 
-  Countup({
+  const CountDownDialer({
     Key? key,
     this.begin = 0,
     this.end = 86400,
@@ -39,10 +39,11 @@ class Countup extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _CountupState createState() => _CountupState();
+  _CountDownDialerState createState() => _CountDownDialerState();
 }
 
-class _CountupState extends State<Countup> with TickerProviderStateMixin {
+class _CountDownDialerState extends State<CountDownDialer>
+    with TickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
   double? _latestBegin;
@@ -65,7 +66,7 @@ class _CountupState extends State<Countup> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     CurvedAnimation curvedAnimation =
-    CurvedAnimation(parent: _controller, curve: widget.curve);
+        CurvedAnimation(parent: _controller, curve: widget.curve);
     _animation = Tween<double>(begin: widget.begin, end: widget.end)
         .animate(curvedAnimation);
 
@@ -77,7 +78,7 @@ class _CountupState extends State<Countup> with TickerProviderStateMixin {
     _latestEnd = widget.end;
     _controller.forward();
 
-    return _CountupAnimatedText(
+    return _CountDownDialerAnimatedText(
       key: UniqueKey(),
       animation: _animation,
       precision: widget.precision,
@@ -96,8 +97,8 @@ class _CountupState extends State<Countup> with TickerProviderStateMixin {
   }
 }
 
-class _CountupAnimatedText extends AnimatedWidget {
-  final RegExp reg = new RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))');
+class _CountDownDialerAnimatedText extends AnimatedWidget {
+  final RegExp reg = RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))');
 
   final Animation<double> animation;
   final int precision;
@@ -113,7 +114,7 @@ class _CountupAnimatedText extends AnimatedWidget {
   final String? prefix;
   final String? suffix;
 
-  _CountupAnimatedText({
+  _CountDownDialerAnimatedText({
     Key? key,
     required this.animation,
     required this.precision,
@@ -134,23 +135,24 @@ class _CountupAnimatedText extends AnimatedWidget {
     String twoDigits(int n) => n.toString().padLeft(2, "0");
     String twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60));
     String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
-    if(twoDigits(duration.inHours) == "00"){
+    if (twoDigits(duration.inHours) == "00") {
       return "$twoDigitMinutes:$twoDigitSeconds";
-    }else{
+    } else {
       return "${twoDigits(duration.inHours)}:$twoDigitMinutes:$twoDigitSeconds";
     }
   }
 
   @override
-  Widget build(BuildContext context) => Text(_printDuration(Duration(seconds: animation.value.toInt())),
-    style: style,
-    textAlign: textAlign,
-    textDirection: textDirection,
-    locale: locale,
-    softWrap: softWrap,
-    overflow: overflow,
-    textScaleFactor: textScaleFactor,
-    maxLines: maxLines,
-    semanticsLabel: semanticsLabel,
-  );
+  Widget build(BuildContext context) => Text(
+        _printDuration(Duration(seconds: animation.value.toInt())),
+        style: style,
+        textAlign: textAlign,
+        textDirection: textDirection,
+        locale: locale,
+        softWrap: softWrap,
+        overflow: overflow,
+        textScaleFactor: textScaleFactor,
+        maxLines: maxLines,
+        semanticsLabel: semanticsLabel,
+      );
 }
