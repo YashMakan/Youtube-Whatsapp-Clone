@@ -564,7 +564,7 @@ class _MessagePageState extends State<MessagePage> {
               fromFriend: false,
               messageType: MessageType.contact,
               contact: Contact(
-                  name: Name(first: e.firstName, last: e.lastName),
+                  name: Name(first: e.firstName, last: e.lastName ?? ""),
                   phones: [Phone(e.phoneNumber)])))
           .toList();
     } else {

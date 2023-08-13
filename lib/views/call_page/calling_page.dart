@@ -10,6 +10,7 @@ import 'package:whatsapp_redesign/managers/webrtc_manager.dart';
 import 'package:whatsapp_redesign/views/onboarding_page/widgets/count_down_dialer.dart';
 import 'package:whatsapp_redesign/models/size_config.dart';
 import 'package:whatsapp_redesign/models/user.dart';
+import 'package:whatsapp_redesign/widgets/custom_circular_image.dart';
 
 class CallAcceptDeclinePage extends StatefulWidget {
   final User user;
@@ -91,15 +92,7 @@ class _CallAcceptDeclinePageState extends State<CallAcceptDeclinePage> {
               ),
               Column(
                 children: [
-                  Container(
-                    width: 150,
-                    height: 150,
-                    decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        image: DecorationImage(
-                            image: NetworkImage(widget.user.picture),
-                            fit: BoxFit.cover)),
-                  ),
+                  CustomCircularImage(size: 150, user: widget.user),
                   const SizedBox(
                     height: 16,
                   ),
@@ -136,15 +129,7 @@ class _CallAcceptDeclinePageState extends State<CallAcceptDeclinePage> {
               ),
               Column(
                 children: [
-                  Container(
-                    width: 150,
-                    height: 150,
-                    decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        image: DecorationImage(
-                            image: NetworkImage(widget.user.picture),
-                            fit: BoxFit.cover)),
-                  ),
+                  CustomCircularImage(size: 150, user: widget.user),
                   const SizedBox(
                     height: 16,
                   ),
@@ -177,15 +162,7 @@ class _CallAcceptDeclinePageState extends State<CallAcceptDeclinePage> {
             const Spacer(),
             Column(
               children: [
-                Container(
-                  width: 150,
-                  height: 150,
-                  decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      image: DecorationImage(
-                          image: NetworkImage(widget.user.picture),
-                          fit: BoxFit.cover)),
-                ),
+                CustomCircularImage(size: 150, user: widget.user),
                 const SizedBox(
                   height: 16,
                 ),
@@ -322,9 +299,11 @@ class _CallAcceptDeclinePageState extends State<CallAcceptDeclinePage> {
             width: SizeConfig.screenWidth,
             height: SizeConfig.screenHeight,
             decoration: BoxDecoration(
-                image: DecorationImage(
-                    image: NetworkImage(widget.user.picture),
-                    fit: BoxFit.cover)),
+                image: widget.user.picture == null
+                    ? null
+                    : DecorationImage(
+                        image: NetworkImage(widget.user.picture!),
+                        fit: BoxFit.cover)),
             child: BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 8.0, sigmaY: 8.0),
               child: Container(

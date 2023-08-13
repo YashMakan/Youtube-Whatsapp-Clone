@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:whatsapp_redesign/constants/enums.dart';
 import 'package:whatsapp_redesign/models/user.dart';
+import 'package:whatsapp_redesign/widgets/custom_circular_image.dart';
 import '../../constants/colors.dart';
 import 'main_profile_page_widgets.dart';
 
@@ -80,14 +81,7 @@ class _ProfilePageState extends State<ProfilePage> {
               const SizedBox(
                 height: 16,
               ),
-              Container(
-                width: 140,
-                height: 140,
-                decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    image: DecorationImage(
-                        image: NetworkImage(user.picture), fit: BoxFit.cover)),
-              ),
+              CustomCircularImage(size: 140, user: user),
               const SizedBox(
                 height: 16,
               ),
@@ -252,14 +246,7 @@ class _ProfilePageState extends State<ProfilePage> {
               const SizedBox(
                 height: 16,
               ),
-              Container(
-                width: 140,
-                height: 140,
-                decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    image: DecorationImage(
-                        image: NetworkImage(user.picture), fit: BoxFit.cover)),
-              ),
+              CustomCircularImage(size: 140, user: user),
               const SizedBox(
                 height: 16,
               ),

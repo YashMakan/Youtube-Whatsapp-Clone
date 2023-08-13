@@ -102,6 +102,7 @@ class _CallListPageState extends State<CallListPage> {
               },
               itemBuilder: (context, index) => CustomListTile(
                   imageUrl: users[index].picture,
+                  participants: [],
                   title: "${users[index].firstName} ${users[index].lastName}",
                   subTitle: "May 7, 6:29 PM",
                   onTap: () {},

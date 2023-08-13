@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:whatsapp_redesign/constants/colors.dart';
+import 'package:whatsapp_redesign/models/user.dart';
+import 'package:whatsapp_redesign/widgets/custom_circular_image.dart';
 
 class ProfileCircularWidget extends StatefulWidget {
-  final String image;
+  final User user;
 
-  const ProfileCircularWidget({Key? key, required this.image})
-      : super(key: key);
+  const ProfileCircularWidget({Key? key, required this.user}) : super(key: key);
 
   @override
   State<ProfileCircularWidget> createState() => _ProfileCircularWidgetState();
@@ -17,13 +18,7 @@ class _ProfileCircularWidgetState extends State<ProfileCircularWidget> {
     return Stack(
       clipBehavior: Clip.none,
       children: [
-        Container(
-          width: 50,
-          height: 50,
-          decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              image: DecorationImage(image: NetworkImage(widget.image))),
-        ),
+        CustomCircularImage(size: 50, user: widget.user),
         Positioned(
           bottom: -5,
           right: -5,

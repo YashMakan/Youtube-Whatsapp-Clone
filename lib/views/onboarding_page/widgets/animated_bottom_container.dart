@@ -15,7 +15,7 @@ class AnimatedBottomContainer extends StatefulWidget {
   final Function() onRightArrowClicked;
   final Function() onLeftArrowReset;
   final Function(String) onSendOtpClicked;
-  final Function(String) onOtpSubmit;
+  final Function(String, String) onOtpSubmit;
 
   const AnimatedBottomContainer(
       {super.key,
@@ -214,7 +214,8 @@ class _AnimatedBottomContainerState extends State<AnimatedBottomContainer> {
                                 Flexible(
                                   child: TextField(
                                     controller: phoneNumberController,
-                                    style: TextStyle(color: blackColor(context).darkShade),
+                                    style: TextStyle(
+                                        color: blackColor(context).darkShade),
                                     keyboardType: TextInputType.phone,
                                     inputFormatters: [
                                       LengthLimitingTextInputFormatter(10)
@@ -246,7 +247,11 @@ class _AnimatedBottomContainerState extends State<AnimatedBottomContainer> {
                                 ])),
                             child: ElevatedButton(
                               onPressed: () {
-                                widget.onSendOtpClicked(phoneNumberController.text);
+                                if (phoneNumberController.text.trim().length ==
+                                    10) {
+                                  widget.onSendOtpClicked(
+                                      phoneNumberController.text);
+                                }
                               },
                               style: ElevatedButton.styleFrom(
                                   backgroundColor: Colors.transparent,
@@ -354,8 +359,21 @@ class _AnimatedBottomContainerState extends State<AnimatedBottomContainer> {
                                                       : Colors.white12),
                                               child: TextField(
                                                 textAlign: TextAlign.center,
-                                                keyboardType: TextInputType.number,
-                                                style: TextStyle(color: blackColor(context).darkShade),
+                                                inputFormatters: [
+                                                  LengthLimitingTextInputFormatter(1)
+                                                ],
+                                                onChanged: (value){
+                                                  if(value.isNotEmpty) {
+                                                    FocusScope.of(context).nextFocus();
+                                                  } else {
+                                                    FocusScope.of(context).previousFocus();
+                                                  }
+                                                },
+                                                keyboardType:
+                                                    TextInputType.number,
+                                                style: TextStyle(
+                                                    color: blackColor(context)
+                                                        .darkShade),
                                                 autofocus: true,
                                                 controller:
                                                     otpControllers[index],
@@ -384,7 +402,7 @@ class _AnimatedBottomContainerState extends State<AnimatedBottomContainer> {
                                     .map((e) => e.text)
                                     .toList()
                                     .join();
-                                widget.onOtpSubmit(otp);
+                                widget.onOtpSubmit(phoneNumberController.text, otp);
                               },
                               style: ElevatedButton.styleFrom(
                                   backgroundColor: Colors.transparent,

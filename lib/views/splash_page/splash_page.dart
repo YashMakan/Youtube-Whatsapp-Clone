@@ -49,15 +49,17 @@ class _SplashScreenState extends State<SplashScreen> {
                 const SizedBox(
                   height: 20,
                 ),
-                GradientText(
-                  "WhatsApp",
-                  style: const TextStyle(
-                    fontSize: 28,
-                  ),
+                GradientWidget(
                   gradient: LinearGradient(colors: [
                     greenGradient.lightShade,
                     greenGradient.darkShade,
                   ]),
+                  child: Text(
+                    "WhatsApp",
+                    style: const TextStyle(
+                      fontSize: 28,
+                    ),
+                  ),
                 ),
               ],
             ),

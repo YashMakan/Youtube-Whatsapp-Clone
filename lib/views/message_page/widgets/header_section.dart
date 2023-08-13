@@ -51,7 +51,7 @@ class _HeaderSectionState extends State<HeaderSection> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        ProfileCircularWidget(image: user.picture),
+                        ProfileCircularWidget(user: user),
                         const SizedBox(
                           width: 16,
                         ),

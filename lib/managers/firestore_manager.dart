@@ -1,20 +1,55 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:whatsapp_redesign/models/user.dart';
+
+class Collections {
+  static const String chats = 'chats';
+  static const String users = 'users';
+}
 
 class FirestoreManager {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  Future<DocumentSnapshot<Map<String, dynamic>>> getUserProfile(
-      String userId) async {
-    final userSnapshot = await _firestore.collection('users').doc(userId).get();
-    return userSnapshot;
+  Future<bool> isUserExist({String? phoneNumber, String? uuid}) async {
+    print((await _firestore.collection(Collections.users).get())
+        .docs
+        .first
+        .data());
+    if(phoneNumber == null && uuid == null) {
+      throw Exception('phoneNumber and uuid both can\'t be null');
+    }
+    final userSnapshot;
+    if(phoneNumber != null) {
+      userSnapshot = await _firestore
+          .collection(Collections.users)
+          .where(User.phoneNumberKey, isEqualTo: phoneNumber)
+          .get();
+    }else {
+      userSnapshot = await _firestore
+          .collection(Collections.users)
+          .where(User.uuidKey, isEqualTo: uuid)
+          .get();
+    }
+    return userSnapshot.docs.isNotEmpty;
   }
 
-  Future<QuerySnapshot<Map<String, dynamic>>> getUserChats(
-      String userId) async {
-    final chatsSnapshot = await _firestore
-        .collection('chats')
-        .where('participants', arrayContains: userId)
+  Future<void> registerUser(User user) async {
+    await _firestore.collection(Collections.users).add(user.toJson());
+  }
+
+  Future<User> getUser(phoneNumber) async {
+    final userSnapshot = await _firestore
+        .collection(Collections.users)
+        .where(User.phoneNumberKey, isEqualTo: phoneNumber)
         .get();
+    return User.fromJson(userSnapshot.docs.first.data());
+  }
+
+  Stream<QuerySnapshot<Map<String, dynamic>>> getUserChats(String userId) {
+    final chatsSnapshot = _firestore
+        .collection(Collections.users)
+        .doc(userId)
+        .collection(Collections.chats)
+        .snapshots();
     return chatsSnapshot;
   }
 

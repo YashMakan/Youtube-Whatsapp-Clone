@@ -47,8 +47,7 @@ class _MainProfilePageState extends State<MainProfilePage> {
                 height: 35,
               ),
               profileWidget(
-                  image: user.picture,
-                  name: user.name,
+                  user: user,
                   onLogoutClick: () {
                     showModalBottomSheet(
                         context: context,

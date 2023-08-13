@@ -63,7 +63,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                 onRightArrowClicked: provider.onRightArrowClicked,
                 onLeftArrowReset: () => provider.onLeftArrowReset(isKeyboardOpened),
                 onSendOtpClicked: provider.onSendOtpClicked,
-                onOtpSubmit: (otp) => provider.onOtpSubmit(otp, context))
+                onOtpSubmit: (phoneNumber, otp) => provider.onOtpSubmit(phoneNumber, otp, context))
           ],
         );
       }),
