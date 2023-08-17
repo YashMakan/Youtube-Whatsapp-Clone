@@ -4,10 +4,8 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:whatsapp_redesign/constants/colors.dart';
-import 'package:whatsapp_redesign/constants/enums.dart';
 import 'package:whatsapp_redesign/constants/extensions.dart';
 import 'package:whatsapp_redesign/constants/persons.dart';
-import 'package:whatsapp_redesign/managers/firestore_manager.dart';
 import 'package:whatsapp_redesign/managers/local_db_manager/local_db.dart';
 import 'package:whatsapp_redesign/models/chat.dart';
 import 'package:whatsapp_redesign/provider/home_provider.dart';
@@ -268,6 +266,7 @@ class _HomePageState extends State<HomePage> {
                                         .push(CupertinoPageRoute(
                                             builder: (context) => MessagePage(
                                                   user: chats[index].user,
+                                                  chatId: chats[index].chatId,
                                                 )));
                                   },
                                   customListTileType:
@@ -275,7 +274,7 @@ class _HomePageState extends State<HomePage> {
                                   participants: chats,
                                   timeFrame: chats[index]
                                       .lastMessage
-                                      .dateTime
+                                      .messageDateTime
                                       .formatToHHMM()),
                             ),
                           );

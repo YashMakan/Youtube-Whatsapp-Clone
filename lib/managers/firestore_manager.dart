@@ -1,29 +1,37 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:whatsapp_redesign/constants/enums.dart';
+import 'package:whatsapp_redesign/managers/local_db_manager/local_db.dart';
+import 'package:whatsapp_redesign/models/chat.dart';
+import 'package:whatsapp_redesign/models/message.dart';
 import 'package:whatsapp_redesign/models/user.dart';
 
 class Collections {
   static const String chats = 'chats';
   static const String users = 'users';
+  static const String messages = 'messages';
+}
+
+class ChatAndUser {
+  final Chat? chat;
+  final User? user;
+
+  ChatAndUser({this.chat, this.user});
 }
 
 class FirestoreManager {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   Future<bool> isUserExist({String? phoneNumber, String? uuid}) async {
-    print((await _firestore.collection(Collections.users).get())
-        .docs
-        .first
-        .data());
-    if(phoneNumber == null && uuid == null) {
+    if (phoneNumber == null && uuid == null) {
       throw Exception('phoneNumber and uuid both can\'t be null');
     }
     final userSnapshot;
-    if(phoneNumber != null) {
+    if (phoneNumber != null) {
       userSnapshot = await _firestore
           .collection(Collections.users)
           .where(User.phoneNumberKey, isEqualTo: phoneNumber)
           .get();
-    }else {
+    } else {
       userSnapshot = await _firestore
           .collection(Collections.users)
           .where(User.uuidKey, isEqualTo: uuid)
@@ -44,6 +52,29 @@ class FirestoreManager {
     return User.fromJson(userSnapshot.docs.first.data());
   }
 
+  Future<ChatAndUser> getChat(String phone) async {
+    User? user;
+    Chat? chat;
+
+    final userSnapshot = await _firestore
+        .collection(Collections.users)
+        .where(User.phoneNumberKey, isEqualTo: phone)
+        .get();
+    if(userSnapshot.docs.isNotEmpty){
+      final userDocRef = userSnapshot.docs.first.reference;
+      final chatData = (await userDocRef
+          .collection(Collections.chats)
+          .where('uuid', isEqualTo: LocalDB.user.uuid)
+          .get())
+          .docs
+          .first;
+      if(chatData.exists){
+        chat = Chat.fromJson(chatData.data());
+      }
+    }
+    return ChatAndUser(chat: chat, user: user);
+  }
+
   Stream<QuerySnapshot<Map<String, dynamic>>> getUserChats(String userId) {
     final chatsSnapshot = _firestore
         .collection(Collections.users)
@@ -53,24 +84,41 @@ class FirestoreManager {
     return chatsSnapshot;
   }
 
-  Future<QuerySnapshot<Map<String, dynamic>>> getChatMessages(
-      String chatId) async {
-    final messagesSnapshot = await _firestore
-        .collection('chats')
+  Stream<QuerySnapshot<Map<String, dynamic>>> getChatMessages(String chatId) {
+    final messagesSnapshot = _firestore
+        .collection(Collections.chats)
         .doc(chatId)
-        .collection('messages')
-        .orderBy('timestamp')
-        .get();
+        .collection(Collections.messages)
+        .orderBy(Message.dateTimeKey)
+        .snapshots();
     return messagesSnapshot;
   }
 
   Future<void> sendChatMessage(
-      String chatId, Map<String, dynamic> newMessageData) async {
-    await _firestore
-        .collection('chats')
+      String chatId, Message message, User user) async {
+    _firestore
+        .collection(Collections.chats)
         .doc(chatId)
-        .collection('messages')
-        .add(newMessageData);
+        .collection(Collections.messages)
+        .add(message.toJson());
+
+    final userSnapshot = await _firestore
+        .collection(Collections.users)
+        .where(User.uuidKey, isEqualTo: LocalDB.user.uuid)
+        .get();
+    final userDocRef = userSnapshot.docs.first.reference;
+    userDocRef.collection(Collections.chats).doc(chatId).update(
+        Chat(user, ChatType.message, message, 0, DateTime.now(), chatId)
+            .toJson());
+
+    final userSnapshot2 = await _firestore
+        .collection(Collections.users)
+        .where(User.uuidKey, isEqualTo: user.uuid)
+        .get();
+    final userDocRef2 = userSnapshot2.docs.first.reference;
+    userDocRef2.collection(Collections.chats).doc(chatId).update(
+        Chat(LocalDB.user, ChatType.message, message, 0, DateTime.now(), chatId)
+            .toJson());
   }
 }
 

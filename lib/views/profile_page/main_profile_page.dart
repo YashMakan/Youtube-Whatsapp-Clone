@@ -5,6 +5,8 @@ import 'package:line_icons/line_icons.dart';
 import 'package:passcode_screen/passcode_screen.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:whatsapp_redesign/constants/enums.dart';
+import 'package:whatsapp_redesign/managers/local_db_manager/local_db.dart';
+import 'package:whatsapp_redesign/managers/navigation_manager/navigation_manager.dart';
 import 'package:whatsapp_redesign/models/size_config.dart';
 import 'package:whatsapp_redesign/main.dart';
 import 'package:whatsapp_redesign/views/profile_page/profile_page.dart';
@@ -95,7 +97,11 @@ class _MainProfilePageState extends State<MainProfilePage> {
                                           backgroundColor:
                                               MaterialStateProperty.all(
                                                   greenColor)),
-                                      onPressed: () {},
+                                      onPressed: () async {
+                                        await LocalDB.setUser(null);
+                                        NavigationManager.navigate(
+                                            context, Routes.splashScreen, replace: true);
+                                      },
                                     ),
                                     ElevatedButton(
                                       child: const Text('Cancel',

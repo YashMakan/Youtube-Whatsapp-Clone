@@ -36,7 +36,6 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
-    provider = Provider.of<AuthProvider>(context, listen: false);
     bool isKeyboardOpened = MediaQuery.of(context).viewInsets.bottom != 0;
     return Scaffold(
       backgroundColor: backgroundColor(context),

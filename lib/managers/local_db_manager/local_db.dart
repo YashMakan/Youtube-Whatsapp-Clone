@@ -14,6 +14,7 @@ class LocalDB {
   static User get user =>
       User.fromJson(Hive.box(LocalDBRoutes.userRoute).toMap());
 
-  static void setUser(User user) =>
-      Hive.box(LocalDBRoutes.userRoute).putAll(user.toJson());
+  static Future<void> setUser(User? user) async => user == null
+      ? await Hive.box(LocalDBRoutes.userRoute).clear()
+      : await Hive.box(LocalDBRoutes.userRoute).putAll(user.toJson());
 }

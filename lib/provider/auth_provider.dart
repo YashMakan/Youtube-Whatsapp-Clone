@@ -43,6 +43,14 @@ class AuthProvider extends ChangeNotifier {
     timer?.cancel();
   }
 
+  void reset() {
+    verificationId = null;
+    selectedPageIndex = 0;
+    showForm = false;
+    onOTPage = false;
+    pageController = null;
+  }
+
   startFloatingAnimation() {
     timerDispose();
     timer = Timer.periodic(const Duration(seconds: 1), (Timer t) {
@@ -53,6 +61,7 @@ class AuthProvider extends ChangeNotifier {
   }
 
   void initialize() {
+    reset();
     startFloatingAnimation();
     pageController = PageController(initialPage: selectedPageIndex);
     notifyListeners();

@@ -43,7 +43,7 @@ class User {
       this.picture});
 
   factory User.fromJson(Map json) => User(
-        name: "${json[firstNameKey]} ${json[lastNameKey]}",
+        name: json[nameKey],
         gender: json[genderKey],
         phoneNumber: json[phoneNumberKey],
         birthDate: json[birthDateKey],

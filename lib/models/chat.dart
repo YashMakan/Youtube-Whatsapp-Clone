@@ -8,8 +8,10 @@ class Chat {
   final ChatType chatType;
   final Message lastMessage;
   final int unreadMessages;
+  final DateTime dateTime;
+  final String chatId;
 
-  Chat(this.user, this.chatType, this.lastMessage, this.unreadMessages);
+  Chat(this.user, this.chatType, this.lastMessage, this.unreadMessages, this.dateTime, this.chatId);
 
   CustomListTileType fromChatType() {
     switch (chatType) {
@@ -24,5 +26,14 @@ class Chat {
       User.fromJson(data['user']),
       data['chatType'] == 'message' ? ChatType.message : ChatType.group,
       Message.fromJson(data['lastMessage']),
-      data['unreadMessages']);
+      data['unreadMessages'], DateTime.parse(data['dateTime']), data['chatId']);
+
+  Map<String, dynamic> toJson() => {
+    'user': user.toJson(),
+    'chatType': 'message',
+    'lastMessage': lastMessage.toJson(),
+    'unreadMessages': unreadMessages,
+    'dateTime': dateTime.toIso8601String(),
+    'chatId': chatId
+  };
 }

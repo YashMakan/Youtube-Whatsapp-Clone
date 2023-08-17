@@ -7,10 +7,10 @@ import 'package:whatsapp_redesign/models/upi_payment.dart';
 
 class PaymentMessage extends StatefulWidget {
   final UpiPayment payment;
-  final bool fromFriend;
+  final bool isIncomingMessage;
 
   const PaymentMessage(
-      {Key? key, required this.payment, required this.fromFriend})
+      {Key? key, required this.payment, required this.isIncomingMessage})
       : super(key: key);
 
   @override
@@ -23,7 +23,7 @@ class _PaymentMessageState extends State<PaymentMessage> {
 
   @override
   void initState() {
-    fromFriend = widget.fromFriend;
+    fromFriend = widget.isIncomingMessage;
     payment = widget.payment;
     super.initState();
   }

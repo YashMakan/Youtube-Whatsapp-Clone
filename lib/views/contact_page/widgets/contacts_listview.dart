@@ -3,6 +3,7 @@ import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:whatsapp_redesign/constants/enums.dart';
 import 'package:whatsapp_redesign/managers/local_db_manager/local_db.dart';
 import 'package:whatsapp_redesign/provider/contact_provider.dart';
+import 'package:whatsapp_redesign/views/message_page/message_page.dart';
 import 'package:whatsapp_redesign/widgets/custom_listtile.dart';
 import 'package:whatsapp_redesign/widgets/custom_loader.dart';
 import 'package:whatsapp_redesign/widgets/no_data_found.dart';
@@ -66,13 +67,23 @@ class _ContactsListViewState extends State<ContactsListView> {
                               }
                             });
                           } else {
-                            // check if user exists in the db
-                            provider.manager.isUserExist(uuid: LocalDB.user.uuid).then((exists) {
-                              if(exists) {
-                                // fetch user and navigate to chat screen
-                              } else {
-                                // show a prompt that user does not have app installed
+                            String phone =
+                                contact.phones.first.number.split(' ')[1];
+                            provider.manager.getChat(phone).then((chatAndUser) {
+                              if (chatAndUser.user == null) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                        content: Text(
+                                            'The user does not have app installed')));
+                                return;
                               }
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => MessagePage(
+                                            user: chatAndUser.user!,
+                                            chatId: chatAndUser.chat?.chatId,
+                                          )));
                             });
                           }
                         },
