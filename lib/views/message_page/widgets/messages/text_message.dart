@@ -41,7 +41,7 @@ class _TextMessageState extends State<TextMessage> {
                     topLeft: const Radius.circular(40),
                     topRight: const Radius.circular(40),
                     bottomRight: Radius.circular(fromFriend ? 40 : 0)),
-                color: fromFriend ? const Color(0xFF313131) : null,
+                color: fromFriend ? const Color(0xFF4C4C4C) : null,
                 gradient: fromFriend
                     ? null
                     : LinearGradient(colors: [

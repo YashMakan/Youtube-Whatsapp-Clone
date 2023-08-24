@@ -67,8 +67,10 @@ class _ContactsListViewState extends State<ContactsListView> {
                               }
                             });
                           } else {
+                            print(contact.phones.first.number);
                             String phone =
                                 contact.phones.first.number.split(' ')[1];
+                            print(phone);
                             provider.manager.getChat(phone).then((chatAndUser) {
                               if (chatAndUser.user == null) {
                                 ScaffoldMessenger.of(context).showSnackBar(

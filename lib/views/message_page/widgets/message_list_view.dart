@@ -18,7 +18,7 @@ class _MessageListScreenState extends State<MessageListScreen> {
         child: Padding(
       padding: const EdgeInsets.only(left: 16, right: 16),
       child: Consumer<MessageProvider>(builder: (context, provider, child) {
-        if(provider.chatId == null) {
+        if (provider.chatId == null) {
           return const SizedBox();
         }
         return StreamBuilder(
@@ -36,7 +36,8 @@ class _MessageListScreenState extends State<MessageListScreen> {
                 return ScrollablePositionedList.builder(
                   itemScrollController: provider.scrollController,
                   itemCount: messages.length,
-                  itemBuilder: (context, index) => messages[index].render(provider.chatId),
+                  itemBuilder: (context, index) => messages[index]
+                      .render(provider.chatId, provider.user?.uuid),
                 );
               }
             });

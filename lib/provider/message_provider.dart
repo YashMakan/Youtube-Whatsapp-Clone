@@ -10,9 +10,11 @@ import 'package:image_picker/image_picker.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:upi_india/upi_india.dart';
+import 'package:uuid/uuid.dart';
 import 'package:whatsapp_redesign/constants/enums.dart';
 import 'package:whatsapp_redesign/getit.dart';
 import 'package:whatsapp_redesign/managers/firestore_manager.dart';
+import 'package:whatsapp_redesign/managers/local_db_manager/local_db.dart';
 import 'package:whatsapp_redesign/models/document.dart';
 import 'package:whatsapp_redesign/models/message.dart';
 import 'package:latlong2/latlong.dart';
@@ -51,6 +53,13 @@ class MessageProvider extends ChangeNotifier {
   void initialize(User tempUser, String? tempChatId) {
     user = tempUser;
     chatId = tempChatId;
+    messageController.clear();
+    gifController.clear();
+    isSearch = false;
+    isGifClicked = false;
+    isRecordingStarted = false;
+    isRecordingInDraft = false;
+    isMenuPopupOpened = false;
     notifyListeners();
   }
 
@@ -64,13 +73,10 @@ class MessageProvider extends ChangeNotifier {
 
   void sendMessage(Message message) {
     String generateRandomHex(int length) {
-      Random random = Random();
-      int maxVal = (pow(16, length) - 1).toInt();
-      int randomInt = random.nextInt(maxVal + 1);
-      String hexString = randomInt.toRadixString(16).toUpperCase();
-      return hexString.padLeft(length, '0');
+      return const Uuid().v4();
     }
 
+    message.dateTime = DateTime.now();
     chatId ??= generateRandomHex(10);
     manager.sendChatMessage(chatId!, message, user!);
     isGifClicked = false;
@@ -97,7 +103,7 @@ class MessageProvider extends ChangeNotifier {
         if (files != null) {
           sendMultipleMessages(files
               .map((e) => Message(
-                  isIncomingMessage: false,
+                  userSendingMessageUUID: LocalDB.user.uuid,
                   messageType: MessageType.doc,
                   file: Document(e.name, e.size, e.extension ?? "")))
               .toList());
@@ -106,9 +112,10 @@ class MessageProvider extends ChangeNotifier {
       case "camera":
         final ImagePicker picker = ImagePicker();
         final XFile? image = await picker.pickImage(source: ImageSource.camera);
+
         if (image != null) {
           Message message = Message(
-              isIncomingMessage: false,
+              userSendingMessageUUID: LocalDB.user.uuid,
               messageType: MessageType.imageMedia,
               gifBytes: await image.readAsBytes());
           sendMessage(message);
@@ -120,7 +127,7 @@ class MessageProvider extends ChangeNotifier {
         List<Message> messages = [];
         for (var image in images) {
           messages.add(Message(
-              isIncomingMessage: false,
+              userSendingMessageUUID: LocalDB.user.uuid,
               messageType: MessageType.imageMedia,
               gifBytes: await image.readAsBytes()));
         }
@@ -134,7 +141,7 @@ class MessageProvider extends ChangeNotifier {
         if (files != null) {
           sendMultipleMessages(files
               .map((e) => Message(
-                  isIncomingMessage: false,
+              userSendingMessageUUID: LocalDB.user.uuid,
                   messageType: MessageType.doc,
                   file: Document(e.name, e.size, e.extension ?? "")))
               .toList());
@@ -147,7 +154,7 @@ class MessageProvider extends ChangeNotifier {
         LatLng latLng = await Navigator.of(context)
             .push(CupertinoPageRoute(builder: (context) => const MapScreen()));
         sendMessage(Message(
-            isIncomingMessage: false,
+            userSendingMessageUUID: LocalDB.user.uuid,
             messageType: MessageType.location,
             latLng: latLng));
         break;
@@ -157,7 +164,7 @@ class MessageProvider extends ChangeNotifier {
         if (selectedContacts != null) {
           sendMultipleMessages(selectedContacts
               .map((e) => Message(
-                  isIncomingMessage: false,
+              userSendingMessageUUID: LocalDB.user.uuid,
                   messageType: MessageType.contact,
                   contact: Contact(
                       name: Name(first: e.firstName, last: e.lastName ?? ""),
@@ -203,7 +210,7 @@ class MessageProvider extends ChangeNotifier {
     UpiPayment upiPaymentWithStatus = await initiateTransaction(upiPayment);
     if (upiPaymentWithStatus.isTransactionSuccessful) {
       sendMessage(Message(
-        isIncomingMessage: false,
+        userSendingMessageUUID: LocalDB.user.uuid,
         messageType: MessageType.upiPayment,
         upiPayment: upiPaymentWithStatus,
       ));

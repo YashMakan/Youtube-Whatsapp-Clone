@@ -13,6 +13,7 @@ import 'package:uuid/uuid.dart';
 import 'package:whatsapp_redesign/provider/auth_provider.dart';
 import 'package:whatsapp_redesign/provider/contact_provider.dart';
 import 'package:whatsapp_redesign/provider/home_provider.dart';
+import 'package:whatsapp_redesign/provider/message_provider.dart';
 import 'package:whatsapp_redesign/views/root_page.dart';
 import 'package:whatsapp_redesign/views/splash_page/splash_page.dart';
 import 'models/location.dart';
@@ -144,6 +145,8 @@ class _MyAppState extends State<MyApp> {
             create: (context) => HomeProvider()),
         ChangeNotifierProvider<ContactProvider>(
             create: (context) => ContactProvider()),
+        ChangeNotifierProvider<MessageProvider>(
+            create: (context) => MessageProvider()),
       ],
       child: MaterialApp(
         title: 'Whatsapp',

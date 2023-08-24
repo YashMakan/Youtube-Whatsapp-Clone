@@ -4,6 +4,7 @@ import 'package:giphy_api_client/giphy_api_client.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:upi_india/upi_india.dart';
 import 'package:whatsapp_redesign/constants/enums.dart';
+import 'package:whatsapp_redesign/managers/local_db_manager/local_db.dart';
 import 'package:whatsapp_redesign/models/message.dart';
 import 'package:whatsapp_redesign/models/user.dart';
 import 'package:whatsapp_redesign/provider/message_provider.dart';
@@ -33,7 +34,6 @@ class _MessagePageState extends State<MessagePage> {
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      provider = Provider.of<MessageProvider>(context, listen: false);
       provider!.initialize(widget.user, widget.chatId);
       setState(() {});
     });
@@ -42,6 +42,7 @@ class _MessagePageState extends State<MessagePage> {
 
   @override
   Widget build(BuildContext context) {
+    provider = Provider.of<MessageProvider>(context, listen: false);
     return Scaffold(
       backgroundColor: backgroundColor(context),
       body: Column(
@@ -76,9 +77,10 @@ class _MessagePageState extends State<MessagePage> {
                             controller: provider!.messageController,
                             onFieldSubmitted: (value) {
                               provider!.sendMessage(Message(
-                                  isIncomingMessage: false,
+                                  userSendingMessageUUID: LocalDB.user.uuid,
                                   messageType: MessageType.text,
                                   message: value));
+                              provider!.messageController.clear();
                             },
                             onChanged: (value) {
                               if (value.length < 2) {
@@ -96,7 +98,7 @@ class _MessagePageState extends State<MessagePage> {
                                   iconData: LineIcons.microphone,
                                   onLongPressStart: (details) {
                                     provider!.sendMessage(Message(
-                                      isIncomingMessage: false,
+                                      userSendingMessageUUID: LocalDB.user.uuid,
                                       messageType: MessageType.audio,
                                     ));
                                   },
@@ -128,10 +130,11 @@ class _MessagePageState extends State<MessagePage> {
                                 iconData: Icons.send_outlined,
                                 onTap: () {
                                   provider!.sendMessage(Message(
-                                      isIncomingMessage: false,
+                                      userSendingMessageUUID: LocalDB.user.uuid,
                                       messageType: MessageType.text,
                                       message:
                                           provider!.messageController.text));
+                                  provider!.messageController.clear();
                                 }))
                   ],
                 ),
@@ -207,7 +210,8 @@ class _MessagePageState extends State<MessagePage> {
                                   return InkWell(
                                     onTap: () {
                                       provider!.sendMessage(Message(
-                                          isIncomingMessage: false,
+                                          userSendingMessageUUID:
+                                              LocalDB.user.uuid,
                                           messageType: MessageType.imageMedia,
                                           gifUrl: gifs[index]
                                               ?.images
@@ -245,29 +249,33 @@ class _MessagePageState extends State<MessagePage> {
         builder: (context) {
           return Padding(
             padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 80),
-            child: Container(
-              width: SizeConfig.screenWidth,
-              height: 340,
-              decoration: const BoxDecoration(
-                  color: Color(0xFF101010),
-                  borderRadius: BorderRadius.all(Radius.circular(22))),
-              child: GridView.builder(
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 3,
-                    crossAxisSpacing: 15.0,
-                    mainAxisSpacing: 15.0),
-                itemCount: provider!.mainMenus.length,
-                padding: const EdgeInsets.all(16),
-                itemBuilder: (context, index) {
-                  return GestureDetector(
-                    onTap: () => provider!.onMainMenuClicked(context,
-                        provider!.mainMenus[index].key, () => showUpiApps()),
-                    child: GradientIconButton(
-                        size: 60,
-                        iconData: provider!.mainMenus[index].iconData,
-                        text: provider!.mainMenus[index].text),
-                  );
-                },
+            child: Material(
+              elevation: 4,
+              borderRadius: BorderRadius.all(Radius.circular(22)),
+              child: Container(
+                width: SizeConfig.screenWidth,
+                height: 380,
+                decoration: const BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.all(Radius.circular(22))),
+                child: GridView.builder(
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 3,
+                      crossAxisSpacing: 15.0,
+                      mainAxisSpacing: 15.0),
+                  itemCount: provider!.mainMenus.length,
+                  padding: const EdgeInsets.all(16),
+                  itemBuilder: (context, index) {
+                    return GestureDetector(
+                      onTap: () => provider!.onMainMenuClicked(context,
+                          provider!.mainMenus[index].key, () => showUpiApps()),
+                      child: GradientIconButton(
+                          size: 60,
+                          iconData: provider!.mainMenus[index].iconData,
+                          text: provider!.mainMenus[index].text),
+                    );
+                  },
+                ),
               ),
             ),
           );

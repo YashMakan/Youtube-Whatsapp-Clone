@@ -60,25 +60,34 @@ class FirestoreManager {
         .collection(Collections.users)
         .where(User.phoneNumberKey, isEqualTo: phone)
         .get();
-    if(userSnapshot.docs.isNotEmpty){
+
+    if (userSnapshot.docs.isNotEmpty) {
       final userDocRef = userSnapshot.docs.first.reference;
-      final chatData = (await userDocRef
-          .collection(Collections.chats)
-          .where('uuid', isEqualTo: LocalDB.user.uuid)
-          .get())
-          .docs
-          .first;
-      if(chatData.exists){
-        chat = Chat.fromJson(chatData.data());
-      }
+      user = User.fromJson(userSnapshot.docs.first.data());
+      try {
+        final chatData = (await userDocRef
+                .collection(Collections.chats)
+                .where('uuid', isEqualTo: LocalDB.user.uuid)
+                .get())
+            .docs
+            .first;
+        if (chatData.exists) {
+          chat = Chat.fromJson(chatData.data());
+        }
+      } catch (_) {}
     }
     return ChatAndUser(chat: chat, user: user);
   }
 
-  Stream<QuerySnapshot<Map<String, dynamic>>> getUserChats(String userId) {
+  Future<Stream<QuerySnapshot<Map<String, dynamic>>>> getUserChats(
+      String userId) async {
+    final userSnapshot = (await _firestore
+        .collection(Collections.users)
+        .where('uuid', isEqualTo: LocalDB.user.uuid)
+        .get());
     final chatsSnapshot = _firestore
         .collection(Collections.users)
-        .doc(userId)
+        .doc(userSnapshot.docs.first.id)
         .collection(Collections.chats)
         .snapshots();
     return chatsSnapshot;
@@ -107,18 +116,54 @@ class FirestoreManager {
         .where(User.uuidKey, isEqualTo: LocalDB.user.uuid)
         .get();
     final userDocRef = userSnapshot.docs.first.reference;
-    userDocRef.collection(Collections.chats).doc(chatId).update(
-        Chat(user, ChatType.message, message, 0, DateTime.now(), chatId)
-            .toJson());
+    bool exists1 =
+        (await userDocRef.collection(Collections.chats).doc(chatId).get())
+            .exists;
+    if (exists1) {
+      await userDocRef.collection(Collections.chats).doc(chatId).update(Chat(
+              user,
+              ChatType.message,
+              message,
+              0,
+              DateTime.now(),
+              chatId,
+              user.uuid)
+          .toJson());
+    } else {
+      await userDocRef.collection(Collections.chats).doc(chatId).set(Chat(user,
+              ChatType.message, message, 0, DateTime.now(), chatId, user.uuid)
+          .toJson());
+    }
 
     final userSnapshot2 = await _firestore
         .collection(Collections.users)
         .where(User.uuidKey, isEqualTo: user.uuid)
         .get();
     final userDocRef2 = userSnapshot2.docs.first.reference;
-    userDocRef2.collection(Collections.chats).doc(chatId).update(
-        Chat(LocalDB.user, ChatType.message, message, 0, DateTime.now(), chatId)
-            .toJson());
+    bool exists2 =
+        (await userDocRef2.collection(Collections.chats).doc(chatId).get())
+            .exists;
+    if (exists2) {
+      await userDocRef2.collection(Collections.chats).doc(chatId).update(Chat(
+              LocalDB.user,
+              ChatType.message,
+              message,
+              0,
+              DateTime.now(),
+              chatId,
+              LocalDB.user.uuid)
+          .toJson());
+    } else {
+      await userDocRef2.collection(Collections.chats).doc(chatId).set(Chat(
+              LocalDB.user,
+              ChatType.message,
+              message,
+              0,
+              DateTime.now(),
+              chatId,
+              LocalDB.user.uuid)
+          .toJson());
+    }
   }
 }
 

@@ -26,10 +26,10 @@ class Message {
   static const String upiPaymentKey = 'upiPayment';
   static const String contactKey = 'contact';
   static const String latLngKey = 'latLng';
-  static const String isIncomingMessageKey = 'isIncomingMessage';
+  static const String userSendingMessageUUIDKey = 'userSendingMessageUUID';
   static const String messageTypeKey = 'messageType';
 
-  final DateTime? dateTime;
+  DateTime? dateTime;
   final String? message;
   final String? gifUrl;
   final Uint8List? gifBytes;
@@ -39,7 +39,7 @@ class Message {
   final UpiPayment? upiPayment;
   final Contact? contact;
   final LatLng? latLng;
-  final bool isIncomingMessage;
+  final String? userSendingMessageUUID;
   final MessageType messageType;
 
   DateTime get messageDateTime => dateTime ?? DateTime.now();
@@ -55,21 +55,26 @@ class Message {
       this.upiPayment,
       this.contact,
       this.latLng,
-      required this.isIncomingMessage,
+      required this.userSendingMessageUUID,
       required this.messageType});
 
   factory Message.fromJson(Map<String, dynamic> data) => Message(
-      dateTime: DateTime.parse(data[dateTimeKey]),
+      dateTime: data[dateTimeKey] != null
+          ? DateTime.parse(data[dateTimeKey])
+          : DateTime.now(),
       message: data[messageKey],
       gifUrl: data[gifUrlKey],
       gifBytes: data[gifBytesKey],
       audio: data[audioKey],
       url: data[urlKey],
-      file: data[fileKey] != null ? Document.fromJson(data[fileKey]): null,
-      upiPayment: data[fileKey] != null ? UpiPayment.fromJson(data[upiPaymentKey]) : null,
-      contact: data[fileKey] != null ? Contact.fromJson(data[contactKey]) : null,
+      file: data[fileKey] != null ? Document.fromJson(data[fileKey]) : null,
+      upiPayment: data[fileKey] != null
+          ? UpiPayment.fromJson(data[upiPaymentKey])
+          : null,
+      contact:
+          data[fileKey] != null ? Contact.fromJson(data[contactKey]) : null,
       latLng: data[fileKey] != null ? LatLng.fromJson(data[latLngKey]) : null,
-      isIncomingMessage: data[isIncomingMessageKey],
+      userSendingMessageUUID: data[userSendingMessageUUIDKey],
       messageType: data[messageTypeKey].toString().parse());
 
   Map<String, dynamic> toJson() => {
@@ -83,11 +88,22 @@ class Message {
         upiPaymentKey: upiPayment?.toJson(),
         contactKey: contact?.toJson(),
         latLngKey: latLng?.toJson(),
-        isIncomingMessageKey: isIncomingMessage,
+        userSendingMessageUUIDKey: userSendingMessageUUID,
         messageTypeKey: messageType.format(),
       };
 
-  Widget render(chatId) {
+  String get getSubtitle {
+    if(message != null) {
+      return message!;
+    } else if(gifUrl != null) {
+      return "GIF";
+    } else {
+      return "";
+    }
+  }
+
+  Widget render(chatId, userId) {
+    bool isIncomingMessage = userSendingMessageUUID == userId;
     switch (messageType) {
       case MessageType.text:
         return TextMessage(
@@ -112,7 +128,10 @@ class Message {
             payment: upiPayment!, isIncomingMessage: isIncomingMessage);
       case MessageType.contact:
         return ContactMessage(
-            contact: contact!, isIncomingMessage: isIncomingMessage, chatId: chatId,);
+          contact: contact!,
+          isIncomingMessage: isIncomingMessage,
+          chatId: chatId,
+        );
       case MessageType.location:
         return LocationMessage(
             latLng: latLng!, isIncomingMessage: isIncomingMessage);

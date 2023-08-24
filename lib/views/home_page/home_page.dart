@@ -32,11 +32,6 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
-    // WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-    //   provider = Provider.of<HomeProvider>(context, listen: false);
-    //   provider!.fetchChats();
-    //   provider!.fetchStatusList();
-    // });
     super.initState();
   }
 
@@ -192,100 +187,119 @@ class _HomePageState extends State<HomePage> {
                   ? const Center(
                       child: CustomLoader(),
                     )
-                  : StreamBuilder(
-                      stream: provider.manager.getUserChats(LocalDB.user.uuid),
+                  : FutureBuilder(
+                      future: provider.manager.getUserChats(LocalDB.user.uuid),
                       builder: (context, data) {
-                        if (data.connectionState == ConnectionState.done &&
-                            data.data != null) {
-                          List<Chat> chats = data.data!.docs
-                              .map((e) => Chat.fromJson(e.data()))
-                              .toList();
-                          return ListView.separated(
-                            padding: const EdgeInsets.only(top: 10),
-                            controller: widget.scrollController,
-                            itemCount: chats.length,
-                            separatorBuilder: (context, index) {
-                              return const Divider(
-                                thickness: 0.3,
-                              );
-                            },
-                            itemBuilder: (context, index) => Slidable(
-                              key: UniqueKey(),
-                              startActionPane: ActionPane(
-                                motion: const ScrollMotion(),
-                                extentRatio:
-                                    provider.SLIDABLE_WIDGET_WIDTH_RATIO,
-                                dismissible: DismissiblePane(onDismissed: () {
-                                  // provider.removeChatAtIndex(index);
-                                }),
-                                children: [
-                                  CustomSlidableAction(
-                                    backgroundColor: greenColor,
-                                    onPressed: (BuildContext context) {},
-                                    child: Center(
-                                      child: Icon(LineIcons.userSecret,
-                                          color: Colors.white,
-                                          size: provider.SLIDABLE_ICON_SIZE),
-                                    ),
-                                  )
-                                ],
-                              ),
-                              endActionPane: ActionPane(
-                                motion: const ScrollMotion(),
-                                extentRatio:
-                                    (provider.SLIDABLE_WIDGET_WIDTH_RATIO) * 2,
-                                dismissible:
-                                    DismissiblePane(onDismissed: () {}),
-                                children: [
-                                  CustomSlidableAction(
-                                    onPressed: (_) {},
-                                    backgroundColor:
-                                        grayColor(context).lightShade,
-                                    foregroundColor: Colors.white,
-                                    child: Icon(
-                                      Icons.more_horiz_outlined,
-                                      size: provider.SLIDABLE_ICON_SIZE,
-                                    ),
-                                  ),
-                                  CustomSlidableAction(
-                                    onPressed: (_) {},
-                                    backgroundColor: const Color(0xFFE25C5C),
-                                    foregroundColor: Colors.white,
-                                    child: Icon(Icons.delete_outline,
-                                        size: provider.SLIDABLE_ICON_SIZE),
-                                  ),
-                                ],
-                              ),
-                              child: CustomListTile(
-                                  isOnline: index == 3 ? false : true,
-                                  imageUrl: chats[index].user.picture,
-                                  title: chats[index].user.name,
-                                  subTitle: sentences[index],
-                                  onTap: () {
-                                    Navigator.of(context)
-                                        .push(CupertinoPageRoute(
-                                            builder: (context) => MessagePage(
-                                                  user: chats[index].user,
-                                                  chatId: chats[index].chatId,
-                                                )));
+                        if (data.hasData &&
+                            data.connectionState == ConnectionState.done) {
+                          return StreamBuilder(
+                            stream: data.data,
+                            builder: (context, data) {
+                              if (data.data != null) {
+                                List<Chat> chats = data.data!.docs
+                                    .map((e) => Chat.fromJson(e.data()))
+                                    .toList();
+                                if(chats.isEmpty){
+                                  return const Center(child: NoDataFound());
+                                }
+                                return ListView.separated(
+                                  padding: const EdgeInsets.only(top: 10),
+                                  controller: widget.scrollController,
+                                  itemCount: chats.length,
+                                  separatorBuilder: (context, index) {
+                                    return const Divider(
+                                      thickness: 0.3,
+                                    );
                                   },
-                                  customListTileType:
-                                      chats[index].fromChatType(),
-                                  participants: chats,
-                                  timeFrame: chats[index]
-                                      .lastMessage
-                                      .messageDateTime
-                                      .formatToHHMM()),
-                            ),
+                                  itemBuilder: (context, index) => Slidable(
+                                    key: UniqueKey(),
+                                    startActionPane: ActionPane(
+                                      motion: const ScrollMotion(),
+                                      extentRatio:
+                                          provider.SLIDABLE_WIDGET_WIDTH_RATIO,
+                                      dismissible:
+                                          DismissiblePane(onDismissed: () {
+                                        // provider.removeChatAtIndex(index);
+                                      }),
+                                      children: [
+                                        CustomSlidableAction(
+                                          backgroundColor: greenColor,
+                                          onPressed: (BuildContext context) {},
+                                          child: Center(
+                                            child: Icon(LineIcons.userSecret,
+                                                color: Colors.white,
+                                                size: provider
+                                                    .SLIDABLE_ICON_SIZE),
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                    endActionPane: ActionPane(
+                                      motion: const ScrollMotion(),
+                                      extentRatio: (provider
+                                              .SLIDABLE_WIDGET_WIDTH_RATIO) *
+                                          2,
+                                      dismissible:
+                                          DismissiblePane(onDismissed: () {}),
+                                      children: [
+                                        CustomSlidableAction(
+                                          onPressed: (_) {},
+                                          backgroundColor:
+                                              grayColor(context).lightShade,
+                                          foregroundColor: Colors.white,
+                                          child: Icon(
+                                            Icons.more_horiz_outlined,
+                                            size: provider.SLIDABLE_ICON_SIZE,
+                                          ),
+                                        ),
+                                        CustomSlidableAction(
+                                          onPressed: (_) {},
+                                          backgroundColor:
+                                              const Color(0xFFE25C5C),
+                                          foregroundColor: Colors.white,
+                                          child: Icon(Icons.delete_outline,
+                                              size:
+                                                  provider.SLIDABLE_ICON_SIZE),
+                                        ),
+                                      ],
+                                    ),
+                                    child: CustomListTile(
+                                        isOnline: index == 3 ? false : true,
+                                        imageUrl: chats[index].user.picture ??
+                                            "https://cdn-icons-png.flaticon.com/512/149/149071.png",
+                                        title: chats[index].user.name,
+                                        subTitle: chats[index].lastMessage.getSubtitle,
+                                        onTap: () {
+                                          Navigator.of(context).push(
+                                              CupertinoPageRoute(
+                                                  builder: (context) =>
+                                                      MessagePage(
+                                                        user: chats[index].user,
+                                                        chatId:
+                                                            chats[index].chatId,
+                                                      )));
+                                        },
+                                        customListTileType:
+                                            chats[index].fromChatType(),
+                                        participants: chats,
+                                        timeFrame: chats[index]
+                                            .lastMessage
+                                            .messageDateTime
+                                            .formatToHHMM()),
+                                  ),
+                                );
+                              } else if (data.connectionState ==
+                                  ConnectionState.waiting) {
+                                return const Center(child: CustomLoader());
+                              } else {
+                                return const Center(child: NoDataFound());
+                              }
+                            },
                           );
-                        } else if (data.connectionState ==
-                            ConnectionState.waiting) {
-                          return const Center(child: CustomLoader());
                         } else {
                           return const Center(child: NoDataFound());
                         }
-                      },
-                    ),
+                      }),
             ),
           )
         ],
