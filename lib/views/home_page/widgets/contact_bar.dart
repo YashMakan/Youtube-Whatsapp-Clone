@@ -1,21 +1,21 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:whatsapp_redesign/constants/colors.dart';
-import 'package:whatsapp_redesign/models/user.dart';
-import 'package:whatsapp_redesign/views/home_page/widgets/story_widget.dart';
+import 'package:whatsapp_redesign/views/home_page/widgets/selected_contact_widget.dart';
 import 'package:whatsapp_redesign/views/status_page/status_page.dart';
 import 'package:whatsapp_redesign/widgets/gradient_icon_button.dart';
 
-class StatusBar extends StatelessWidget {
-  final List<User> statusList;
+class ContactBar extends StatelessWidget {
+  final List<Contact> contactList;
   final GestureTapCallback? onNewStatusClicked;
   final bool addWidget;
   final bool seeAllWidget;
 
-  const StatusBar({
+  const ContactBar({
     Key? key,
-    required this.statusList,
+    required this.contactList,
     this.onNewStatusClicked,
     this.addWidget = true,
     this.seeAllWidget = true,
@@ -36,24 +36,24 @@ class StatusBar extends StatelessWidget {
               children: [
                 addWidget
                     ? GestureDetector(
-                        onTap: onNewStatusClicked,
-                        child: const GradientIconButton(
-                          size: 60,
-                          iconData: Icons.add,
-                          text: "New Status",
-                        ),
-                      )
+                  onTap: onNewStatusClicked,
+                  child: const GradientIconButton(
+                    size: 60,
+                    iconData: Icons.add,
+                    text: "New Status",
+                  ),
+                )
                     : const SizedBox(),
                 addWidget
                     ? const SizedBox(
-                        width: 8,
-                      )
+                  width: 8,
+                )
                     : const SizedBox(),
                 SizedBox(
                   height: 100,
                   child: ListView.builder(
                     shrinkWrap: true,
-                    itemCount: statusList.length,
+                    itemCount: contactList.length,
                     scrollDirection: Axis.horizontal,
                     itemBuilder: (context, index) {
                       return GestureDetector(
@@ -62,11 +62,9 @@ class StatusBar extends StatelessWidget {
                             builder: (context) => const StatusPage(),
                           ));
                         },
-                        child: StoryWidget(
+                        child: SelectedContactWidget(
                           size: 60,
-                          showGreenStrip:
-                              addWidget && (index == 2 || index == 3),
-                          user: statusList[index],
+                          user: contactList[index],
                         ),
                       );
                     },
@@ -74,19 +72,19 @@ class StatusBar extends StatelessWidget {
                 ),
                 seeAllWidget
                     ? const SizedBox(
-                        width: 10,
-                      )
+                  width: 10,
+                )
                     : const SizedBox(),
                 seeAllWidget
                     ? const Icon(
-                        LineIcons.arrowRight,
-                        color: greenColor,
-                      )
+                  LineIcons.arrowRight,
+                  color: greenColor,
+                )
                     : const SizedBox(),
                 seeAllWidget
                     ? const SizedBox(
-                        width: 10,
-                      )
+                  width: 10,
+                )
                     : const SizedBox(),
               ],
             ),

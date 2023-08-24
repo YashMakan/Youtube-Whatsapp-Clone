@@ -10,10 +10,11 @@ import 'package:whatsapp_redesign/widgets/gradient_icon_button.dart';
 
 class ContactMessage extends StatefulWidget {
   final Contact contact;
-  final bool fromFriend;
+  final bool isIncomingMessage;
+  final String chatId;
 
   const ContactMessage(
-      {Key? key, required this.contact, required this.fromFriend})
+      {Key? key, required this.contact, required this.isIncomingMessage, required this.chatId})
       : super(key: key);
 
   @override
@@ -26,7 +27,7 @@ class _ContactMessageState extends State<ContactMessage> {
 
   @override
   void initState() {
-    fromFriend = widget.fromFriend;
+    fromFriend = widget.isIncomingMessage;
     contact = widget.contact;
     super.initState();
   }
@@ -42,6 +43,20 @@ class _ContactMessageState extends State<ContactMessage> {
           Container(
             width: SizeConfig.screenWidth * 0.8,
             height: 90,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(fromFriend ? 0 : 40),
+                  topLeft: const Radius.circular(40),
+                  topRight: const Radius.circular(40),
+                  bottomRight: Radius.circular(fromFriend ? 40 : 0)),
+              color: fromFriend ? const Color(0xFF313131) : null,
+              gradient: fromFriend
+                  ? null
+                  : LinearGradient(colors: [
+                      greenGradient.lightShade,
+                      greenGradient.darkShade,
+                    ]),
+            ),
             child: Column(
               children: [
                 const SizedBox(
@@ -115,6 +130,7 @@ class _ContactMessageState extends State<ContactMessage> {
                                               builder: (context) => MessagePage(
                                                     user: convertContactToUser(
                                                         contact),
+                                                chatId: widget.chatId,
                                                   )));
                                     }),
                               ],
@@ -147,20 +163,6 @@ class _ContactMessageState extends State<ContactMessage> {
                   ),
                 )
               ],
-            ),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(fromFriend ? 0 : 40),
-                  topLeft: const Radius.circular(40),
-                  topRight: const Radius.circular(40),
-                  bottomRight: Radius.circular(fromFriend ? 40 : 0)),
-              color: fromFriend ? const Color(0xFF313131) : null,
-              gradient: fromFriend
-                  ? null
-                  : LinearGradient(colors: [
-                      greenGradient.lightShade,
-                      greenGradient.darkShade,
-                    ]),
             ),
           ),
         ],

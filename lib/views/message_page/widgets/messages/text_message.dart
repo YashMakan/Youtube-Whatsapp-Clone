@@ -4,9 +4,9 @@ import 'package:whatsapp_redesign/models/size_config.dart';
 
 class TextMessage extends StatefulWidget {
   final String message;
-  final bool fromFriend;
+  final bool isIncomingMessage;
 
-  const TextMessage({Key? key, required this.message, required this.fromFriend})
+  const TextMessage({Key? key, required this.message, required this.isIncomingMessage})
       : super(key: key);
 
   @override
@@ -19,7 +19,7 @@ class _TextMessageState extends State<TextMessage> {
 
   @override
   void initState() {
-    fromFriend = widget.fromFriend;
+    fromFriend = widget.isIncomingMessage;
     message = widget.message;
     super.initState();
   }
@@ -41,7 +41,7 @@ class _TextMessageState extends State<TextMessage> {
                     topLeft: const Radius.circular(40),
                     topRight: const Radius.circular(40),
                     bottomRight: Radius.circular(fromFriend ? 40 : 0)),
-                color: fromFriend ? const Color(0xFF313131) : null,
+                color: fromFriend ? const Color(0xFF4C4C4C) : null,
                 gradient: fromFriend
                     ? null
                     : LinearGradient(colors: [

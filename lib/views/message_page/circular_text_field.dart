@@ -29,7 +29,8 @@ class CircularTextField extends StatelessWidget {
       child: Center(
         child: TextFormField(
           cursorColor: Colors.white,
-          style: const TextStyle(color: Colors.white38),
+          style: TextStyle(
+              color: context.isDarkMode() ? Colors.white : Colors.black),
           maxLines: 6,
           minLines: 1,
           controller: controller,

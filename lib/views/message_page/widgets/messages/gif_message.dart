@@ -4,11 +4,11 @@ import 'package:whatsapp_redesign/models/size_config.dart';
 
 class GifMessage extends StatefulWidget {
   final String? gifUrl;
-  final bool fromFriend;
+  final bool isIncomingMessage;
   final Uint8List? gifBytes;
 
   const GifMessage(
-      {Key? key, this.gifUrl, required this.fromFriend, this.gifBytes})
+      {Key? key, this.gifUrl, required this.isIncomingMessage, this.gifBytes})
       : super(key: key);
 
   @override
@@ -22,7 +22,7 @@ class _GifMessageState extends State<GifMessage> {
 
   @override
   void initState() {
-    fromFriend = widget.fromFriend;
+    fromFriend = widget.isIncomingMessage;
     gifUrl = widget.gifUrl;
     gifBytes = widget.gifBytes;
     super.initState();

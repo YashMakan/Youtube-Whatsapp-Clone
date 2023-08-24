@@ -69,6 +69,8 @@ dependencies:
   flutter_map:
   hive_flutter:
   firebase_auth:
+  intl:
+  latlong2:
 
 dev_dependencies:
   flutter_test:

@@ -65,14 +65,16 @@ class LottieAnimationStackWidget extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        GradientText(
-                          onOTPage ? "Enter the OTP" : "Welcome!",
-                          style: const TextStyle(
-                              fontSize: 36, fontWeight: FontWeight.bold),
+                        GradientWidget(
                           gradient: LinearGradient(colors: [
                             greenGradient.lightShade,
                             greenGradient.darkShade,
                           ]),
+                          child: Text(
+                            onOTPage ? "Enter the OTP" : "Welcome!",
+                            style: const TextStyle(
+                                fontSize: 36, fontWeight: FontWeight.bold),
+                          ),
                         ),
                       ],
                     )

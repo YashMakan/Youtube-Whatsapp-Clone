@@ -36,7 +36,6 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
-    provider = Provider.of<AuthProvider>(context, listen: false);
     bool isKeyboardOpened = MediaQuery.of(context).viewInsets.bottom != 0;
     return Scaffold(
       backgroundColor: backgroundColor(context),
@@ -63,7 +62,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                 onRightArrowClicked: provider.onRightArrowClicked,
                 onLeftArrowReset: () => provider.onLeftArrowReset(isKeyboardOpened),
                 onSendOtpClicked: provider.onSendOtpClicked,
-                onOtpSubmit: (otp) => provider.onOtpSubmit(otp, context))
+                onOtpSubmit: (phoneNumber, otp) => provider.onOtpSubmit(phoneNumber, otp, context))
           ],
         );
       }),

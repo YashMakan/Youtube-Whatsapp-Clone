@@ -3,8 +3,13 @@ import 'dart:math';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:whatsapp_redesign/constants/colors.dart';
+import 'package:whatsapp_redesign/constants/extensions.dart';
+import 'package:whatsapp_redesign/managers/firestore_manager.dart';
+import 'package:whatsapp_redesign/managers/local_db_manager/local_db.dart';
 import 'package:whatsapp_redesign/managers/navigation_manager/navigation_manager.dart';
 import 'package:whatsapp_redesign/models/onboarding_page.dart';
+import 'package:whatsapp_redesign/models/user.dart' as model;
 
 class AuthProvider extends ChangeNotifier {
   double top = 0, left = 0;
@@ -38,6 +43,14 @@ class AuthProvider extends ChangeNotifier {
     timer?.cancel();
   }
 
+  void reset() {
+    verificationId = null;
+    selectedPageIndex = 0;
+    showForm = false;
+    onOTPage = false;
+    pageController = null;
+  }
+
   startFloatingAnimation() {
     timerDispose();
     timer = Timer.periodic(const Duration(seconds: 1), (Timer t) {
@@ -48,6 +61,7 @@ class AuthProvider extends ChangeNotifier {
   }
 
   void initialize() {
+    reset();
     startFloatingAnimation();
     pageController = PageController(initialPage: selectedPageIndex);
     notifyListeners();
@@ -117,19 +131,116 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void onOtpSubmit(otp, context) {
+  void onOtpSubmit(String phoneNumber, String otp, BuildContext context) {
+    Widget _buildTextField(String labelText, TextEditingController controller) {
+      return TextField(
+        controller: controller,
+        decoration: InputDecoration(
+          labelText: labelText,
+          border: const OutlineInputBorder(),
+        ),
+      );
+    }
+
+    Future<String?> _showBottomSheet(BuildContext context) async {
+      final t1 = TextEditingController();
+      final t2 = TextEditingController();
+      return await showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        builder: (BuildContext context) {
+          return SingleChildScrollView(
+            child: Container(
+              padding: const EdgeInsets.all(16.0),
+              margin: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'What should we call You?',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 26),
+                  Row(
+                    children: [
+                      Expanded(child: _buildTextField('First Name', t1)),
+                      const SizedBox(width: 10),
+                      Expanded(child: _buildTextField('Last Name', t2)),
+                    ],
+                  ),
+                  const SizedBox(height: 20),
+                  Container(
+                    decoration: BoxDecoration(
+                        borderRadius:
+                        const BorderRadius.all(Radius.circular(4)),
+                        gradient: LinearGradient(colors: [
+                          greenGradient.darkShade,
+                          greenGradient.lightShade,
+                        ])),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.of(context).pop("${t1.text} ${t2.text}");
+                      },
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.transparent,
+                          shadowColor: Colors.transparent),
+                      child: Container(
+                        height: 45.0,
+                        padding: EdgeInsets.zero,
+                        alignment: Alignment.center,
+                        child: const Text(
+                          "Submit",
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w500),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      );
+    }
+
+    final maanger = FirestoreManager();
     // verify otp function
     if (verificationId == null) {
       throw Exception("VerificationId cannot be null");
     }
     final credential = PhoneAuthProvider.credential(
         verificationId: verificationId!, smsCode: otp);
-    auth.signInWithCredential(credential).then((result) {
-      print("User verified");
-      NavigationManager.navigate(context, Routes.rootScreen);
+    auth.signInWithCredential(credential).then((result) async {
+      // show a popup/bottomsheet for name
+      maanger.isUserExist(phoneNumber: phoneNumber).then((exists) async {
+        if (!exists) {
+          String? name = await _showBottomSheet(context);
+          if (name != null) {
+            model.User user = model.User(
+                name: name,
+                phoneNumber: phoneNumber,
+                firstName: name.split(' ')[0],
+                uuid: context.getUUid(),
+                firebaseToken: await context.getFCMToken());
+            maanger.registerUser(user);
+            LocalDB.setUser(user);
+            NavigationManager.navigate(context, Routes.rootScreen);
+          } else {
+            print("Name is mandatory for authentication");
+          }
+        } else {
+          model.User user = await maanger.getUser(phoneNumber);
+          LocalDB.setUser(user);
+          NavigationManager.navigate(context, Routes.rootScreen);
+        }
+      });
     }).catchError((e) {
       print(e);
     });
   }
-
 }

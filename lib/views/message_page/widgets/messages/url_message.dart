@@ -5,9 +5,9 @@ import 'package:whatsapp_redesign/models/size_config.dart';
 
 class UrlMessage extends StatefulWidget {
   final String url;
-  final bool fromFriend;
+  final bool isIncomingMessage;
 
-  const UrlMessage({Key? key, required this.url, required this.fromFriend})
+  const UrlMessage({Key? key, required this.url, required this.isIncomingMessage})
       : super(key: key);
 
   @override
@@ -20,7 +20,7 @@ class _UrlMessageState extends State<UrlMessage> {
 
   @override
   void initState() {
-    fromFriend = widget.fromFriend;
+    fromFriend = widget.isIncomingMessage;
     url = widget.url;
     super.initState();
   }

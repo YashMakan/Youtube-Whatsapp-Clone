@@ -4,22 +4,22 @@ class Location {
   static const String stateKey = "state";
   static const String postcodeKey = "postcode";
 
-  final String street;
-  final String city;
-  final String state;
-  final String postcode;
+  final String? street;
+  final String? city;
+  final String? state;
+  final String? postcode;
 
   Location(
-      {required this.street,
-      required this.city,
-      required this.state,
-      required this.postcode});
+      {this.street,
+      this.city,
+      this.state,
+      this.postcode});
 
-  factory Location.fromJson(Map json) => Location(
-      street: json[streetKey],
-      city: json[cityKey],
-      state: json[stateKey],
-      postcode: json[postcodeKey].toString());
+  factory Location.fromJson(Map? json) => Location(
+      street: json?[streetKey],
+      city: json?[cityKey],
+      state: json?[stateKey],
+      postcode: json?[postcodeKey].toString());
 
   toJson() => {
         streetKey: street,

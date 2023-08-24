@@ -7,10 +7,10 @@ import 'package:whatsapp_redesign/models/size_config.dart';
 
 class LocationMessage extends StatefulWidget {
   final LatLng latLng;
-  final bool fromFriend;
+  final bool isIncomingMessage;
 
   const LocationMessage(
-      {Key? key, required this.latLng, required this.fromFriend})
+      {Key? key, required this.latLng, required this.isIncomingMessage})
       : super(key: key);
 
   @override
@@ -23,7 +23,7 @@ class _LocationMessageState extends State<LocationMessage> {
 
   @override
   void initState() {
-    fromFriend = widget.fromFriend;
+    fromFriend = widget.isIncomingMessage;
     latLng = widget.latLng;
     super.initState();
   }

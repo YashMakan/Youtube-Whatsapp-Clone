@@ -8,10 +8,10 @@ import 'package:whatsapp_redesign/models/document.dart';
 
 class DocumentMessage extends StatefulWidget {
   final Document file;
-  final bool fromFriend;
+  final bool isIncomingMessage;
 
   const DocumentMessage(
-      {Key? key, required this.file, required this.fromFriend})
+      {Key? key, required this.file, required this.isIncomingMessage})
       : super(key: key);
 
   @override
@@ -25,7 +25,7 @@ class _DocumentMessageState extends State<DocumentMessage> {
   @override
   void initState() {
     file = widget.file;
-    fromFriend = widget.fromFriend;
+    fromFriend = widget.isIncomingMessage;
     super.initState();
   }
 

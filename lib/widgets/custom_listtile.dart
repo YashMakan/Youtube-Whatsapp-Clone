@@ -4,8 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:whatsapp_redesign/constants/colors.dart';
 import 'package:whatsapp_redesign/constants/enums.dart';
+import 'package:whatsapp_redesign/models/chat.dart';
 import 'package:whatsapp_redesign/models/size_config.dart';
 import 'package:whatsapp_redesign/widgets/gradient_icon_button.dart';
+
+import 'custom_circular_image.dart';
 
 class CustomListTile extends StatelessWidget {
   final String? imageUrl;
@@ -18,10 +21,11 @@ class CustomListTile extends StatelessWidget {
   final String? timeFrame;
   final int? numberOfCalls;
   final CallStatus? callStatus;
-  final List<String>? participantImages;
+  final List<Chat> participants;
   final int? messageCounter;
   final bool isOnline;
   final bool isSelected;
+  final bool showImage;
 
   const CustomListTile(
       {Key? key,
@@ -35,10 +39,11 @@ class CustomListTile extends StatelessWidget {
       this.timeFrame,
       this.numberOfCalls,
       this.callStatus,
-      this.participantImages,
+      required this.participants,
       this.messageCounter,
       this.isOnline = false,
-      this.isSelected = false})
+      this.isSelected = false,
+      this.showImage = true})
       : super(key: key);
 
   @override
@@ -52,105 +57,107 @@ class CustomListTile extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12),
           child: Row(
             children: [
-              Stack(
-                children: [
-                  SizedBox(
-                      width: 70,
-                      height: 70,
-                      child: Stack(
-                        children: [
-                          participantImages == null ||
-                                  participantImages?.length == 1
-                              ? const SizedBox()
-                              : Positioned(
-                                  bottom: 0,
-                                  right: 0,
-                                  child: Container(
-                                    width: 47,
-                                    height: 47,
-                                    decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        image: DecorationImage(
-                                            fit: BoxFit.cover,
-                                            image: NetworkImage(
-                                                participantImages![1]))),
+              if (showImage)
+                Stack(
+                  children: [
+                    SizedBox(
+                        width: 70,
+                        height: 70,
+                        child: Stack(
+                          children: [
+                            participants.length <= 1
+                                ? const SizedBox()
+                                : Positioned(
+                                    bottom: 0,
+                                    right: 0,
+                                    child: CustomCircularImage(
+                                        size: 47, user: participants[1].user),
                                   ),
-                                ),
-                          participantImages == null ||
-                                  participantImages?.length == 1
-                              ? Stack(
-                                  children: [
-                                    Container(
-                                      width: 70,
-                                      height: 70,
-                                      decoration: BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          image: imageBytes != null
-                                              ? DecorationImage(
-                                                  fit: BoxFit.cover,
-                                                  image:
-                                                      MemoryImage(imageBytes!))
-                                              : DecorationImage(
-                                                  image:
-                                                      NetworkImage(imageUrl!),
-                                                  fit: BoxFit.cover)),
-                                    ),
-                                    if (isSelected)
+                            participants.length <= 1
+                                ? Stack(
+                                    children: [
                                       Container(
                                         width: 70,
                                         height: 70,
-                                        child: const Center(
-                                          child: Icon(
-                                            Icons.check,
-                                            color: Colors.white,
-                                          ),
-                                        ),
                                         decoration: BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          gradient: LinearGradient(colors: [
-                                            greenGradient.lightShade
-                                                .withOpacity(0.5),
-                                            greenGradient.darkShade
-                                                .withOpacity(0.5),
-                                          ]),
-                                        ),
-                                      )
-                                  ],
-                                )
-                              : Container(
-                                  width: 50,
-                                  height: 50,
-                                  decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      border: Border.all(
-                                          color:
-                                              backgroundColor(SizeConfig.cntxt),
-                                          width: 3),
-                                      image: DecorationImage(
-                                          fit: BoxFit.cover,
-                                          image: NetworkImage(
-                                              participantImages![0]))),
-                                ),
-                        ],
-                      )),
-                  isOnline
-                      ? Positioned(
-                          bottom: 3,
-                          right: 3,
-                          child: Container(
-                            width: 15,
-                            height: 15,
-                            decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                border: Border.all(
-                                    color: backgroundColor(SizeConfig.cntxt),
-                                    width: 2),
-                                color: greenColor),
-                          ),
-                        )
-                      : const SizedBox()
-                ],
-              ),
+                                            shape: BoxShape.circle,
+                                            image: imageBytes != null
+                                                ? DecorationImage(
+                                                    fit: BoxFit.cover,
+                                                    image: MemoryImage(
+                                                        imageBytes!))
+                                                : DecorationImage(
+                                                    image:
+                                                        NetworkImage(imageUrl!),
+                                                    fit: BoxFit.cover)),
+                                      ),
+                                      if (isSelected)
+                                        Container(
+                                          width: 70,
+                                          height: 70,
+                                          decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            gradient: LinearGradient(colors: [
+                                              greenGradient.lightShade
+                                                  .withOpacity(0.5),
+                                              greenGradient.darkShade
+                                                  .withOpacity(0.5),
+                                            ]),
+                                          ),
+                                          child: const Center(
+                                            child: Icon(
+                                              Icons.check,
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        )
+                                    ],
+                                  )
+                                : Container(
+                                    width: 50,
+                                    height: 50,
+                                    decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        border: Border.all(
+                                            color: backgroundColor(
+                                                SizeConfig.cntxt),
+                                            width: 3),
+                                        image:
+                                            participants[0].user.picture == null
+                                                ? null
+                                                : DecorationImage(
+                                                    fit: BoxFit.cover,
+                                                    image: NetworkImage(
+                                                        participants[0]
+                                                            .user
+                                                            .picture!))),
+                                    child: Center(
+                                      child: Text(participants[0]
+                                          .user
+                                          .name[0]
+                                          .toUpperCase()),
+                                    ),
+                                  ),
+                          ],
+                        )),
+                    isOnline
+                        ? Positioned(
+                            bottom: 3,
+                            right: 3,
+                            child: Container(
+                              width: 15,
+                              height: 15,
+                              decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                      color: backgroundColor(SizeConfig.cntxt),
+                                      width: 2),
+                                  color: greenColor),
+                            ),
+                          )
+                        : const SizedBox()
+                  ],
+                ),
               Padding(
                 padding: const EdgeInsets.only(left: 12.0),
                 child: Padding(

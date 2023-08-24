@@ -11,9 +11,9 @@ import 'package:whatsapp_redesign/models/audio_wave_form_data.dart';
 
 class AudioMessage extends StatefulWidget {
   final Uint8List? samples;
-  final bool fromFriend;
+  final bool isIncomingMessage;
 
-  const AudioMessage({Key? key, this.samples, required this.fromFriend})
+  const AudioMessage({Key? key, this.samples, required this.isIncomingMessage})
       : super(key: key);
 
   @override
@@ -30,7 +30,7 @@ class _AudioMessageState extends State<AudioMessage> {
   @override
   void initState() {
     getStream();
-    fromFriend = widget.fromFriend;
+    fromFriend = widget.isIncomingMessage;
     super.initState();
   }
 

@@ -3,12 +3,13 @@ import 'package:flutter_switch/flutter_switch.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:whatsapp_redesign/constants/colors.dart';
 import 'package:whatsapp_redesign/constants/enums.dart';
+import 'package:whatsapp_redesign/models/user.dart';
+import 'package:whatsapp_redesign/widgets/custom_circular_image.dart';
 
 import '../../models/size_config.dart';
 
 Widget profileWidget(
-    {required String name,
-    required String image,
+    {required User user,
     required GestureTapCallback onLogoutClick,
     required GestureTapCallback onTap}) {
   return Padding(
@@ -22,15 +23,7 @@ Widget profileWidget(
               Stack(
                 clipBehavior: Clip.none,
                 children: [
-                  Container(
-                    width: 70,
-                    height: 70,
-                    decoration: BoxDecoration(
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(10)),
-                        image: DecorationImage(
-                            image: NetworkImage(image), fit: BoxFit.cover)),
-                  ),
+                  CustomCircularImage(size: 70, user: user),
                   Positioned(
                     top: -5,
                     right: -5,
@@ -57,7 +50,7 @@ Widget profileWidget(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    name,
+                    user.name,
                     style: TextStyle(
                         color: blackColor(SizeConfig.cntxt).darkShade,
                         fontSize: 22,

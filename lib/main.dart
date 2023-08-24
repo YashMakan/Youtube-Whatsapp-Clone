@@ -11,13 +11,15 @@ import 'package:whatsapp_redesign/managers/navigation_manager/navigation_manager
 import 'package:whatsapp_redesign/models/user.dart';
 import 'package:uuid/uuid.dart';
 import 'package:whatsapp_redesign/provider/auth_provider.dart';
+import 'package:whatsapp_redesign/provider/contact_provider.dart';
+import 'package:whatsapp_redesign/provider/home_provider.dart';
+import 'package:whatsapp_redesign/provider/message_provider.dart';
 import 'package:whatsapp_redesign/views/root_page.dart';
 import 'package:whatsapp_redesign/views/splash_page/splash_page.dart';
 import 'models/location.dart';
 
 User user = User(
     name: "Yash Makan",
-    email: "yashmakan.fake.email@gmail.com",
     gender: "Male",
     phoneNumber: "+91 9999999999",
     birthDate: 498456350,
@@ -27,7 +29,6 @@ User user = User(
         state: "Haryana",
         street: "New Street"),
     username: "yashmakan",
-    password: "79aa7b81bcdd14fd98282b810b61312b",
     firstName: "Yash",
     lastName: "Makan",
     title: "Full Stack Developer",
@@ -39,7 +40,6 @@ User user = User(
 
 User rick = User(
     name: "Rick Rolland",
-    email: "rick.fake.email@gmail.com",
     gender: "Male",
     phoneNumber: "8888888888",
     birthDate: 498456351,
@@ -49,7 +49,6 @@ User rick = User(
         state: "Haryana",
         street: "New Street"),
     username: "rickkk",
-    password: "79aa7b81bcdd14fd98282b810b61312a",
     firstName: "Rick",
     lastName: "Rolland",
     title: "Web Developer",
@@ -142,6 +141,12 @@ class _MyAppState extends State<MyApp> {
       providers: [
         ChangeNotifierProvider<AuthProvider>(
             create: (context) => AuthProvider()),
+        ChangeNotifierProvider<HomeProvider>(
+            create: (context) => HomeProvider()),
+        ChangeNotifierProvider<ContactProvider>(
+            create: (context) => ContactProvider()),
+        ChangeNotifierProvider<MessageProvider>(
+            create: (context) => MessageProvider()),
       ],
       child: MaterialApp(
         title: 'Whatsapp',
